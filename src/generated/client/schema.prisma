@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id      String   @id @default(cuid())
+  name    String
+  email   String?
+  phone   String
+  repairs Repair[]
+  createdAt DateTime @default(now())
+}
+
+model DeviceType {
+  id      String         @id @default(cuid())
+  name    String         @unique // Ex: "Smartphone"
+  models  DeviceModel[]
+  createdAt DateTime @default(now())
+}
+
+model DeviceBrand {
+  id      String         @id @default(cuid())
+  name    String         @unique // Ex: "Apple"
+  models  DeviceModel[]
+  createdAt DateTime @default(now())
+}
+
+model DeviceModel {
+  id          String      @id @default(cuid())
+  name        String      // Ex: "iPhone 13"
+  modelReference String?  // Ex: "A2403"
+  brandId     String
+  typeId      String
+  brand       DeviceBrand @relation(fields: [brandId], references: [id])
+  type        DeviceType  @relation(fields: [typeId], references: [id])
+  services    Service[]
+  parts       Part[]
+  createdAt   DateTime    @default(now())
+  
+  @@unique([name, brandId])
+}
+
+model Part {
+  id          String    @id @default(cuid())
+  name        String
+  sku         String    @unique
+  costPrice   Float     // Prix d'achat de la pièce
+  stock       Int       @default(0)
+  minStock    Int       @default(0) // Seuil d'alerte
+  quality     String?   // ORIGINAL | COMPATIBLE
+  supplier    String?   // Fournisseur
+  supplierRef String?   // Référence fournisseur
+  location    String?   // Emplacement rayon
+  description String?
+  modelId     String?
+  model       DeviceModel? @relation(fields: [modelId], references: [id])
+  services    Service[]
+  createdAt   DateTime  @default(now())
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String   // Ex: "Remplacement écran iPhone 13"
+  laborCost   Float    // Main d'oeuvre pure
+  suggestedPrice Float @default(0) // Prix de vente conseillé (TTC)
+  duration    Int      @default(30) // Durée en minutes
+  partId      String?  // Pièce associée optionnelle
+  part        Part?    @relation(fields: [partId], references: [id])
+  modelId     String?
+  model       DeviceModel? @relation(fields: [modelId], references: [id])
+  description String?
+  repairs     RepairService[]
+  createdAt   DateTime @default(now())
+}
+
+model Repair {
+  id          String   @id @default(cuid())
+  status      String   @default("PENDING") // PENDING, DIAGNOSIS, IN_PROGRESS, READY, DELIVERED, CANCELLED
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  services    RepairService[]
+  logs        RepairLog[]
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RepairService {
+  id        String  @id @default(cuid())
+  repairId  String
+  serviceId String
+  repair    Repair  @relation(fields: [repairId], references: [id])
+  service   Service @relation(fields: [serviceId], references: [id])
+  quantity  Int     @default(1)
+  priceAtTime Float // Prix total (pièce + MO) fixé au moment de l'édition du ticket
+}
+
+model RepairLog {
+  id        String   @id @default(cuid())
+  repairId  String
+  repair    Repair   @relation(fields: [repairId], references: [id])
+  status    String
+  comment   String?
+  createdAt DateTime @default(now())
+}

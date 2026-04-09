@@ -126,6 +126,25 @@ function SignaturePad({ onSign }: { onSign: (data: string) => void }) {
   )
 }
 
+interface DeviceBrand {
+  id: string
+  name: string
+}
+
+interface DeviceType {
+  id: string
+  name: string
+}
+
+interface DeviceModel {
+  id: string
+  name: string
+  brandId: string
+  typeId: string
+  brand: DeviceBrand
+  type: DeviceType
+}
+
 interface Client {
   id: string
   name: string
@@ -137,6 +156,8 @@ interface Part {
   id: string
   name: string
   stock: number
+  modelId?: string | null
+  model?: DeviceModel | null
 }
 
 interface Service {
@@ -144,6 +165,8 @@ interface Service {
   name: string
   laborCost: number
   description?: string | null
+  modelId?: string | null
+  model?: DeviceModel | null
   part?: {
     id: string
     name: string
@@ -312,6 +335,7 @@ export default function Dashboard() {
   const [clients, setClients] = useState<Client[]>([])
   const [parts, setParts] = useState<Part[]>([])
   const [services, setServices] = useState<Service[]>([])
+  const [models, setModels] = useState<DeviceModel[]>([])
   const [selectedRepairId, setSelectedRepairId] = useState<string | null>(null)
   const [draggedRepairId, setDraggedRepairId] = useState<string | null>(null)
   const [hoveredStatus, setHoveredStatus] = useState<KanbanStatus | null>(null)
@@ -320,9 +344,11 @@ export default function Dashboard() {
   const [drawerMode, setDrawerMode] = useState<QuickFlowMode>('repair')
   const [showNewClientForm, setShowNewClientForm] = useState(false)
   const [clientSearch, setClientSearch] = useState('')
+  const [showModelSuggestions, setShowModelSuggestions] = useState(false)
   const [signatureData, setSignatureData] = useState('')
   const [deviceForm, setDeviceForm] = useState({
     model: '',
+    modelId: '',
     imei: '',
     unlockCode: '',
     condition: 5,
@@ -345,12 +371,14 @@ export default function Dashboard() {
       setIsLoading(true)
       setError(null)
 
-      const [repairsResult, clientsResult, partsResult, servicesResult] = await Promise.allSettled([
-        apiRequest<Repair[]>('/api/repairs', {}, 'Impossible de charger les réparations.'),
-        apiRequest<Client[]>('/api/clients', {}, 'Impossible de charger les clients.'),
-        apiRequest<Part[]>('/api/parts', {}, 'Impossible de charger le stock.'),
-        apiRequest<Service[]>('/api/services', {}, 'Impossible de charger les forfaits.'),
-      ])
+      const [repairsResult, clientsResult, partsResult, servicesResult, modelsResult] =
+        await Promise.allSettled([
+          apiRequest<Repair[]>('/api/repairs', {}, 'Impossible de charger les réparations.'),
+          apiRequest<Client[]>('/api/clients', {}, 'Impossible de charger les clients.'),
+          apiRequest<Part[]>('/api/parts', {}, 'Impossible de charger le stock.'),
+          apiRequest<Service[]>('/api/services', {}, 'Impossible de charger les forfaits.'),
+          apiRequest<DeviceModel[]>('/api/models', {}, 'Impossible de charger les modèles.'),
+        ])
 
       if (repairsResult.status === 'rejected') {
         throw repairsResult.reason
@@ -370,18 +398,25 @@ export default function Dashboard() {
         servicesResult.status === 'fulfilled' && Array.isArray(servicesResult.value)
           ? servicesResult.value
           : []
+      const nextModels =
+        modelsResult.status === 'fulfilled' && Array.isArray(modelsResult.value)
+          ? modelsResult.value
+          : []
 
-      const nonBlockingErrors = [partsResult, servicesResult]
+      const nonBlockingErrors = [partsResult, servicesResult, modelsResult]
         .filter((result) => result.status === 'rejected')
         .map((result) => (result as PromiseRejectedResult).reason)
         .map((reason) =>
-          reason instanceof Error ? reason.message : 'Une partie du tableau de bord est indisponible.'
+          reason instanceof Error
+            ? reason.message
+            : 'Une partie du tableau de bord est indisponible.'
         )
 
       setRepairs(nextRepairs)
       setClients(nextClients)
       setParts(nextParts)
       setServices(nextServices)
+      setModels(nextModels)
 
       setSelectedRepairId((currentSelected) => {
         if (currentSelected && nextRepairs.some((repair) => repair.id === currentSelected)) {
@@ -615,8 +650,9 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
     setClientForm(initialClientForm)
     setQuickFlowForm(initialQuickFlowForm)
     setClientSearch('')
+    setShowModelSuggestions(false)
     setSignatureData('')
-    setDeviceForm({ model: '', imei: '', unlockCode: '', condition: 5 })
+    setDeviceForm({ model: '', modelId: '', imei: '', unlockCode: '', condition: 5 })
     setError(null)
   }
 
@@ -1353,14 +1389,54 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
               <SectionTitle label="Étape 2" title="Quel est l'appareil ?" icon={<Smartphone className="h-5 w-5" />} />
               
               <div className="grid gap-5">
-                <Field label="Modèle de l'appareil">
-                  <input
-                    value={deviceForm.model}
-                    onChange={(e) => setDeviceForm(prev => ({ ...prev, model: e.target.value }))}
-                    placeholder="ex: iPhone 13 Pro"
-                    className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
-                  />
-                </Field>
+                <div className="relative">
+                  <Field label="Modèle de l'appareil">
+                    <div className="relative">
+                      <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <input
+                        value={deviceForm.model}
+                        onChange={(e) => {
+                          setDeviceForm((prev) => ({ ...prev, model: e.target.value, modelId: '' }))
+                          setShowModelSuggestions(true)
+                        }}
+                        placeholder="Chercher ou saisir un modèle..."
+                        className="w-full rounded-2xl border border-slate-100 bg-slate-50 py-4 pl-12 pr-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                      />
+                    </div>
+                  </Field>
+                  {showModelSuggestions &&
+                    deviceForm.model.length > 1 &&
+                    models.filter((m) =>
+                      `${m.brand.name} ${m.name}`.toLowerCase().includes(deviceForm.model.toLowerCase())
+                    ).length > 0 && (
+                      <div className="absolute z-10 mt-2 w-full rounded-2xl border border-slate-100 bg-white p-2 shadow-xl">
+                        {models
+                          .filter((m) =>
+                            `${m.brand.name} ${m.name}`
+                              .toLowerCase()
+                              .includes(deviceForm.model.toLowerCase())
+                          )
+                          .slice(0, 5)
+                          .map((m) => (
+                            <button
+                              key={m.id}
+                              onClick={() => {
+                                setDeviceForm((prev) => ({
+                                  ...prev,
+                                  model: `${m.brand.name} ${m.name}`,
+                                  modelId: m.id,
+                                }))
+                                setShowModelSuggestions(false)
+                              }}
+                              className="flex w-full items-center gap-2 rounded-xl p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 text-left"
+                            >
+                                <Smartphone className="h-4 w-4 text-slate-400" />
+                                {m.brand.name} {m.name}
+                             </button>
+                          ))}
+                     </div>
+                  )}
+                </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
                   <Field label="IMEI / Numéro de série">
@@ -1402,33 +1478,63 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
 
           {workflowStep === 'services' && (
             <div className="space-y-6">
-              <SectionTitle label="Étape 3" title="Prestations à réaliser" icon={<Wrench className="h-5 w-5" />} />
+              <div className="flex items-center justify-between">
+                <SectionTitle label="Étape 3" title="Prestations" icon={<Wrench className="h-5 w-5" />} />
+                {deviceForm.model && (
+                  <span className="rounded-lg bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-blue-600 ring-1 ring-inset ring-blue-200">
+                    Filtre : {deviceForm.model}
+                  </span>
+                )}
+              </div>
               
               <div className="grid gap-3 sm:grid-cols-2">
-                {services.map((s) => {
-                  const isSelected = quickFlowForm.serviceIds.includes(s.id)
-                  const totalPrice = s.laborCost + (s.part?.costPrice ?? 0)
-                  return (
-                    <button
-                      key={s.id}
-                      onClick={() => toggleService(s.id)}
-                      className={`flex flex-col rounded-2xl border p-4 text-left transition ${
-                        isSelected
-                          ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
-                          : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <span className={`rounded-lg p-2 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-400'}`}>
-                          <Plus className="h-4 w-4" />
-                        </span>
-                        <span className="text-sm font-bold text-slate-900">{formatCurrency(totalPrice)}</span>
-                      </div>
-                      <p className="mt-4 font-bold text-slate-950">{s.name}</p>
-                      <p className="mt-1 text-xs text-slate-500 line-clamp-1">{s.description || 'Intervention atelier'}</p>
-                    </button>
-                  )
-                })}
+                {services
+                  .filter((s) => {
+                    if (deviceForm.modelId) {
+                      return s.modelId === deviceForm.modelId || !s.modelId
+                    }
+                    return !s.modelId
+                  }).length > 0 ? (
+                  services
+                    .filter((s) => {
+                      if (deviceForm.modelId) {
+                        return s.modelId === deviceForm.modelId || !s.modelId
+                      }
+                      return !s.modelId
+                    })
+                    .map((s) => {
+                      const isSelected = quickFlowForm.serviceIds.includes(s.id)
+                      const totalPrice = s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0))
+                      return (
+                        <button
+                          key={s.id}
+                          onClick={() => toggleService(s.id)}
+                          className={`flex flex-col rounded-2xl border p-4 text-left transition ${
+                            isSelected
+                              ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
+                              : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between">
+                            <span className={`rounded-lg p-2 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-400'}`}>
+                              <Plus className="h-4 w-4" />
+                            </span>
+                            <span className="text-sm font-bold text-slate-900">{formatCurrency(totalPrice)}</span>
+                          </div>
+                          <p className="mt-4 font-bold text-slate-950">{s.name}</p>
+                          <div className="mt-1 flex items-center gap-2">
+                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.duration || 30} min</p>
+                             <p className="text-xs text-slate-500 line-clamp-1">— {s.description || 'Intervention atelier'}</p>
+                          </div>
+                        </button>
+                      )
+                    })
+                ) : (
+                  <div className="col-span-full rounded-2xl border border-dashed border-slate-200 p-8 text-center">
+                    <p className="text-sm font-bold text-slate-400">Aucune prestation spécifique trouvée pour ce modèle.</p>
+                    <p className="mt-1 text-xs text-slate-400">Ajoutez des forfaits universels dans le catalogue.</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1465,7 +1571,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       {formatCurrency(
                         quickFlowForm.serviceIds.reduce((total, id) => {
                           const s = services.find(x => x.id === id)
-                          return total + (s ? s.laborCost + (s.part?.costPrice ?? 0) : 0)
+                          return total + (s ? s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0)) : 0)
                         }, 0)
                       )}
                     </p>

@@ -1,5 +1,5 @@
 import { CatalogWorkspace } from '@/components/catalog-workspace'
 
 export default function InventoryPage() {
-  return <CatalogWorkspace defaultTab="products" />
+  return <CatalogWorkspace />
 }

@@ -1,20 +1,50 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import {
   AlertCircle,
+  ChevronRight,
+  Database,
+  Layers,
+  LayoutGrid,
+  Loader2,
   Package,
   Plus,
   Search,
-  Settings,
+  Smartphone,
+  Tablet,
+  Tag,
   Wrench,
   X,
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/repair'
+import { SideDrawer } from '@/components/side-drawer'
 
-type CatalogTab = 'products' | 'services'
+type CatalogTab = 'models' | 'services' | 'parts'
+
+interface Brand {
+  id: string
+  name: string
+}
+
+interface DeviceType {
+  id: string
+  name: string
+}
+
+interface DeviceModel {
+  id: string
+  name: string
+  brandId: string
+  typeId: string
+  brand: Brand
+  type: DeviceType
+  _count?: {
+    services: number
+    parts: number
+  }
+}
 
 interface Part {
   id: string
@@ -22,14 +52,15 @@ interface Part {
   sku: string
   costPrice: number
   stock: number
+  minStock: number
+  quality?: string | null // ORIGINAL | COMPATIBLE
+  supplier?: string | null
+  supplierRef?: string | null
+  location?: string | null
   description?: string | null
+  modelId?: string | null
+  model?: (DeviceModel & { brand: Brand }) | null
   linkedServicesCount?: number
-}
-
-interface ServicePart {
-  id: string
-  name: string
-  costPrice: number
 }
 
 interface Service {
@@ -37,766 +68,626 @@ interface Service {
   name: string
   laborCost: number
   partId?: string | null
-  part?: ServicePart | null
+  part?: { name: string; costPrice: number } | null
+  modelId?: string | null
+  model?: (DeviceModel & { brand: Brand }) | null
   description?: string | null
 }
 
-const initialPartForm = {
+const initialModelForm = {
   name: '',
-  sku: '',
-  costPrice: '',
-  stock: '',
-  description: '',
+  modelReference: '',
+  brandId: '',
+  typeId: '',
 }
 
 const initialServiceForm = {
   name: '',
   laborCost: '',
+  suggestedPrice: '',
+  duration: '30',
   partId: '',
+  modelId: '',
   description: '',
 }
 
-export function CatalogWorkspace({
-  defaultTab = 'products',
-}: {
-  defaultTab?: CatalogTab
-}) {
-  const pathname = usePathname()
+const initialPartForm = {
+  name: '',
+  sku: '',
+  costPrice: '0',
+  stock: '0',
+  minStock: '0',
+  quality: 'ORIGINAL',
+  supplier: '',
+  supplierRef: '',
+  location: '',
+  modelId: '',
+  description: '',
+  createLinkedService: false,
+}
+
+export function CatalogWorkspace() {
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  const paramTab = searchParams.get('tab')
-  const initialTab = paramTab === 'services' ? 'services' : defaultTab
-
-  const [activeTab, setActiveTab] = useState<CatalogTab>(initialTab)
-  const [parts, setParts] = useState<Part[]>([])
+  const paramTab = searchParams.get('tab') as CatalogTab
+  
+  const [activeTab, setActiveTab] = useState<CatalogTab>(paramTab || 'models')
+  const [brands, setBrands] = useState<Brand[]>([])
+  const [types, setTypes] = useState<DeviceType[]>([])
+  const [models, setModels] = useState<DeviceModel[]>([])
   const [services, setServices] = useState<Service[]>([])
+  const [parts, setParts] = useState<Part[]>([])
+  
   const [search, setSearch] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const [showPartModal, setShowPartModal] = useState(false)
-  const [showServiceModal, setShowServiceModal] = useState(false)
-  const [editingPart, setEditingPart] = useState<Part | null>(null)
-  const [editingService, setEditingService] = useState<Service | null>(null)
-  const [partForm, setPartForm] = useState(initialPartForm)
+  const [error, setError] = useState<string | null>(null)
+  const [drawerError, setDrawerError] = useState<string | null>(null)
+
+  // Drawer states
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerType, setDrawerType] = useState<'model' | 'service' | 'part' | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  
+  // Form states
+  const [modelForm, setModelForm] = useState(initialModelForm)
   const [serviceForm, setServiceForm] = useState(initialServiceForm)
+  const [partForm, setPartForm] = useState(initialPartForm)
+
+  // Filter states
+  const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
 
   useEffect(() => {
-    void loadCatalog()
+    void loadAllData()
   }, [])
 
   useEffect(() => {
-    const nextTab = paramTab === 'services' ? 'services' : paramTab === 'products' ? 'products' : defaultTab
-    setActiveTab(nextTab)
-  }, [defaultTab, paramTab])
+    if (paramTab && ['models', 'services', 'parts'].includes(paramTab)) {
+      setActiveTab(paramTab)
+    }
+  }, [paramTab])
 
-  async function loadCatalog() {
+  async function loadAllData() {
     try {
       setIsLoading(true)
-      setError(null)
-
-      const [partsResponse, servicesResponse] = await Promise.all([
-        fetch('/api/parts'),
+      const [bRes, tRes, mRes, sRes, pRes] = await Promise.all([
+        fetch('/api/brands'),
+        fetch('/api/types'),
+        fetch('/api/models'),
         fetch('/api/services'),
+        fetch('/api/parts'),
       ])
 
-      const [partsData, servicesData] = await Promise.all([
-        partsResponse.json(),
-        servicesResponse.json(),
+      const [bData, tData, mData, sData, pData] = await Promise.all([
+        bRes.json(),
+        tRes.json(),
+        mRes.json(),
+        sRes.json(),
+        pRes.json(),
       ])
 
-      if (!partsResponse.ok) {
-        throw new Error(partsData.error ?? 'Impossible de charger les produits.')
-      }
-
-      if (!servicesResponse.ok) {
-        throw new Error(servicesData.error ?? 'Impossible de charger les services.')
-      }
-
-      setParts(Array.isArray(partsData) ? partsData : [])
-      setServices(Array.isArray(servicesData) ? servicesData : [])
-    } catch (loadError) {
-      setError(
-        loadError instanceof Error
-          ? loadError.message
-          : 'Impossible de charger le catalogue.'
-      )
+      setBrands(bData)
+      setTypes(tData)
+      setModels(mData)
+      setServices(sData)
+      setParts(pData)
+    } catch (err) {
+      setError('Erreur lors du chargement du catalogue.')
     } finally {
       setIsLoading(false)
     }
   }
 
-  function updateTab(nextTab: CatalogTab) {
-    setActiveTab(nextTab)
-
-    if (pathname === '/catalog') {
-      const nextSearchParams = new URLSearchParams(searchParams.toString())
-      nextSearchParams.set('tab', nextTab)
-      router.replace(`/catalog?${nextSearchParams.toString()}`)
-    }
-  }
-
-  function openPartModal(part?: Part) {
-    setEditingPart(part ?? null)
-    setPartForm(
-      part
-        ? {
-            name: part.name,
-            sku: part.sku,
-            costPrice: String(part.costPrice),
-            stock: String(part.stock),
-            description: part.description ?? '',
-          }
-        : initialPartForm
-    )
-    setError(null)
-    setShowPartModal(true)
-  }
-
-  function openServiceModal(service?: Service) {
-    setEditingService(service ?? null)
-    setServiceForm(
-      service
-        ? {
-            name: service.name,
-            laborCost: String(service.laborCost),
-            partId: service.partId ?? '',
-            description: service.description ?? '',
-          }
-        : initialServiceForm
-    )
-    setError(null)
-    setShowServiceModal(true)
-  }
-
-  async function submitPart(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    try {
-      setIsSaving(true)
-      setError(null)
-
-      const response = await fetch(
-        editingPart ? `/api/parts/${editingPart.id}` : '/api/parts',
-        {
-          method: editingPart ? 'PATCH' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(partForm),
-        }
-      )
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error ?? 'Impossible d’enregistrer le produit.')
-      }
-
-      setShowPartModal(false)
-      setEditingPart(null)
-      setPartForm(initialPartForm)
-      await loadCatalog()
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : 'Impossible d’enregistrer le produit.'
-      )
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  async function submitService(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    try {
-      setIsSaving(true)
-      setError(null)
-
-      const response = await fetch(
-        editingService ? `/api/services/${editingService.id}` : '/api/services',
-        {
-          method: editingService ? 'PATCH' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(serviceForm),
-        }
-      )
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error ?? 'Impossible d’enregistrer le service.')
-      }
-
-      setShowServiceModal(false)
-      setEditingService(null)
-      setServiceForm(initialServiceForm)
-      await loadCatalog()
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : 'Impossible d’enregistrer le service.'
-      )
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  const filteredParts = useMemo(() => {
-    const query = search.trim().toLowerCase()
-
-    if (!query) {
-      return parts
-    }
-
-    return parts.filter((part) =>
-      [part.name, part.sku, part.description ?? '']
-        .join(' ')
-        .toLowerCase()
-        .includes(query)
-    )
-  }, [parts, search])
+  const filteredModels = useMemo(() => {
+    return models.filter(m => {
+      const matchSearch = m.name.toLowerCase().includes(search.toLowerCase()) || 
+                          m.brand.name.toLowerCase().includes(search.toLowerCase())
+      const matchBrand = !selectedBrandId || m.brandId === selectedBrandId
+      return matchSearch && matchBrand
+    })
+  }, [models, search, selectedBrandId])
 
   const filteredServices = useMemo(() => {
-    const query = search.trim().toLowerCase()
+    return services.filter(s => {
+      const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) || 
+                          s.model?.name.toLowerCase().includes(search.toLowerCase())
+      const matchBrand = !selectedBrandId || s.model?.brandId === selectedBrandId
+      return matchSearch && matchBrand
+    })
+  }, [services, search, selectedBrandId])
 
-    if (!query) {
-      return services
+  const filteredParts = useMemo(() => {
+    return parts.filter(p => {
+      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || 
+                          p.sku.toLowerCase().includes(search.toLowerCase()) ||
+                          p.model?.name.toLowerCase().includes(search.toLowerCase())
+      const matchBrand = !selectedBrandId || p.model?.brandId === selectedBrandId
+      return matchSearch && matchBrand
+    })
+  }, [parts, search, selectedBrandId])
+
+  function openDrawer(type: 'model' | 'service' | 'part', item?: any) {
+    setDrawerType(type)
+    setEditingId(item?.id || null)
+    setDrawerError(null)
+    
+    if (type === 'model') setModelForm(item ? { name: item.name, modelReference: item.modelReference || '', brandId: item.brandId, typeId: item.typeId } : initialModelForm)
+    if (type === 'service') setServiceForm(item ? { name: item.name, laborCost: item.laborCost.toString(), suggestedPrice: item.suggestedPrice?.toString() || '', duration: item.duration?.toString() || '30', partId: item.partId || '', modelId: item.modelId || '', description: item.description || '' } : initialServiceForm)
+    if (type === 'part') setPartForm(item ? { name: item.name, sku: item.sku, costPrice: item.costPrice.toString(), stock: item.stock.toString(), minStock: item.minStock?.toString() || '0', quality: item.quality || 'ORIGINAL', supplier: item.supplier || '', supplierRef: item.supplierRef || '', location: item.location || '', modelId: item.modelId || '', description: item.description || '', createLinkedService: false } : initialPartForm)
+    
+    setDrawerOpen(true)
+  }
+
+  async function handleDelete() {
+    if (!editingId || !confirm('Voulez-vous vraiment supprimer cet élément ?')) return
+    
+    try {
+      setDrawerError(null)
+      setIsSaving(true)
+      const baseUrl = activeTab === 'models' ? '/api/models' : activeTab === 'services' ? '/api/services' : '/api/parts'
+      const res = await fetch(`${baseUrl}/${editingId}`, {
+        method: 'DELETE',
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Erreur lors de la suppression.')
+      }
+
+      await loadAllData()
+      setDrawerOpen(false)
+    } catch (err) {
+      setDrawerError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+    } finally {
+      setIsSaving(false)
     }
+  }
 
-    return services.filter((service) =>
-      [service.name, service.description ?? '', service.part?.name ?? '']
-        .join(' ')
-        .toLowerCase()
-        .includes(query)
-    )
-  }, [search, services])
+  async function handleSave() {
+    try {
+      setDrawerError(null)
+      setIsSaving(true)
+      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : '/api/parts'
+      const url = editingId ? `${baseUrl}/${editingId}` : baseUrl
+      const method = editingId ? 'PATCH' : 'POST'
+      const body = drawerType === 'model' ? modelForm : drawerType === 'service' ? serviceForm : partForm
+      
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
 
-  const totalUnits = parts.reduce((sum, part) => sum + part.stock, 0)
-  const lowStockCount = parts.filter((part) => part.stock < 5).length
-  const inventoryValue = parts.reduce((sum, part) => sum + part.costPrice * part.stock, 0)
-  const averageServicePrice =
-    services.length > 0
-      ? services.reduce(
-          (sum, service) =>
-            sum + service.laborCost + (service.part?.costPrice ?? 0),
-          0
-        ) / services.length
-      : 0
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erreur lors de l’enregistrement.')
+      }
+      
+      const savedItem = data
+
+      // Logic for automatic service creation
+      if (drawerType === 'part' && !editingId && partForm.createLinkedService) {
+         const sRes = await fetch('/api/services', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({
+              name: `Remplacement ${partForm.name}`,
+              laborCost: 30,
+              suggestedPrice: (parseFloat(partForm.costPrice) || 0) + 60,
+              partId: savedItem.id,
+              modelId: partForm.modelId,
+              description: `Service généré automatiquement.`
+           })
+         })
+         if (!sRes.ok) {
+           const sData = await sRes.json().catch(() => ({}))
+           console.error('Erreur creation service auto:', sData.error)
+         }
+      }
+
+      await loadAllData()
+      setDrawerOpen(false)
+    } catch (err) {
+      setDrawerError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  function changeTab(tab: CatalogTab) {
+    setActiveTab(tab)
+    router.push(`/catalog?tab=${tab}`)
+  }
 
   return (
-    <div className="space-y-6 pb-6">
-      <section className="rounded-[1.75rem] border border-white/70 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
-                Espace catalogue
-              </p>
-              <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                Produits et services atelier
-              </h1>
-            </div>
+    <div className="min-h-screen space-y-8 pb-12">
+      {/* Header Section */}
+      <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[0.7rem] font-black uppercase tracking-[0.3em] text-blue-600">Espace Catalogue</p>
+          <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-950">Gestion Technique</h1>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => openDrawer(activeTab === 'models' ? 'model' : activeTab === 'services' ? 'service' : 'part')}
+            className="flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white shadow-xl transition hover:bg-blue-600 active:scale-95"
+          >
+            <Plus className="h-5 w-5" />
+            Nouveau {activeTab === 'models' ? 'modèle' : activeTab === 'services' ? 'forfait' : 'produit'}
+          </button>
+        </div>
+      </header>
 
-            <div className="flex gap-2">
-              {pathname !== '/catalog' ? (
-                <Link
-                  href={`/catalog?tab=${activeTab}`}
-                  className="rounded-2xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+      {/* Navigation Tabs */}
+      <nav className="flex items-center gap-2 rounded-[2rem] border border-slate-100 bg-white p-1.5 shadow-sm">
+        <TabButton active={activeTab === 'models'} onClick={() => changeTab('models')} icon={<Smartphone className="h-4 w-4" />} label="Modèles" count={models.length} />
+        <TabButton active={activeTab === 'services'} onClick={() => changeTab('services')} icon={<Wrench className="h-4 w-4" />} label="Prestations" count={services.length} />
+        <TabButton active={activeTab === 'parts'} onClick={() => changeTab('parts')} icon={<Package className="h-4 w-4" />} label="Pièces détachées" count={parts.length} />
+      </nav>
+
+      {/* Main Content */}
+      <section className="grid gap-6 lg:grid-cols-[280px_1fr]">
+        {/* Sidebar Filters */}
+        <aside className="space-y-6">
+          <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Recherche</p>
+            <div className="relative mt-4">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input 
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Filtrer..."
+                className="w-full rounded-xl border border-slate-50 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-blue-100 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Marques</p>
+            <div className="mt-4 space-y-1">
+              <button 
+                onClick={() => setSelectedBrandId(null)}
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition ${!selectedBrandId ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-50'}`}
+              >
+                Toutes
+              </button>
+              {brands.map(b => (
+                <button 
+                  key={b.id}
+                  onClick={() => setSelectedBrandId(b.id)}
+                  className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition ${selectedBrandId === b.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
-                  Ouvrir en vue catalogue
-                </Link>
-              ) : null}
-              <button
-                type="button"
-                onClick={() =>
-                  activeTab === 'products' ? openPartModal() : openServiceModal()
-                }
-                className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700"
-              >
-                <Plus className="h-4 w-4" />
-                {activeTab === 'products' ? 'Nouveau produit' : 'Nouveau service'}
-              </button>
+                  {b.name}
+                </button>
+              ))}
             </div>
           </div>
+        </aside>
 
-          <div className="flex flex-wrap gap-2 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-2">
-            {[
-              { key: 'products', label: `Produits (${parts.length})`, icon: Package },
-              { key: 'services', label: `Services (${services.length})`, icon: Wrench },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => updateTab(tab.key as CatalogTab)}
-                className={`inline-flex items-center gap-2 rounded-[1rem] px-4 py-2.5 text-sm font-bold transition ${
-                  activeTab === tab.key
-                    ? 'bg-violet-100 text-violet-800 shadow-sm'
-                    : 'text-slate-600 hover:bg-white'
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </button>
-            ))}
-
-            <div className="ml-auto hidden items-center gap-2 rounded-[1rem] px-4 py-2.5 text-sm font-semibold text-slate-400 lg:inline-flex">
-              Vue pensée pour l’accueil atelier et le stock.
+        {/* List Content */}
+        <main>
+          {isLoading ? (
+            <div className="flex h-64 items-center justify-center rounded-[2.5rem] bg-white shadow-sm">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
             </div>
-          </div>
-
-          <div className="grid gap-4 xl:grid-cols-[1.3fr_1fr_1fr]">
-            <article className="rounded-[1.5rem] border border-slate-100 bg-slate-50/80 p-5">
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
-                Stock valorisé
-              </p>
-              <p className="mt-3 text-3xl font-black text-slate-950">
-                {formatCurrency(inventoryValue)}
-              </p>
-              <p className="mt-2 text-sm text-slate-500">
-                {totalUnits} unité(s) référencée(s)
-              </p>
-            </article>
-
-            <article className="rounded-[1.5rem] border border-slate-100 bg-slate-50/80 p-5">
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
-                Alertes stock
-              </p>
-              <p className="mt-3 text-3xl font-black text-slate-950">
-                {lowStockCount}
-              </p>
-              <p className="mt-2 text-sm text-slate-500">
-                Produits sous le seuil recommandé
-              </p>
-            </article>
-
-            <article className="rounded-[1.5rem] border border-slate-100 bg-slate-50/80 p-5">
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
-                Forfait moyen
-              </p>
-              <p className="mt-3 text-3xl font-black text-slate-950">
-                {formatCurrency(averageServicePrice)}
-              </p>
-              <p className="mt-2 text-sm text-slate-500">
-                Pièce + main d’œuvre comprise
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="rounded-[1.75rem] border border-white/70 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative w-full max-w-2xl">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-violet-500" />
-            <input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={
-                activeTab === 'products'
-                  ? 'Rechercher par produit, catégorie, SKU...'
-                  : 'Rechercher par service, pièce liée, description...'
-              }
-              className="w-full rounded-[1.1rem] border border-violet-200 bg-violet-50/50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-violet-300 focus:bg-white"
-            />
-          </div>
-
-          <div className="text-sm text-slate-500">
-            {activeTab === 'products'
-              ? `${filteredParts.length} produit(s) affiché(s)`
-              : `${filteredServices.length} service(s) affiché(s)`}
-          </div>
-        </div>
-
-        {error ? (
-          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
-            {error}
-          </div>
-        ) : null}
-
-        <div className="mt-5 overflow-x-auto">
-          {activeTab === 'products' ? (
-            <table className="min-w-full text-left">
-              <thead>
-                <tr className="border-y border-violet-100 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
-                  <th className="px-4 py-4">Statut</th>
-                  <th className="px-4 py-4">Produit</th>
-                  <th className="px-4 py-4">SKU</th>
-                  <th className="px-4 py-4">Coût achat</th>
-                  <th className="px-4 py-4">Quantité</th>
-                  <th className="px-4 py-4">Services liés</th>
-                  <th className="px-4 py-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-violet-100/70">
-                {!isLoading && filteredParts.length > 0 ? (
-                  filteredParts.map((part) => (
-                    <tr key={part.id} className="hover:bg-violet-50/40">
-                      <td className="px-4 py-4">
-                        <span
-                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${
-                            part.stock < 5
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-emerald-100 text-emerald-800'
-                          }`}
-                        >
-                          <AlertCircle className="h-3.5 w-3.5" />
-                          {part.stock < 5 ? 'Limité' : 'En stock'}
-                        </span>
+          ) : (
+            <div className="overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white shadow-sm">
+              <table className="w-full text-left">
+                <thead className="bg-slate-50/50">
+                  <tr className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">
+                    {activeTab === 'models' ? (
+                      <>
+                        <th className="px-8 py-5">Marque & Type</th>
+                        <th className="px-8 py-5">Modèle & Réf.</th>
+                        <th className="px-8 py-5">Contenu</th>
+                        <th className="px-8 py-5 text-right">Action</th>
+                      </>
+                    ) : activeTab === 'services' ? (
+                      <>
+                        <th className="px-8 py-5">Forfait & Temps</th>
+                        <th className="px-8 py-5">Modèle Lié</th>
+                        <th className="px-8 py-5">Prix de Vente</th>
+                        <th className="px-8 py-5 text-right">Action</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="px-8 py-5">Produit & Qualité</th>
+                        <th className="px-8 py-5">SKU / Stock</th>
+                        <th className="px-8 py-5">Coût Achat</th>
+                        <th className="px-8 py-5 text-right">Action</th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {activeTab === 'models' && filteredModels.map(m => (
+                    <tr key={m.id} className="group hover:bg-blue-50/30 transition">
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">{m.brand.name}</span>
+                          <span className="text-xs font-bold text-slate-400">{m.type.name}</span>
+                        </div>
                       </td>
-                      <td className="px-4 py-4">
-                        <p className="font-black text-slate-950">{part.name}</p>
-                        <p className="mt-1 text-sm text-slate-500">
-                          {part.description || 'Aucune note technique'}
-                        </p>
+                      <td className="px-8 py-5">
+                        <p className="font-black text-slate-950">{m.name}</p>
+                        {m.modelReference && <p className="text-[10px] font-bold text-blue-600 uppercase">{m.modelReference}</p>}
                       </td>
-                      <td className="px-4 py-4 font-mono text-sm font-bold text-slate-700">
-                        {part.sku}
+                      <td className="px-8 py-5">
+                        <div className="flex gap-4">
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                            <Wrench className="h-3.5 w-3.5" /> {m._count?.services || 0}
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                            <Package className="h-3.5 w-3.5" /> {m._count?.parts || 0}
+                          </div>
+                        </div>
                       </td>
-                      <td className="px-4 py-4 font-black text-slate-950">
-                        {formatCurrency(part.costPrice)}
-                      </td>
-                      <td className="px-4 py-4">
-                        <span className="rounded-[0.9rem] border border-violet-200 bg-white px-4 py-2 text-sm font-black text-violet-800">
-                          {part.stock}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-sm font-medium text-slate-600">
-                        {part.linkedServicesCount ?? 0}
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <button
-                          type="button"
-                          onClick={() => openPartModal(part)}
-                          className="rounded-[0.9rem] border border-violet-200 px-4 py-2 text-sm font-bold text-violet-700 transition hover:bg-violet-50"
-                        >
-                          Voir plus
-                        </button>
+                      <td className="px-8 py-5 text-right">
+                        <button onClick={() => openDrawer('model', m)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-16 text-center text-sm text-slate-500">
-                      {isLoading
-                        ? 'Chargement des produits...'
-                        : 'Aucun produit ne correspond à la recherche.'}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            <table className="min-w-full text-left">
-              <thead>
-                <tr className="border-y border-violet-100 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
-                  <th className="px-4 py-4">Service</th>
-                  <th className="px-4 py-4">Pièce liée</th>
-                  <th className="px-4 py-4">Main d’œuvre</th>
-                  <th className="px-4 py-4">Prix catalogue</th>
-                  <th className="px-4 py-4">Description</th>
-                  <th className="px-4 py-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-violet-100/70">
-                {!isLoading && filteredServices.length > 0 ? (
-                  filteredServices.map((service) => {
-                    const total = service.laborCost + (service.part?.costPrice ?? 0)
+                  ))}
+                  
+                  {activeTab === 'services' && filteredServices.map(s => (
+                    <tr key={s.id} className="group hover:bg-blue-50/30 transition">
+                      <td className="px-8 py-5">
+                        <p className="font-black text-slate-950">{s.name}</p>
+                        <p className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
+                          <Tag className="h-3 w-3" /> {s.duration || 30} min
+                        </p>
+                      </td>
+                      <td className="px-8 py-5">
+                        {s.model ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-500">{s.model.brand.name}</span>
+                            <span className="text-xs font-black text-slate-950">{s.model.name}</span>
+                          </div>
+                        ) : <span className="text-xs text-slate-400">—</span>}
+                      </td>
+                      <td className="px-8 py-5 font-bold text-blue-600">{formatCurrency(s.suggestedPrice || s.laborCost)}</td>
+                      <td className="px-8 py-5 text-right">
+                        <button onClick={() => openDrawer('service', s)} className="text-blue-600 hover:underline text-sm font-bold">Modifier</button>
+                      </td>
+                    </tr>
+                  ))}
 
-                    return (
-                      <tr key={service.id} className="hover:bg-violet-50/40">
-                        <td className="px-4 py-4">
-                          <p className="font-black text-slate-950">{service.name}</p>
-                        </td>
-                        <td className="px-4 py-4 text-sm font-medium text-slate-600">
-                          {service.part?.name || 'Aucune pièce'}
-                        </td>
-                        <td className="px-4 py-4 font-black text-slate-950">
-                          {formatCurrency(service.laborCost)}
-                        </td>
-                        <td className="px-4 py-4">
-                          <span className="rounded-[0.9rem] bg-violet-100 px-4 py-2 text-sm font-black text-violet-800">
-                            {formatCurrency(total)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-slate-500">
-                          {service.description || 'Service standard'}
-                        </td>
-                        <td className="px-4 py-4 text-right">
-                          <button
-                            type="button"
-                            onClick={() => openServiceModal(service)}
-                            className="rounded-[0.9rem] border border-violet-200 px-4 py-2 text-sm font-bold text-violet-700 transition hover:bg-violet-50"
-                          >
-                            Voir plus
-                          </button>
-                        </td>
-                      </tr>
-                    )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="px-4 py-16 text-center text-sm text-slate-500">
-                      {isLoading
-                        ? 'Chargement des services...'
-                        : 'Aucun service ne correspond à la recherche.'}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  {activeTab === 'parts' && filteredParts.map(p => (
+                    <tr key={p.id} className="group hover:bg-blue-50/30 transition">
+                      <td className="px-8 py-5">
+                        <p className="font-black text-slate-950">{p.name}</p>
+                        <div className="flex items-center gap-2">
+                           <span className={`rounded px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider ${p.quality === 'ORIGINAL' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.quality === 'ORIGINAL' ? 'Origine' : 'Compatible'}</span>
+                           <p className="text-[10px] font-bold text-slate-400">{p.model ? `${p.model.brand.name} ${p.model.name}` : 'Pièce universelle'}</p>
+                           {p.location && <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-500">{p.location}</span>}
+                        </div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <p className="font-mono text-[10px] font-bold text-slate-400 uppercase">{p.sku}</p>
+                        <div className="mt-1 flex items-center gap-2">
+                          <div className="h-1.5 w-12 rounded-full bg-slate-100 overflow-hidden">
+                            <div className={`h-full ${p.stock <= (p.minStock || 0) ? 'bg-red-500 animate-pulse' : p.stock < 5 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{ width: `${Math.min(p.stock * 10, 100)}%` }} />
+                          </div>
+                          <span className={`text-xs font-black ${p.stock <= (p.minStock || 0) ? 'text-red-600' : 'text-slate-950'}`}>{p.stock}</span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-5 text-right font-bold text-slate-950">{formatCurrency(p.costPrice)}</td>
+                      <td className="px-8 py-5 text-right">
+                        <button onClick={() => openDrawer('part', p)} className="text-blue-600 hover:underline text-sm font-bold">Stock</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </div>
+        </main>
       </section>
 
-      {showPartModal ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-[1.75rem] border border-white/60 bg-white p-6 shadow-2xl shadow-slate-900/15">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.26em] text-violet-600">
-                  Produit catalogue
-                </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                  {editingPart ? 'Modifier le produit' : 'Nouveau produit'}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowPartModal(false)}
-                className="rounded-2xl bg-slate-100 p-3 text-slate-500 transition hover:bg-slate-200"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <form onSubmit={submitPart} className="mt-6 space-y-5">
-              <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
-                    Produit
-                  </label>
-                  <input
-                    required
-                    value={partForm.name}
-                    onChange={(event) =>
-                      setPartForm((current) => ({ ...current, name: event.target.value }))
-                    }
-                    className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
-                    Référence / SKU
-                  </label>
-                  <input
-                    required
-                    value={partForm.sku}
-                    onChange={(event) =>
-                      setPartForm((current) => ({ ...current, sku: event.target.value }))
-                    }
-                    className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
-                    Quantité
-                  </label>
-                  <input
-                    required
-                    type="number"
-                    min="0"
-                    value={partForm.stock}
-                    onChange={(event) =>
-                      setPartForm((current) => ({ ...current, stock: event.target.value }))
-                    }
-                    className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
-                    Prix d’achat
-                  </label>
-                  <input
-                    required
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={partForm.costPrice}
-                    onChange={(event) =>
-                      setPartForm((current) => ({
-                        ...current,
-                        costPrice: event.target.value,
-                      }))
-                    }
-                    className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Description
-                </label>
-                <textarea
-                  rows={4}
-                  value={partForm.description}
-                  onChange={(event) =>
-                    setPartForm((current) => ({
-                      ...current,
-                      description: event.target.value,
-                    }))
-                  }
-                  className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowPartModal(false)}
-                  className="flex-1 rounded-[1rem] border border-slate-200 px-4 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
+      {/* SideDrawer for Creation/Edition */}
+      <SideDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title={editingId ? 'Modifier' : 'Ajouter'}
+        subtitle={drawerType === 'model' ? 'Modèle' : drawerType === 'service' ? 'Prestation' : 'Pièce'}
+        footer={
+          <div className="flex items-center justify-between gap-3">
+             {editingId ? (
+               <button 
+                 onClick={handleDelete}
+                 className="text-sm font-bold text-red-500 hover:text-red-700 hover:underline"
+               >
+                 Supprimer
+               </button>
+             ) : (
+               <div />
+             )}
+             <div className="flex items-center gap-3">
+               <button onClick={() => setDrawerOpen(false)} className="text-sm font-bold text-slate-400">Annuler</button>
+               <button 
+                  onClick={handleSave}
                   disabled={isSaving}
-                  className="flex-1 rounded-[1rem] bg-violet-600 px-4 py-3 font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSaving ? 'Enregistrement...' : 'Enregistrer'}
-                </button>
-              </div>
-            </form>
+                  className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 disabled:opacity-50"
+               >
+                 {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Enregistrer'}
+               </button>
+             </div>
           </div>
-        </div>
-      ) : null}
-
-      {showServiceModal ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-[1.75rem] border border-white/60 bg-white p-6 shadow-2xl shadow-slate-900/15">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.26em] text-violet-600">
-                  Service catalogue
-                </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                  {editingService ? 'Modifier le service' : 'Nouveau service'}
-                </h2>
+        }
+      >
+        <div className="space-y-6">
+          {drawerError && (
+            <div className="rounded-2xl bg-red-50 p-4 text-red-600 ring-1 ring-inset ring-red-200">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5" />
+                <p className="text-sm font-bold">{drawerError}</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowServiceModal(false)}
-                className="rounded-2xl bg-slate-100 p-3 text-slate-500 transition hover:bg-slate-200"
-              >
-                <X className="h-5 w-5" />
-              </button>
             </div>
-
-            <form onSubmit={submitService} className="mt-6 space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Service
-                </label>
-                <input
-                  required
-                  value={serviceForm.name}
-                  onChange={(event) =>
-                    setServiceForm((current) => ({
-                      ...current,
-                      name: event.target.value,
-                    }))
-                  }
-                  className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                />
-              </div>
-
-              <div className="grid gap-5 md:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
-                    Pièce liée
-                  </label>
-                  <select
-                    value={serviceForm.partId}
-                    onChange={(event) =>
-                      setServiceForm((current) => ({
-                        ...current,
-                        partId: event.target.value,
-                      }))
-                    }
-                    className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                  >
-                    <option value="">Aucune pièce</option>
-                    {parts.map((part) => (
-                      <option key={part.id} value={part.id}>
-                        {part.name} ({formatCurrency(part.costPrice)})
-                      </option>
-                    ))}
+          )}
+          
+          {drawerType === 'model' && (
+            <>
+              <Field label="Nom du modèle">
+                <input value={modelForm.name} onChange={e => setModelForm(p => ({...p, name: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" placeholder="ex: iPhone 15 Pro" />
+              </Field>
+              <Field label="Référence Technique">
+                <input value={modelForm.modelReference} onChange={e => setModelForm(p => ({...p, modelReference: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" placeholder="ex: A2403" />
+              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Marque">
+                  <select value={modelForm.brandId} onChange={e => setModelForm(p => ({...p, brandId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <option value="">Sélectionner</option>
+                    {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
                   </select>
+                </Field>
+                <Field label="Type">
+                  <select value={modelForm.typeId} onChange={e => setModelForm(p => ({...p, typeId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <option value="">Sélectionner</option>
+                    {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </Field>
+              </div>
+            </>
+          )}
+
+          {drawerType === 'service' && (
+            <>
+              <Field label="Désignation du forfait">
+                <input value={serviceForm.name} onChange={e => setServiceForm(p => ({...p, name: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" placeholder="ex: Changement écran OLED" />
+              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Modèle concerné">
+                  <select value={serviceForm.modelId} onChange={e => setServiceForm(p => ({...p, modelId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <option value="">Universel</option>
+                    {models.map(m => <option key={m.id} value={m.id}>{m.brand.name} {m.name}</option>)}
+                  </select>
+                </Field>
+                <Field label="Durée (min)">
+                  <input type="number" value={serviceForm.duration} onChange={e => setServiceForm(p => ({...p, duration: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" />
+                </Field>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Main d'œuvre (€)">
+                  <input type="number" value={serviceForm.laborCost} onChange={e => setServiceForm(p => ({...p, laborCost: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" />
+                </Field>
+                <Field label="Prix de vente TTC (€)">
+                  <input type="number" value={serviceForm.suggestedPrice} onChange={e => setServiceForm(p => ({...p, suggestedPrice: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 font-black text-blue-600" />
+                </Field>
+              </div>
+
+              <Field label="Pièce associée">
+                <select value={serviceForm.partId} onChange={e => setServiceForm(p => ({...p, partId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                  <option value="">Aucune</option>
+                  {parts.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku}) — {formatCurrency(p.costPrice)}</option>)}
+                </select>
+              </Field>
+
+              {serviceForm.suggestedPrice && (
+                <div className="rounded-2xl bg-slate-900 p-4 text-white">
+                  <div className="flex justify-between items-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Marge Brute HT</p>
+                    <p className="text-xl font-black">
+                      {formatCurrency(
+                        parseFloat(serviceForm.suggestedPrice) - 
+                        (parts.find(p => p.id === serviceForm.partId)?.costPrice || 0)
+                      )}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
-                    Main d’œuvre
-                  </label>
-                  <input
-                    required
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={serviceForm.laborCost}
-                    onChange={(event) =>
-                      setServiceForm((current) => ({
-                        ...current,
-                        laborCost: event.target.value,
-                      }))
-                    }
-                    className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
+              )}
+
+              <Field label="Notes techniques">
+                <textarea value={serviceForm.description} onChange={e => setServiceForm(p => ({...p, description: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" rows={2} />
+              </Field>
+            </>
+          )}
+
+          {drawerType === 'part' && (
+            <>
+              <Field label="Désignation de la pièce">
+                <input value={partForm.name} onChange={e => setPartForm(p => ({...p, name: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" placeholder="ex: Batterie Premium 3100mAh" />
+              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Référence SKU">
+                  <input value={partForm.sku} onChange={e => setPartForm(p => ({...p, sku: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" />
+                </Field>
+                <Field label="Qualité">
+                  <select value={partForm.quality} onChange={e => setPartForm(p => ({...p, quality: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 font-bold">
+                    <option value="ORIGINAL">Origine (OEM)</option>
+                    <option value="COMPATIBLE">Compatible</option>
+                  </select>
+                </Field>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Prix d'achat HT (€)">
+                  <input type="number" value={partForm.costPrice} onChange={e => setPartForm(p => ({...p, costPrice: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" />
+                </Field>
+                <Field label="Stock actuel">
+                  <input type="number" value={partForm.stock} onChange={e => setPartForm(p => ({...p, stock: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" />
+                </Field>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Seuil d'alerte stock">
+                  <input type="number" value={partForm.minStock} onChange={e => setPartForm(p => ({...p, minStock: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-red-600 font-bold" />
+                </Field>
+                <Field label="Modèle spécifique">
+                  <select value={partForm.modelId} onChange={e => setPartForm(p => ({...p, modelId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <option value="">Générique</option>
+                    {models.map(m => <option key={m.id} value={m.id}>{m.brand.name} {m.name}</option>)}
+                  </select>
+                </Field>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Fournisseur">
+                  <input value={partForm.supplier} onChange={e => setPartForm(p => ({...p, supplier: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" placeholder="ex: MobileParts" />
+                </Field>
+                <Field label="Emplacement (Rayon)">
+                  <input value={partForm.location} onChange={e => setPartForm(p => ({...p, location: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" placeholder="ex: B1-C4" />
+                </Field>
+              </div>
+
+              {!editingId && (
+                <div className="flex items-center gap-3 rounded-2xl bg-blue-50/50 p-4 ring-1 ring-inset ring-blue-100">
+                  <input 
+                    type="checkbox" 
+                    id="createLinkedService" 
+                    checked={partForm.createLinkedService} 
+                    onChange={e => setPartForm(p => ({ ...p, createLinkedService: e.target.checked }))}
+                    className="h-5 w-5 rounded-lg accent-blue-600"
                   />
+                  <label htmlFor="createLinkedService" className="text-sm font-bold text-blue-900 cursor-pointer select-none">
+                    Créer automatiquement un forfait de service lié
+                  </label>
                 </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Description
-                </label>
-                <textarea
-                  rows={4}
-                  value={serviceForm.description}
-                  onChange={(event) =>
-                    setServiceForm((current) => ({
-                      ...current,
-                      description: event.target.value,
-                    }))
-                  }
-                  className="w-full rounded-[1rem] border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-violet-300 focus:bg-white"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowServiceModal(false)}
-                  className="flex-1 rounded-[1rem] border border-slate-200 px-4 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="flex-1 rounded-[1rem] bg-violet-600 px-4 py-3 font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSaving ? 'Enregistrement...' : 'Enregistrer'}
-                </button>
-              </div>
-            </form>
-          </div>
+              )}
+            </>
+          )}
         </div>
-      ) : null}
+      </SideDrawer>
+    </div>
+  )
+}
+
+function TabButton({ active, onClick, icon, label, count }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string, count: number }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`flex flex-1 items-center justify-center gap-2 rounded-[1.75rem] py-3.5 text-sm font-black transition ${active ? 'bg-slate-950 text-white shadow-xl shadow-slate-900/20' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'}`}
+    >
+      {icon}
+      {label}
+      <span className={`ml-1 rounded-full px-2 py-0.5 text-[10px] ${active ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'}`}>{count}</span>
+    </button>
+  )
+}
+
+function Field({ label, children }: { label: string, children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">{label}</p>
+      {children}
     </div>
   )
 }

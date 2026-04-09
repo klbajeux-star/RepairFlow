@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import {
   handleApiError,
   optionalString,
+  requireInteger,
   requireNumber,
   requireString,
 } from '@/lib/api-utils'
@@ -10,7 +11,12 @@ import {
 export async function GET() {
   try {
     const services = await prisma.service.findMany({
-      include: { part: true },
+      include: {
+        part: true,
+        model: {
+          include: { brand: true },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     })
 
@@ -24,17 +30,26 @@ export async function POST(request: Request) {
   try {
     const json = await request.json()
 
+    if (!json || typeof json !== 'object') {
+      throw new ApiError('Données invalides.', 400)
+    }
+
     const service = await prisma.service.create({
       data: {
-        name: requireString(json.name, 'Le nom du forfait', { maxLength: 140 }),
-        laborCost: requireNumber(json.laborCost, "La main d'oeuvre", { min: 0 }),
-        partId:
-          typeof json.partId === 'string' && json.partId.trim()
-            ? json.partId
-            : null,
+        name: requireString(json.name, 'Nom du forfait', { maxLength: 140 }),
+        laborCost: requireNumber(json.laborCost, "Main d'oeuvre", { min: 0 }),
+        suggestedPrice: requireNumber(json.suggestedPrice, "Prix de vente TTC", { min: 0 }),
+        duration: requireInteger(json.duration, 'Durée'),
+        partId: (typeof json.partId === 'string' && json.partId.trim()) ? json.partId : null,
+        modelId: (typeof json.modelId === 'string' && json.modelId.trim()) ? json.modelId : null,
         description: optionalString(json.description, 500),
       },
-      include: { part: true },
+      include: {
+        part: true,
+        model: {
+          include: { brand: true },
+        },
+      },
     })
 
     return NextResponse.json(service, { status: 201 })

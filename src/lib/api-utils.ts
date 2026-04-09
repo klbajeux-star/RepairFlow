@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '../generated/client'
 import { NextResponse } from 'next/server'
 
 export class ApiError extends Error {
@@ -68,11 +68,15 @@ export function requireNumber(
   fieldLabel: string,
   options: { min?: number; max?: number } = {}
 ) {
+  if (value === null || value === undefined || value === '') {
+    throw new ApiError(`${fieldLabel} est requis.`)
+  }
+
   const parsed =
     typeof value === 'number'
       ? value
       : typeof value === 'string'
-        ? Number.parseFloat(value)
+        ? Number.parseFloat(value.replace(',', '.'))
         : Number.NaN
 
   if (!Number.isFinite(parsed)) {
@@ -95,6 +99,10 @@ export function requireInteger(
   fieldLabel: string,
   options: { min?: number; max?: number } = {}
 ) {
+  if (value === null || value === undefined || value === '') {
+    return 0
+  }
+
   const parsed =
     typeof value === 'number'
       ? value
@@ -102,7 +110,7 @@ export function requireInteger(
         ? Number.parseInt(value, 10)
         : Number.NaN
 
-  if (!Number.isInteger(parsed)) {
+  if (Number.isNaN(parsed) || !Number.isSafeInteger(parsed)) {
     throw new ApiError(`${fieldLabel} doit être un nombre entier.`)
   }
 
@@ -125,27 +133,30 @@ export function handleApiError(
   error: unknown,
   fallbackMessage = 'Une erreur est survenue.'
 ) {
-  console.error(error)
+  try {
+    console.error('[API ERROR]', error)
 
-  if (error instanceof ApiError) {
-    return NextResponse.json({ error: error.message }, { status: error.status })
-  }
-
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    if (error.code === 'P2002') {
-      return NextResponse.json(
-        { error: 'Une valeur unique existe déjà dans la base.' },
-        { status: 409 }
-      )
+    if (error instanceof ApiError) {
+      return NextResponse.json({ error: error.message }, { status: error.status })
     }
 
-    if (error.code === 'P2025') {
-      return NextResponse.json(
-        { error: 'L’élément demandé est introuvable.' },
-        { status: 404 }
-      )
+    if (error && typeof error === 'object' && 'code' in error) {
+      const prismaError = error as any
+      if (prismaError.code === 'P2002') {
+        const target = (prismaError.meta?.target as string[]) || []
+        return NextResponse.json(
+          { error: `Cette valeur existe déjà (${target.join(', ')}).` },
+          { status: 409 }
+        )
+      }
+      if (prismaError.code === 'P2025') {
+        return NextResponse.json({ error: 'Élément introuvable.' }, { status: 404 })
+      }
     }
-  }
 
-  return NextResponse.json({ error: fallbackMessage }, { status: 500 })
+    const message = error instanceof Error ? error.message : fallbackMessage
+    return NextResponse.json({ error: message }, { status: 500 })
+  } catch (criticalError) {
+    return NextResponse.json({ error: fallbackMessage }, { status: 500 })
+  }
 }
