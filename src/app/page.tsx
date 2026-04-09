@@ -2,11 +2,13 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle,
+  ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  ChevronRight,
   FilePlus2,
   FileText,
   GripVertical,
@@ -16,6 +18,8 @@ import {
   Plus,
   Search,
   StickyNote,
+  Smartphone,
+  User,
   UserPlus,
   Wrench,
   X,
@@ -27,10 +31,100 @@ import {
   getRepairStatusStyle,
   getRepairTotal,
 } from '@/lib/repair'
+import { SideDrawer } from '@/components/side-drawer'
 
 type KanbanStatus = 'PENDING' | 'DIAGNOSIS' | 'IN_PROGRESS' | 'READY'
 type QuickFlowMode = 'repair' | 'quote'
 type BoardDensity = 'compact' | 'detail'
+type WorkflowStep = 'client' | 'device' | 'services' | 'summary' | 'signature'
+
+// ... existing code ...
+
+function SignaturePad({ onSign }: { onSign: (data: string) => void }) {
+  const [isDrawing, setIsDrawing] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  function getPos(e: any) {
+    const canvas = canvasRef.current
+    if (!canvas) return { x: 0, y: 0 }
+    const rect = canvas.getBoundingClientRect()
+    const clientX = e.clientX || e.touches?.[0]?.clientX || 0
+    const clientY = e.clientY || e.touches?.[0]?.clientY || 0
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    }
+  }
+
+  function startDrawing(e: any) {
+    setIsDrawing(true)
+    const pos = getPos(e)
+    const ctx = canvasRef.current?.getContext('2d')
+    if (ctx) {
+      ctx.beginPath()
+      ctx.moveTo(pos.x, pos.y)
+    }
+  }
+
+  function draw(e: any) {
+    if (!isDrawing) return
+    const pos = getPos(e)
+    const ctx = canvasRef.current?.getContext('2d')
+    if (ctx) {
+      ctx.lineTo(pos.x, pos.y)
+      ctx.strokeStyle = '#2563eb'
+      ctx.lineWidth = 3
+      ctx.lineCap = 'round'
+      ctx.stroke()
+    }
+  }
+
+  function stopDrawing() {
+    setIsDrawing(false)
+    if (canvasRef.current) {
+      onSign(canvasRef.current.toDataURL())
+    }
+  }
+
+  function clear() {
+    const canvas = canvasRef.current
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      ctx?.clearRect(0, 0, canvas.width, canvas.height)
+      onSign('')
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="relative overflow-hidden rounded-[1.5rem] border-2 border-dashed border-slate-200 bg-slate-50">
+        <canvas
+          ref={canvasRef}
+          width={400}
+          height={180}
+          className="h-[180px] w-full touch-none cursor-crosshair"
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          onTouchStart={startDrawing}
+          onTouchMove={draw}
+          onTouchEnd={stopDrawing}
+        />
+        <button
+          type="button"
+          onClick={clear}
+          className="absolute right-4 top-4 rounded-lg bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400 shadow-sm transition hover:text-red-500"
+        >
+          Effacer
+        </button>
+      </div>
+      <p className="text-center text-[11px] font-bold uppercase tracking-widest text-slate-400">
+        Signez ci-dessus pour acceptation des conditions
+      </p>
+    </div>
+  )
+}
 
 interface Client {
   id: string
@@ -221,8 +315,18 @@ export default function Dashboard() {
   const [selectedRepairId, setSelectedRepairId] = useState<string | null>(null)
   const [draggedRepairId, setDraggedRepairId] = useState<string | null>(null)
   const [hoveredStatus, setHoveredStatus] = useState<KanbanStatus | null>(null)
-  const [showClientModal, setShowClientModal] = useState(false)
-  const [showQuickFlowModal, setShowQuickFlowModal] = useState<QuickFlowMode | null>(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [workflowStep, setWorkflowStep] = useState<WorkflowStep>('client')
+  const [drawerMode, setDrawerMode] = useState<QuickFlowMode>('repair')
+  const [showNewClientForm, setShowNewClientForm] = useState(false)
+  const [clientSearch, setClientSearch] = useState('')
+  const [signatureData, setSignatureData] = useState('')
+  const [deviceForm, setDeviceForm] = useState({
+    model: '',
+    imei: '',
+    unlockCode: '',
+    condition: 5,
+  })
   const [clientForm, setClientForm] = useState(initialClientForm)
   const [quickFlowForm, setQuickFlowForm] = useState(initialQuickFlowForm)
   const [search, setSearch] = useState('')
@@ -331,6 +435,18 @@ export default function Dashboard() {
     })
   }, [repairs, search])
 
+  const selectedClient = useMemo(() => {
+    return clients.find((c) => c.id === quickFlowForm.clientId) ?? null
+  }, [clients, quickFlowForm.clientId])
+
+  const filteredClients = useMemo(() => {
+    const q = clientSearch.trim().toLowerCase()
+    if (!q) return []
+    return clients
+      .filter((c) => c.name.toLowerCase().includes(q) || c.phone.includes(q))
+      .slice(0, 5)
+  }, [clients, clientSearch])
+
   const boardData = useMemo(() => {
     return kanbanColumns.map((column) => ({
       ...column,
@@ -353,14 +469,12 @@ export default function Dashboard() {
     .filter((repair) => ['PENDING', 'DIAGNOSIS', 'IN_PROGRESS', 'READY'].includes(repair.status))
     .reduce((total, repair) => total + getRepairTotal(repair), 0)
 
-  async function createClient(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
+  async function createClient() {
     try {
       setIsSavingClient(true)
       setError(null)
 
-      await apiRequest<Client>(
+      const data = await apiRequest<Client>(
         '/api/clients',
         {
           method: 'POST',
@@ -370,9 +484,11 @@ export default function Dashboard() {
         'Impossible de créer le client.'
       )
 
-      setShowClientModal(false)
-      setClientForm(initialClientForm)
+      setQuickFlowForm((prev) => ({ ...prev, clientId: data.id }))
+      setClientSearch(data.name)
+      setShowNewClientForm(false)
       await loadDashboard()
+      setWorkflowStep('device')
     } catch (saveError) {
       setError(
         saveError instanceof Error ? saveError.message : 'Impossible de créer le client.'
@@ -382,28 +498,39 @@ export default function Dashboard() {
     }
   }
 
-  async function createQuickFlow(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
+  async function createQuickFlow() {
     try {
       setIsSavingFlow(true)
       setError(null)
+
+      const notesForApi = `
+${quickFlowForm.notes}
+
+--- 
+APPAREIL : ${deviceForm.model}
+IMEI : ${deviceForm.imei}
+CODE : ${deviceForm.unlockCode}
+ÉTAT : ${deviceForm.condition}/5
+SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
+`.trim()
 
       const data = await apiRequest<Repair>(
         '/api/repairs',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(quickFlowForm),
+          body: JSON.stringify({
+            ...quickFlowForm,
+            notes: notesForApi,
+          }),
         },
         'Impossible de créer le ticket.'
       )
 
-      setShowQuickFlowModal(null)
-      setQuickFlowForm(initialQuickFlowForm)
+      resetWorkflow()
       await loadDashboard()
 
-      if (showQuickFlowModal === 'quote' && data?.id) {
+      if (drawerMode === 'quote' && data?.id) {
         router.push(`/billing?repairId=${data.id}&mode=devis`)
         return
       }
@@ -481,14 +608,22 @@ export default function Dashboard() {
     })
   }
 
-  function resetClientModal() {
+  function resetWorkflow() {
+    setDrawerOpen(false)
+    setWorkflowStep('client')
+    setShowNewClientForm(false)
     setClientForm(initialClientForm)
-    setShowClientModal(false)
+    setQuickFlowForm(initialQuickFlowForm)
+    setClientSearch('')
+    setSignatureData('')
+    setDeviceForm({ model: '', imei: '', unlockCode: '', condition: 5 })
+    setError(null)
   }
 
-  function resetQuickFlowModal() {
-    setQuickFlowForm(initialQuickFlowForm)
-    setShowQuickFlowModal(null)
+  function openWorkflow(mode: QuickFlowMode) {
+    resetWorkflow()
+    setDrawerMode(mode)
+    setDrawerOpen(true)
   }
 
   return (
@@ -516,30 +651,21 @@ export default function Dashboard() {
                   title="Nouveau client"
                   description="Créer une fiche sans quitter le dashboard"
                   tone="light"
-                  onClick={() => {
-                    setError(null)
-                    setShowClientModal(true)
-                  }}
+                  onClick={() => openWorkflow('repair')}
                 />
                 <QuickActionCard
                   icon={<FilePlus2 className="h-5 w-5" />}
                   title="Nouveau devis"
                   description="Créer un dossier et ouvrir le devis"
                   tone="brand"
-                  onClick={() => {
-                    setError(null)
-                    setShowQuickFlowModal('quote')
-                  }}
+                  onClick={() => openWorkflow('quote')}
                 />
                 <QuickActionCard
                   icon={<Plus className="h-5 w-5" />}
                   title="Nouveau ticket"
                   description="Démarrer une intervention atelier"
                   tone="dark"
-                  onClick={() => {
-                    setError(null)
-                    setShowQuickFlowModal('repair')
-                  }}
+                  onClick={() => openWorkflow('repair')}
                 />
               </div>
             </div>
@@ -1033,226 +1159,348 @@ export default function Dashboard() {
         </section>
       </div>
 
-      {(showClientModal || showQuickFlowModal) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm">
-          {showClientModal ? (
-            <div className="w-full max-w-lg rounded-[2rem] border border-white/70 bg-white p-6 shadow-2xl">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.28em] text-blue-600">
-                    Action rapide
-                  </p>
-                  <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                    Créer un client
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Ajoutez la fiche client sans quitter le tableau de bord.
-                  </p>
-                </div>
+      <SideDrawer
+        isOpen={drawerOpen}
+        onClose={resetWorkflow}
+        title={
+          workflowStep === 'client'
+            ? 'Sélection Client'
+            : workflowStep === 'device'
+              ? 'Appareil'
+              : workflowStep === 'services'
+                ? 'Prestations'
+                : workflowStep === 'summary'
+                  ? 'Résumé'
+                  : 'Validation & Signature'
+        }
+        subtitle={drawerMode === 'quote' ? 'Nouveau Devis' : 'Nouveau Ticket'}
+        footer={
+          <div className="flex items-center justify-between">
+            {workflowStep !== 'client' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (workflowStep === 'device') setWorkflowStep('client')
+                  if (workflowStep === 'services') setWorkflowStep('device')
+                  if (workflowStep === 'summary') setWorkflowStep('services')
+                  if (workflowStep === 'signature') setWorkflowStep('summary')
+                }}
+                className="flex items-center gap-2 text-sm font-bold text-slate-400 transition hover:text-slate-900"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Retour
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <div className="flex items-center gap-4">
+              {workflowStep !== 'signature' ? (
                 <button
                   type="button"
-                  onClick={resetClientModal}
-                  className="rounded-2xl border border-slate-200 p-2 text-slate-500 transition hover:border-slate-300 hover:text-slate-950"
+                  disabled={
+                    (workflowStep === 'client' && !quickFlowForm.clientId) ||
+                    (workflowStep === 'device' && !deviceForm.model)
+                  }
+                  onClick={() => {
+                    if (workflowStep === 'client') setWorkflowStep('device')
+                    else if (workflowStep === 'device') setWorkflowStep('services')
+                    else if (workflowStep === 'services') setWorkflowStep('summary')
+                    else if (workflowStep === 'summary') setWorkflowStep('signature')
+                  }}
+                  className="flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-600 disabled:opacity-30"
                 >
-                  <X className="h-5 w-5" />
+                  Suivant
+                  <ArrowRight className="h-4 w-4" />
                 </button>
-              </div>
-
-              <form onSubmit={createClient} className="mt-6 space-y-4">
-                <Field label="Nom du client">
-                  <input
-                    required
-                    value={clientForm.name}
-                    onChange={(event) =>
-                      setClientForm((current) => ({ ...current, name: event.target.value }))
-                    }
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    placeholder="Ex. Jean Dupont"
-                  />
-                </Field>
-
-                <Field label="Téléphone">
-                  <input
-                    required
-                    value={clientForm.phone}
-                    onChange={(event) =>
-                      setClientForm((current) => ({ ...current, phone: event.target.value }))
-                    }
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    placeholder="06 00 00 00 00"
-                  />
-                </Field>
-
-                <Field label="Email">
-                  <input
-                    type="email"
-                    value={clientForm.email}
-                    onChange={(event) =>
-                      setClientForm((current) => ({ ...current, email: event.target.value }))
-                    }
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    placeholder="optionnel@client.fr"
-                  />
-                </Field>
-
-                <div className="flex items-center justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={resetClientModal}
-                    className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSavingClient}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    {isSavingClient ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                    Enregistrer
-                  </button>
-                </div>
-              </form>
+              ) : (
+                <button
+                  type="button"
+                  onClick={createQuickFlow}
+                  disabled={isSavingFlow || !signatureData}
+                  className="flex items-center gap-2 rounded-2xl bg-blue-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {isSavingFlow ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  {drawerMode === 'quote' ? 'Générer le devis' : 'Valider & Ouvrir'}
+                </button>
+              )}
             </div>
-          ) : null}
+          </div>
+        }
+      >
+        <div className="space-y-6">
+          <StepIndicator
+            current={
+              workflowStep === 'client'
+                ? 1
+                : workflowStep === 'device'
+                  ? 2
+                  : workflowStep === 'services'
+                    ? 3
+                    : workflowStep === 'summary'
+                      ? 4
+                      : 5
+            }
+            total={5}
+          />
 
-          {showQuickFlowModal ? (
-            <div className="w-full max-w-3xl rounded-[2rem] border border-white/70 bg-white p-6 shadow-2xl">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.28em] text-blue-600">
-                    Workflow rapide
-                  </p>
-                  <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                    {showQuickFlowModal === 'quote' ? 'Créer un devis' : 'Créer un ticket'}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Sélectionnez un client, ajoutez les prestations utiles et lancez le dossier sans
-                    quitter la page principale.
-                  </p>
+          {workflowStep === 'client' && (
+            <div className="space-y-6">
+              <SectionTitle label="Étape 1" title="Qui est le client ?" icon={<User className="h-5 w-5" />} />
+              
+              {!showNewClientForm ? (
+                <>
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                    <input
+                      autoFocus
+                      value={clientSearch}
+                      onChange={(e) => setClientSearch(e.target.value)}
+                      placeholder="Rechercher par nom ou téléphone..."
+                      className="w-full rounded-2xl border border-slate-100 bg-slate-50 py-4 pl-12 pr-4 outline-none transition focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
+                    />
+                  </div>
+
+                  {filteredClients.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">Résultats</p>
+                      {filteredClients.map((c) => (
+                        <button
+                          key={c.id}
+                          onClick={() => {
+                            setQuickFlowForm(prev => ({ ...prev, clientId: c.id }))
+                            setClientSearch(c.name)
+                          }}
+                          className={`flex w-full items-center justify-between rounded-2xl border p-4 transition ${
+                            quickFlowForm.clientId === c.id
+                              ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
+                              : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
+                          }`}
+                        >
+                          <div className="text-left">
+                            <p className="font-bold text-slate-950">{c.name}</p>
+                            <p className="text-sm text-slate-500">{c.phone}</p>
+                          </div>
+                          {quickFlowForm.clientId === c.id && <CheckCircle2 className="h-5 w-5 text-blue-600" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="rounded-2xl border border-dashed border-slate-200 p-6 text-center transition-all hover:bg-slate-50/50">
+                    <p className="text-sm text-slate-500">Le client n'existe pas encore ?</p>
+                    <button
+                      onClick={() => {
+                        setError(null)
+                        setShowNewClientForm(true)
+                      }}
+                      className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:underline"
+                    >
+                      <UserPlus className="h-4 w-4" />
+                      Créer une nouvelle fiche
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-5 rounded-[2rem] border border-blue-100 bg-blue-50/30 p-6">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[0.65rem] font-bold uppercase tracking-widest text-blue-600">Nouveau Client</p>
+                    <button onClick={() => setShowNewClientForm(false)} className="text-xs font-bold text-slate-400 hover:text-slate-900">
+                      Annuler
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    <Field label="Nom complet">
+                      <input 
+                        value={clientForm.name} 
+                        onChange={e => setClientForm(p => ({ ...p, name: e.target.value }))}
+                        className="w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 outline-none focus:border-blue-200"
+                        placeholder="Ex: Marc Lefebvre"
+                      />
+                    </Field>
+                    <Field label="Téléphone">
+                      <input 
+                        value={clientForm.phone} 
+                        onChange={e => setClientForm(p => ({ ...p, phone: e.target.value }))}
+                        className="w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 outline-none focus:border-blue-200"
+                        placeholder="06 00 00 00 00"
+                      />
+                    </Field>
+                    <Field label="Email (optionnel)">
+                      <input 
+                        value={clientForm.email} 
+                        onChange={e => setClientForm(p => ({ ...p, email: e.target.value }))}
+                        className="w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 outline-none focus:border-blue-200"
+                        placeholder="contact@client.com"
+                      />
+                    </Field>
+                    <button 
+                      onClick={createClient}
+                      disabled={isSavingClient || !clientForm.name || !clientForm.phone}
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 py-4 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/20"
+                    >
+                      {isSavingClient ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                      Enregistrer et continuer
+                    </button>
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={resetQuickFlowModal}
-                  className="rounded-2xl border border-slate-200 p-2 text-slate-500 transition hover:border-slate-300 hover:text-slate-950"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+              )}
+            </div>
+          )}
 
-              <form onSubmit={createQuickFlow} className="mt-6 space-y-5">
-                <Field label="Client">
-                  <select
-                    required
-                    value={quickFlowForm.clientId}
-                    onChange={(event) =>
-                      setQuickFlowForm((current) => ({ ...current, clientId: event.target.value }))
-                    }
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                  >
-                    <option value="">Sélectionner un client</option>
-                    {clients.map((client) => (
-                      <option key={client.id} value={client.id}>
-                        {client.name} — {client.phone}
-                      </option>
-                    ))}
-                  </select>
+          {workflowStep === 'device' && (
+            <div className="space-y-6">
+              <SectionTitle label="Étape 2" title="Quel est l'appareil ?" icon={<Smartphone className="h-5 w-5" />} />
+              
+              <div className="grid gap-5">
+                <Field label="Modèle de l'appareil">
+                  <input
+                    value={deviceForm.model}
+                    onChange={(e) => setDeviceForm(prev => ({ ...prev, model: e.target.value }))}
+                    placeholder="ex: iPhone 13 Pro"
+                    className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                  />
                 </Field>
 
-                <Field label="Prestations">
-                  <div className="grid max-h-[300px] gap-3 overflow-y-auto rounded-[1.5rem] border border-slate-200 bg-slate-50 p-3 sm:grid-cols-2">
-                    {services.length > 0 ? (
-                      services.map((service) => {
-                        const checked = quickFlowForm.serviceIds.includes(service.id)
-                        const totalServicePrice =
-                          service.laborCost + (service.part?.costPrice ?? 0)
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Field label="IMEI / Numéro de série">
+                    <input
+                      value={deviceForm.imei}
+                      onChange={(e) => setDeviceForm(prev => ({ ...prev, imei: e.target.value }))}
+                      placeholder="15 chiffres"
+                      className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                    />
+                  </Field>
+                  <Field label="Code de déverrouillage">
+                    <input
+                      value={deviceForm.unlockCode}
+                      onChange={(e) => setDeviceForm(prev => ({ ...prev, unlockCode: e.target.value }))}
+                      placeholder="ex: 123456"
+                      className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                    />
+                  </Field>
+                </div>
 
-                        return (
-                          <button
-                            key={service.id}
-                            type="button"
-                            onClick={() => toggleService(service.id)}
-                            className={`rounded-[1.3rem] border px-4 py-4 text-left transition ${
-                              checked
-                                ? 'border-blue-200 bg-blue-50 shadow-sm'
-                                : 'border-transparent bg-white hover:border-slate-200'
-                            }`}
-                          >
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <p className="font-semibold text-slate-950">{service.name}</p>
-                                <p className="mt-1 text-sm text-slate-500">
-                                  {service.description?.trim() || 'Prestation atelier'}
-                                </p>
-                                {service.part ? (
-                                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                                    Pièce liée : {service.part.name}
-                                  </p>
-                                ) : null}
-                              </div>
-                              <span className="text-sm font-bold text-slate-900">
-                                {formatCurrency(totalServicePrice)}
-                              </span>
-                            </div>
-                          </button>
-                        )
-                      })
-                    ) : (
-                      <div className="rounded-[1.25rem] bg-white px-4 py-6 text-sm text-slate-500">
-                        Aucun forfait disponible.
-                      </div>
-                    )}
+                <Field label={`État cosmétique : ${deviceForm.condition}/5`}>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    step="1"
+                    value={deviceForm.condition}
+                    onChange={(e) => setDeviceForm(prev => ({ ...prev, condition: parseInt(e.target.value) }))}
+                    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-100 accent-blue-600"
+                  />
+                  <div className="mt-2 flex justify-between text-[0.6rem] font-bold uppercase tracking-widest text-slate-400">
+                    <span>Médiocre</span>
+                    <span>Excellent</span>
                   </div>
                 </Field>
-
-                <Field label="Notes atelier">
-                  <textarea
-                    rows={4}
-                    value={quickFlowForm.notes}
-                    onChange={(event) =>
-                      setQuickFlowForm((current) => ({ ...current, notes: event.target.value }))
-                    }
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    placeholder="Panne signalée, informations utiles, remarques client..."
-                  />
-                </Field>
-
-                <div className="rounded-[1.4rem] border border-slate-200 bg-slate-50 px-4 py-4">
-                  <p className="text-[0.7rem] font-bold uppercase tracking-[0.22em] text-slate-400">
-                    Total estimé
-                  </p>
-                  <p className="mt-2 text-xl font-black tracking-tight text-slate-950">
-                    {formatCurrency(
-                      quickFlowForm.serviceIds.reduce((total, serviceId) => {
-                        const service = services.find((item) => item.id === serviceId)
-                        return total + (service ? service.laborCost + (service.part?.costPrice ?? 0) : 0)
-                      }, 0)
-                    )}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={resetQuickFlowModal}
-                    className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSavingFlow}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    {isSavingFlow ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                    {showQuickFlowModal === 'quote' ? 'Créer et ouvrir le devis' : 'Créer le ticket'}
-                  </button>
-                </div>
-              </form>
+              </div>
             </div>
-          ) : null}
+          )}
+
+          {workflowStep === 'services' && (
+            <div className="space-y-6">
+              <SectionTitle label="Étape 3" title="Prestations à réaliser" icon={<Wrench className="h-5 w-5" />} />
+              
+              <div className="grid gap-3 sm:grid-cols-2">
+                {services.map((s) => {
+                  const isSelected = quickFlowForm.serviceIds.includes(s.id)
+                  const totalPrice = s.laborCost + (s.part?.costPrice ?? 0)
+                  return (
+                    <button
+                      key={s.id}
+                      onClick={() => toggleService(s.id)}
+                      className={`flex flex-col rounded-2xl border p-4 text-left transition ${
+                        isSelected
+                          ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
+                          : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className={`rounded-lg p-2 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-400'}`}>
+                          <Plus className="h-4 w-4" />
+                        </span>
+                        <span className="text-sm font-bold text-slate-900">{formatCurrency(totalPrice)}</span>
+                      </div>
+                      <p className="mt-4 font-bold text-slate-950">{s.name}</p>
+                      <p className="mt-1 text-xs text-slate-500 line-clamp-1">{s.description || 'Intervention atelier'}</p>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {workflowStep === 'summary' && (
+            <div className="space-y-6">
+              <SectionTitle label="Étape 4" title="Finalisation" icon={<StickyNote className="h-5 w-5" />} />
+              
+              <div className="rounded-3xl bg-slate-900 p-6 text-white shadow-xl">
+                <div className="flex items-center gap-4 border-b border-white/10 pb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-400">
+                    <User className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Client</p>
+                    <p className="text-lg font-bold">{selectedClient?.name || 'Inconnu'}</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600/20 text-emerald-400">
+                    <Smartphone className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Appareil</p>
+                    <p className="text-lg font-bold">{deviceForm.model || 'Modèle non spécifié'}</p>
+                  </div>
+                </div>
+
+                <div className="mt-8 rounded-2xl bg-white/5 p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-500">Total estimé</p>
+                    <p className="text-2xl font-black text-white">
+                      {formatCurrency(
+                        quickFlowForm.serviceIds.reduce((total, id) => {
+                          const s = services.find(x => x.id === id)
+                          return total + (s ? s.laborCost + (s.part?.costPrice ?? 0) : 0)
+                        }, 0)
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Field label="Notes & Observations">
+                <textarea
+                  rows={4}
+                  value={quickFlowForm.notes}
+                  onChange={(e) => setQuickFlowForm(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Informations complémentaires, code promo, urgence..."
+                  className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                />
+              </Field>
+            </div>
+          )}
+
+          {workflowStep === 'signature' && (
+            <div className="space-y-6">
+              <SectionTitle label="Étape 5" title="Signature du client" icon={<PencilLine className="h-5 w-5" />} />
+              
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <p className="text-[11px] leading-relaxed text-slate-500">
+                  En signant, le client reconnaît avoir pris connaissance des conditions générales de réparation 
+                  et valide l'état cosmétique de l'appareil mentionné à l'étape 2.
+                </p>
+              </div>
+
+              <SignaturePad onSign={setSignatureData} />
+            </div>
+          )}
         </div>
-      )}
+      </SideDrawer>
     </>
   )
 }
@@ -1367,6 +1615,43 @@ function AlertItem({
           <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
         </div>
       </div>
+    </div>
+  )
+}
+
+function SectionTitle({
+  label,
+  title,
+  icon,
+}: {
+  label: string
+  title: string
+  icon?: React.ReactNode
+}) {
+  return (
+    <div className="mb-6">
+      <div className="flex items-center gap-2">
+        {icon && <div className="text-blue-600">{icon}</div>}
+        <p className="text-[0.65rem] font-bold uppercase tracking-[0.24em] text-slate-400">
+          {label}
+        </p>
+      </div>
+      <h4 className="mt-1 text-xl font-black tracking-tight text-slate-950">{title}</h4>
+    </div>
+  )
+}
+
+function StepIndicator({ current, total }: { current: number; total: number }) {
+  return (
+    <div className="flex gap-1.5">
+      {Array.from({ length: total }).map((_, i) => (
+        <div
+          key={i}
+          className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
+            i < current ? 'bg-blue-600' : 'bg-slate-100'
+          }`}
+        />
+      ))}
     </div>
   )
 }
