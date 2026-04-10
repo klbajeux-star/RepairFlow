@@ -10,12 +10,11 @@ import {
 
 export async function PATCH(
   request: Request,
-  props: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const json = await request.json()
-    const id = props.params.id
-    console.log('[PATCH] Route Param ID:', id)
+    const { id } = await params
 
     if (!id || id === 'undefined' || id === 'null') {
       throw new ApiError('ID manquant ou invalide.', 400)
@@ -45,15 +44,25 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: Request,
-  props: { params: { id: string } }
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = props.params.id
-    console.log('[DELETE] Route Param ID:', id)
+    const { id } = await params
     
     if (!id || id === 'undefined' || id === 'null') {
-      return NextResponse.json({ error: `ID de pièce invalide (${id}).` }, { status: 400 })
+      return NextResponse.json({ error: 'ID de pièce manquant.' }, { status: 400 })
+    }
+
+    const usageCount = await prisma.service.count({
+      where: { partId: id }
+    })
+
+    if (usageCount > 0) {
+      return NextResponse.json(
+        { error: 'Cette pièce est liée à des forfaits de service. Supprimez ou modifiez les forfaits d’abord.' },
+        { status: 409 }
+      )
     }
 
     await prisma.part.delete({ where: { id } })

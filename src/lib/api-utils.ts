@@ -140,17 +140,21 @@ export function handleApiError(
       return NextResponse.json({ error: error.message }, { status: error.status })
     }
 
-    if (error && typeof error === 'object' && 'code' in error) {
-      const prismaError = error as any
-      if (prismaError.code === 'P2002') {
-        const target = (prismaError.meta?.target as string[]) || []
+    if (error && typeof error === 'object') {
+      const err = error as any
+      const code = err.code || err.prisma?.code
+      
+      if (code === 'P2002') {
         return NextResponse.json(
-          { error: `Cette valeur existe déjà (${target.join(', ')}).` },
+          { error: 'Cette valeur unique existe déjà (doublon).' },
           { status: 409 }
         )
       }
-      if (prismaError.code === 'P2025') {
-        return NextResponse.json({ error: 'Élément introuvable.' }, { status: 404 })
+      if (code === 'P2003') {
+        return NextResponse.json(
+          { error: 'Impossible de supprimer : cet élément est lié à des tickets ou d’autres fiches.' },
+          { status: 409 }
+        )
       }
     }
 

@@ -224,7 +224,8 @@ export function CatalogWorkspace() {
     try {
       setDrawerError(null)
       setIsSaving(true)
-      const baseUrl = activeTab === 'models' ? '/api/models' : activeTab === 'services' ? '/api/services' : '/api/parts'
+      
+      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : '/api/parts'
       const res = await fetch(`${baseUrl}/${editingId}`, {
         method: 'DELETE',
       })

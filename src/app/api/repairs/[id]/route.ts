@@ -73,8 +73,22 @@ export async function PATCH(
       })
     })
 
-    return NextResponse.json(repair)
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const repairId = requireId(id, 'Le ticket')
+
+    await prisma.$transaction([
+      prisma.repairLog.deleteMany({ where: { repairId } }),
+      prisma.repairService.deleteMany({ where: { repairId } }),
+      prisma.repair.delete({ where: { id: repairId } }),
+    ])
+
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    return handleApiError(error, 'Impossible de mettre à jour le ticket.')
+    return handleApiError(error, 'Impossible de supprimer le ticket.')
   }
 }
