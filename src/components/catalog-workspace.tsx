@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   Loader2,
   Package,
+  PencilLine,
   Plus,
   Search,
   Smartphone,
@@ -126,13 +127,14 @@ export function CatalogWorkspace() {
 
   // Drawer states
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [drawerType, setDrawerType] = useState<'model' | 'service' | 'part' | null>(null)
+  const [drawerType, setDrawerType] = useState<'model' | 'service' | 'part' | 'brand' | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   
   // Form states
   const [modelForm, setModelForm] = useState(initialModelForm)
   const [serviceForm, setServiceForm] = useState(initialServiceForm)
   const [partForm, setPartForm] = useState(initialPartForm)
+  const [brandForm, setBrandForm] = useState({ name: '' })
 
   // Filter states
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
@@ -206,7 +208,7 @@ export function CatalogWorkspace() {
     })
   }, [parts, search, selectedBrandId])
 
-  function openDrawer(type: 'model' | 'service' | 'part', item?: any) {
+  function openDrawer(type: 'model' | 'service' | 'part' | 'brand', item?: any) {
     setDrawerType(type)
     setEditingId(item?.id || null)
     setDrawerError(null)
@@ -214,6 +216,7 @@ export function CatalogWorkspace() {
     if (type === 'model') setModelForm(item ? { name: item.name, modelReference: item.modelReference || '', brandId: item.brandId, typeId: item.typeId } : initialModelForm)
     if (type === 'service') setServiceForm(item ? { name: item.name, laborCost: item.laborCost.toString(), suggestedPrice: item.suggestedPrice?.toString() || '', duration: item.duration?.toString() || '30', partId: item.partId || '', modelId: item.modelId || '', description: item.description || '' } : initialServiceForm)
     if (type === 'part') setPartForm(item ? { name: item.name, sku: item.sku, costPrice: item.costPrice.toString(), stock: item.stock.toString(), minStock: item.minStock?.toString() || '0', quality: item.quality || 'ORIGINAL', supplier: item.supplier || '', supplierRef: item.supplierRef || '', location: item.location || '', modelId: item.modelId || '', description: item.description || '', createLinkedService: false } : initialPartForm)
+    if (type === 'brand') setBrandForm(item ? { name: item.name } : { name: '' })
     
     setDrawerOpen(true)
   }
@@ -225,7 +228,7 @@ export function CatalogWorkspace() {
       setDrawerError(null)
       setIsSaving(true)
       
-      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : '/api/parts'
+      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : drawerType === 'part' ? '/api/parts' : '/api/brands'
       const res = await fetch(`${baseUrl}/${editingId}`, {
         method: 'DELETE',
       })
@@ -248,10 +251,10 @@ export function CatalogWorkspace() {
     try {
       setDrawerError(null)
       setIsSaving(true)
-      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : '/api/parts'
+      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : drawerType === 'part' ? '/api/parts' : '/api/brands'
       const url = editingId ? `${baseUrl}/${editingId}` : baseUrl
       const method = editingId ? 'PATCH' : 'POST'
-      const body = drawerType === 'model' ? modelForm : drawerType === 'service' ? serviceForm : partForm
+      const body = drawerType === 'model' ? modelForm : drawerType === 'service' ? serviceForm : drawerType === 'part' ? partForm : brandForm
       
       const res = await fetch(url, {
         method,
@@ -346,7 +349,16 @@ export function CatalogWorkspace() {
           </div>
 
           <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
-            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Marques</p>
+            <div className="flex items-center justify-between">
+              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Marques</p>
+              <button 
+                onClick={() => openDrawer('brand')}
+                className="rounded-lg bg-slate-50 p-1.5 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
+                title="Ajouter une marque"
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            </div>
             <div className="mt-4 space-y-1">
               <button 
                 onClick={() => setSelectedBrandId(null)}
@@ -355,13 +367,21 @@ export function CatalogWorkspace() {
                 Toutes
               </button>
               {brands.map(b => (
-                <button 
-                  key={b.id}
-                  onClick={() => setSelectedBrandId(b.id)}
-                  className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition ${selectedBrandId === b.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-50'}`}
-                >
-                  {b.name}
-                </button>
+                <div key={b.id} className="group relative">
+                  <button 
+                    onClick={() => setSelectedBrandId(b.id)}
+                    className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition ${selectedBrandId === b.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    {b.name}
+                  </button>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); openDrawer('brand', b); }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex h-7 w-7 items-center justify-center rounded-lg bg-white/20 text-slate-400 hover:bg-white hover:text-blue-600 shadow-sm border border-slate-100"
+                    title="Modifier la marque"
+                  >
+                    <PencilLine className="h-3 w-3" />
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -491,7 +511,7 @@ export function CatalogWorkspace() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         title={editingId ? 'Modifier' : 'Ajouter'}
-        subtitle={drawerType === 'model' ? 'Modèle' : drawerType === 'service' ? 'Prestation' : 'Pièce'}
+        subtitle={drawerType === 'model' ? 'Modèle' : drawerType === 'service' ? 'Prestation' : drawerType === 'part' ? 'Pièce' : 'Marque'}
         footer={
           <div className="flex items-center justify-between gap-3">
              {editingId ? (
@@ -527,6 +547,18 @@ export function CatalogWorkspace() {
             </div>
           )}
           
+          {drawerType === 'brand' && (
+            <Field label="Nom de la marque">
+              <input 
+                value={brandForm.name} 
+                onChange={e => setBrandForm({ name: e.target.value })} 
+                className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" 
+                placeholder="ex: Apple, Samsung, Huawei..." 
+                autoFocus
+              />
+            </Field>
+          )}
+
           {drawerType === 'model' && (
             <>
               <Field label="Nom du modèle">
