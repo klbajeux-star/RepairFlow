@@ -8,7 +8,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
 model Client {
@@ -84,7 +84,7 @@ model Service {
 
 model Repair {
   id          String   @id @default(cuid())
-  status      String   @default("PENDING") // PENDING, DIAGNOSIS, IN_PROGRESS, READY, DELIVERED, CANCELLED
+  status      String   @default("PENDING") // PENDING, DIAGNOSIS, IN_PROGRESS, READY, DELIVERED, CANCELLED, ARCHIVED
   clientId    String
   client      Client   @relation(fields: [clientId], references: [id])
   services    RepairService[]
@@ -98,7 +98,7 @@ model RepairService {
   id        String  @id @default(cuid())
   repairId  String
   serviceId String
-  repair    Repair  @relation(fields: [repairId], references: [id])
+  repair    Repair  @relation(fields: [repairId], references: [id], onDelete: Cascade)
   service   Service @relation(fields: [serviceId], references: [id])
   quantity  Int     @default(1)
   priceAtTime Float // Prix total (pièce + MO) fixé au moment de l'édition du ticket
@@ -107,7 +107,7 @@ model RepairService {
 model RepairLog {
   id        String   @id @default(cuid())
   repairId  String
-  repair    Repair   @relation(fields: [repairId], references: [id])
+  repair    Repair   @relation(fields: [repairId], references: [id], onDelete: Cascade)
   status    String
   comment   String?
   createdAt DateTime @default(now())

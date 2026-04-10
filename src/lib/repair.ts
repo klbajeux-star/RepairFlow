@@ -5,6 +5,7 @@ export const repairStatuses = [
   'READY',
   'DELIVERED',
   'CANCELLED',
+  'ARCHIVED',
 ] as const
 
 export type RepairStatus = (typeof repairStatuses)[number]
@@ -16,6 +17,7 @@ export const repairStatusLabels: Record<RepairStatus, string> = {
   READY: 'Prêt',
   DELIVERED: 'Restitué',
   CANCELLED: 'Annulé',
+  ARCHIVED: 'Archivé',
 }
 
 export const repairStatusStyles: Record<RepairStatus, string> = {
@@ -25,6 +27,7 @@ export const repairStatusStyles: Record<RepairStatus, string> = {
   READY: 'bg-emerald-100 text-emerald-800',
   DELIVERED: 'bg-slate-200 text-slate-800',
   CANCELLED: 'bg-rose-100 text-rose-800',
+  ARCHIVED: 'bg-slate-100 text-slate-500 opacity-60',
 }
 
 export function isRepairStatus(value: unknown): value is RepairStatus {

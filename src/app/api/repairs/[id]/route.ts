@@ -73,6 +73,12 @@ export async function PATCH(
       })
     })
 
+    return NextResponse.json(repair)
+  } catch (error) {
+    return handleApiError(error, 'Impossible de mettre à jour le ticket.')
+  }
+}
+
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
