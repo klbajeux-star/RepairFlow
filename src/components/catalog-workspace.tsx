@@ -6,9 +6,11 @@ import {
   AlertCircle,
   ChevronRight,
   Database,
+  Gamepad2,
   Layers,
   LayoutGrid,
   Loader2,
+  Monitor,
   Package,
   PencilLine,
   Plus,
@@ -107,6 +109,33 @@ const initialPartForm = {
   createLinkedService: false,
 }
 
+function TypeIcon({ type, className }: { type: string; className?: string }) {
+  const t = type.toLowerCase()
+  if (t.includes('phone') || t.includes('mobile')) return <Smartphone className={className} />
+  if (t.includes('tablette') || t.includes('tablet')) return <Tablet className={className} />
+  if (t.includes('console')) return <Gamepad2 className={className} />
+  if (t.includes('ordinateur') || t.includes('pc') || t.includes('laptop')) return <Monitor className={className} />
+  return <Smartphone className={className} />
+}
+
+function getTypeColor(type: string) {
+  const t = type.toLowerCase()
+  if (t.includes('phone') || t.includes('mobile')) return 'bg-blue-50 text-blue-600 ring-blue-100'
+  if (t.includes('tablette') || t.includes('tablet')) return 'bg-purple-50 text-purple-600 ring-purple-100'
+  if (t.includes('console')) return 'bg-rose-50 text-rose-600 ring-rose-100'
+  if (t.includes('ordinateur') || t.includes('pc') || t.includes('laptop')) return 'bg-amber-50 text-amber-600 ring-amber-100'
+  return 'bg-slate-50 text-slate-600 ring-slate-100'
+}
+
+function getTypeActiveColor(type: string) {
+  const t = type.toLowerCase()
+  if (t.includes('phone') || t.includes('mobile')) return 'bg-blue-600 text-white shadow-blue-600/20'
+  if (t.includes('tablette') || t.includes('tablet')) return 'bg-purple-600 text-white shadow-purple-600/20'
+  if (t.includes('console')) return 'bg-rose-600 text-white shadow-rose-600/20'
+  if (t.includes('ordinateur') || t.includes('pc') || t.includes('laptop')) return 'bg-amber-600 text-white shadow-amber-600/20'
+  return 'bg-slate-900 text-white shadow-slate-900/20'
+}
+
 export function CatalogWorkspace() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -138,6 +167,7 @@ export function CatalogWorkspace() {
 
   // Filter states
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
+  const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null)
 
   useEffect(() => {
     void loadAllData()
@@ -185,18 +215,20 @@ export function CatalogWorkspace() {
       const matchSearch = m.name.toLowerCase().includes(search.toLowerCase()) || 
                           m.brand.name.toLowerCase().includes(search.toLowerCase())
       const matchBrand = !selectedBrandId || m.brandId === selectedBrandId
-      return matchSearch && matchBrand
+      const matchType = !selectedTypeId || m.typeId === selectedTypeId
+      return matchSearch && matchBrand && matchType
     })
-  }, [models, search, selectedBrandId])
+  }, [models, search, selectedBrandId, selectedTypeId])
 
   const filteredServices = useMemo(() => {
     return services.filter(s => {
       const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) || 
                           s.model?.name.toLowerCase().includes(search.toLowerCase())
       const matchBrand = !selectedBrandId || s.model?.brandId === selectedBrandId
-      return matchSearch && matchBrand
+      const matchType = !selectedTypeId || s.model?.typeId === selectedTypeId
+      return matchSearch && matchBrand && matchType
     })
-  }, [services, search, selectedBrandId])
+  }, [services, search, selectedBrandId, selectedTypeId])
 
   const filteredParts = useMemo(() => {
     return parts.filter(p => {
@@ -204,9 +236,10 @@ export function CatalogWorkspace() {
                           p.sku.toLowerCase().includes(search.toLowerCase()) ||
                           p.model?.name.toLowerCase().includes(search.toLowerCase())
       const matchBrand = !selectedBrandId || p.model?.brandId === selectedBrandId
-      return matchSearch && matchBrand
+      const matchType = !selectedTypeId || p.model?.typeId === selectedTypeId
+      return matchSearch && matchBrand && matchType
     })
-  }, [parts, search, selectedBrandId])
+  }, [parts, search, selectedBrandId, selectedTypeId])
 
   function openDrawer(type: 'model' | 'service' | 'part' | 'brand', item?: any) {
     setDrawerType(type)
@@ -349,6 +382,28 @@ export function CatalogWorkspace() {
           </div>
 
           <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Catégories</p>
+            <div className="mt-4 space-y-2">
+              <button 
+                onClick={() => setSelectedTypeId(null)}
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition ${!selectedTypeId ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+              >
+                Toutes les catégories
+              </button>
+              {types.map(t => (
+                <button 
+                  key={t.id}
+                  onClick={() => setSelectedTypeId(t.id)}
+                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition ring-1 ring-inset ${selectedTypeId === t.id ? getTypeActiveColor(t.name) : getTypeColor(t.name) + ' hover:opacity-80'}`}
+                >
+                  <TypeIcon type={t.name} className="h-4 w-4" />
+                  {t.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Marques</p>
               <button 
@@ -426,9 +481,12 @@ export function CatalogWorkspace() {
                   {activeTab === 'models' && filteredModels.map(m => (
                     <tr key={m.id} className="group hover:bg-blue-50/30 transition">
                       <td className="px-8 py-5">
-                        <div className="flex items-center gap-2">
-                          <span className="rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">{m.brand.name}</span>
-                          <span className="text-xs font-bold text-slate-400">{m.type.name}</span>
+                        <div className="flex flex-col gap-2">
+                          <span className="w-fit rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">{m.brand.name}</span>
+                          <div className={`flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-black uppercase ring-1 ring-inset ${getTypeColor(m.type.name)}`}>
+                            <TypeIcon type={m.type.name} className="h-3 w-3" />
+                            {m.type.name}
+                          </div>
                         </div>
                       </td>
                       <td className="px-8 py-5">
@@ -461,9 +519,15 @@ export function CatalogWorkspace() {
                       </td>
                       <td className="px-8 py-5">
                         {s.model ? (
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-slate-500">{s.model.brand.name}</span>
-                            <span className="text-xs font-black text-slate-950">{s.model.name}</span>
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{s.model.brand.name}</span>
+                              <span className="text-xs font-black text-slate-950">{s.model.name}</span>
+                            </div>
+                            <div className={`flex w-fit items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase ring-1 ring-inset ${getTypeColor(s.model.type.name)}`}>
+                              <TypeIcon type={s.model.type.name} className="h-2.5 w-2.5" />
+                              {s.model.type.name}
+                            </div>
                           </div>
                         ) : <span className="text-xs text-slate-400">—</span>}
                       </td>
@@ -478,10 +542,18 @@ export function CatalogWorkspace() {
                     <tr key={p.id} className="group hover:bg-blue-50/30 transition">
                       <td className="px-8 py-5">
                         <p className="font-black text-slate-950">{p.name}</p>
-                        <div className="flex items-center gap-2">
-                           <span className={`rounded px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider ${p.quality === 'ORIGINAL' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.quality === 'ORIGINAL' ? 'Origine' : 'Compatible'}</span>
-                           <p className="text-[10px] font-bold text-slate-400">{p.model ? `${p.model.brand.name} ${p.model.name}` : 'Pièce universelle'}</p>
-                           {p.location && <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-500">{p.location}</span>}
+                        <div className="flex flex-col gap-1.5 mt-1">
+                           <div className="flex items-center gap-2">
+                              <span className={`rounded px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider ${p.quality === 'ORIGINAL' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.quality === 'ORIGINAL' ? 'Origine' : 'Compatible'}</span>
+                              <p className="text-[10px] font-bold text-slate-400">{p.model ? `${p.model.brand.name} ${p.model.name}` : 'Pièce universelle'}</p>
+                              {p.location && <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-black text-slate-500">{p.location}</span>}
+                           </div>
+                           {p.model && (
+                             <div className={`flex w-fit items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase ring-1 ring-inset ${getTypeColor(p.model.type.name)}`}>
+                               <TypeIcon type={p.model.type.name} className="h-2.5 w-2.5" />
+                               {p.model.type.name}
+                             </div>
+                           )}
                         </div>
                       </td>
                       <td className="px-8 py-5">

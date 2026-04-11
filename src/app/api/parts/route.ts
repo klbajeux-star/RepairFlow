@@ -13,7 +13,10 @@ export async function GET() {
     const parts = await prisma.part.findMany({
       include: {
         model: {
-          include: { brand: true },
+          include: { 
+            brand: true,
+            type: true
+          },
         },
         _count: {
           select: { services: true },

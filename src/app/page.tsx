@@ -11,14 +11,17 @@ import {
   ChevronRight,
   FilePlus2,
   FileText,
+  Gamepad2,
   GripVertical,
   Loader2,
+  Monitor,
   Package,
   PencilLine,
   Plus,
   Search,
   StickyNote,
   Smartphone,
+  Tablet,
   User,
   UserPlus,
   Wrench,
@@ -1508,8 +1511,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                               }}
                               className="flex w-full items-center gap-2 rounded-xl p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 text-left"
                             >
-                                <Smartphone className="h-4 w-4 text-slate-400" />
-                                {m.brand.name} {m.name}
+                                <TypeIcon type={m.type.name} className="h-4 w-4 text-slate-400" /> {m.brand.name} {m.name}
                              </button>
                           ))}
                      </div>
@@ -1801,6 +1803,15 @@ function AlertItem({
       </div>
     </div>
   )
+}
+
+function TypeIcon({ type, className }: { type: string; className?: string }) {
+  const t = type.toLowerCase()
+  if (t.includes('phone') || t.includes('mobile')) return <Smartphone className={className} />
+  if (t.includes('tablette') || t.includes('tablet')) return <Tablet className={className} />
+  if (t.includes('console')) return <Gamepad2 className={className} />
+  if (t.includes('ordinateur') || t.includes('pc') || t.includes('laptop')) return <Monitor className={className} />
+  return <Smartphone className={className} />
 }
 
 function SectionTitle({

@@ -14,7 +14,10 @@ export async function GET() {
       include: {
         part: true,
         model: {
-          include: { brand: true },
+          include: { 
+            brand: true,
+            type: true
+          },
         },
       },
       orderBy: { createdAt: 'desc' },
