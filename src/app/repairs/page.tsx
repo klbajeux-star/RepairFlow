@@ -130,48 +130,15 @@ export default function RepairsPage() {
     if (repairToOpen) {
       openManageModal(repairToOpen, false)
     }
-  }, [repairIdFromUrl, repairs]) // On retire selectedRepair?.id des dépendances pour éviter le feedback loop à la fermeture
-
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key !== 'Escape') {
-        return
-      }
-
-      if (selectedRepair) {
-        closeManageModal()
-        return
-      }
-
-      if (showCreateModal) {
-        setShowCreateModal(false)
-      }
-    }
-
-    window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [selectedRepair, showCreateModal])
-
-  function updateRepairIdInUrl(repairId?: string) {
-    const params = new URLSearchParams(window.location.search)
-    if (repairId) {
-      params.set('repairId', repairId)
-    } else {
-      params.delete('repairId')
-    }
-    const queryString = params.toString()
-    router.replace(queryString ? `?${queryString}` : pathname, { scroll: false })
-  }
+  }, [repairIdFromUrl, repairs])
 
   async function loadData() {
     try {
       setIsLoading(true)
-      setError(null)
-
       const [repairsResponse, clientsResponse, servicesResponse] = await Promise.all([
-        fetch('/api/repairs', { cache: 'no-store' }),
-        fetch('/api/clients', { cache: 'no-store' }),
-        fetch('/api/services', { cache: 'no-store' }),
+        fetch('/api/repairs'),
+        fetch('/api/clients'),
+        fetch('/api/services'),
       ])
 
       const [repairsData, clientsData, servicesData] = await Promise.all([
@@ -180,49 +147,24 @@ export default function RepairsPage() {
         parseJsonResponse<Service[]>(servicesResponse),
       ])
 
-      if (!repairsResponse.ok) {
-        throw new Error(repairsData.error ?? 'Impossible de charger les tickets.')
-      }
-
-      if (!clientsResponse.ok) {
-        throw new Error(clientsData.error ?? 'Impossible de charger les clients.')
-      }
-
-      if (!servicesResponse.ok) {
-        throw new Error(servicesData.error ?? 'Impossible de charger les forfaits.')
-      }
-
-      const nextRepairs = Array.isArray(repairsData) ? repairsData : []
-      setRepairs(nextRepairs)
-      setClients(Array.isArray(clientsData) ? clientsData : [])
-      setServices(Array.isArray(servicesData) ? servicesData : [])
-
-      if (selectedRepair) {
-        const refreshed = nextRepairs.find((repair) => repair.id === selectedRepair.id)
-        if (refreshed) {
-          setSelectedRepair(refreshed)
-          setManageForm((current) => ({
-            ...current,
-            status: refreshed.status,
-            notes: refreshed.notes ?? current.notes,
-          }))
-        }
-      }
-    } catch (loadError) {
-      setError(
-        loadError instanceof Error
-          ? loadError.message
-          : 'Impossible de charger les tickets.'
-      )
+      setRepairs(repairsData)
+      setClients(clientsData)
+      setServices(servicesData)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors du chargement des données.')
     } finally {
       setIsLoading(false)
     }
   }
 
-  function openCreateTicketModal() {
-    setCreateForm(initialCreateForm)
-    setError(null)
-    setShowCreateModal(true)
+  function updateRepairIdInUrl(repairId: string | null) {
+    const params = new URLSearchParams(searchParams?.toString())
+    if (repairId) {
+      params.set('repairId', repairId)
+    } else {
+      params.delete('repairId')
+    }
+    router.replace(`${pathname}?${params.toString()}`)
   }
 
   function openManageModal(repair: Repair, syncUrl = true) {
@@ -241,9 +183,7 @@ export default function RepairsPage() {
 
   function closeManageModal() {
     setSelectedRepair(null)
-    setManageForm(initialManageForm)
-    setError(null)
-    updateRepairIdInUrl()
+    updateRepairIdInUrl(null)
   }
 
   function toggleService(serviceId: string) {
@@ -340,6 +280,80 @@ export default function RepairsPage() {
     }
   }
 
+  async function handleDeleteTicket() {
+    if (!selectedRepair || !confirm('Voulez-vous vraiment supprimer ce ticket ? Cette action est irréversible.')) {
+      return
+    }
+
+    const repairId = selectedRepair.id
+
+    try {
+      setIsSaving(true)
+      setError(null)
+
+      const response = await fetch(`/api/repairs/${repairId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const data = await parseJsonResponse<ApiError>(response)
+        throw new Error(data.error ?? 'Impossible de supprimer le ticket.')
+      }
+
+      setRepairs((current) => current.filter((r) => r.id !== repairId))
+      closeManageModal()
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'Impossible de supprimer le ticket.'
+      )
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function handleArchiveTicket() {
+    if (!selectedRepair) return
+
+    const repairId = selectedRepair.id
+
+    try {
+      setIsSaving(true)
+      setError(null)
+
+      const response = await fetch(`/api/repairs/${repairId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...manageForm,
+          status: 'ARCHIVED',
+          comment: 'Dossier archivé par l’utilisateur.',
+        }),
+      })
+
+      const data = await parseJsonResponse<Repair & ApiError>(response)
+
+      if (!response.ok) {
+        throw new Error(data.error ?? 'Impossible d’archiver le ticket.')
+      }
+
+      setRepairs((current) =>
+        current.map((repair) => (repair.id === repairId ? data : repair))
+      )
+
+      closeManageModal()
+    } catch (archiveError) {
+      setError(
+        archiveError instanceof Error
+          ? archiveError.message
+          : 'Impossible d’archiver le ticket.'
+      )
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const filteredRepairs = useMemo(() => {
     const query = search.trim().toLowerCase()
 
@@ -348,27 +362,21 @@ export default function RepairsPage() {
       const haystack = [
         repair.client.name,
         repair.client.phone,
-        repair.id,
-        ...repair.services.map((line) => line.service.name),
+        repair.notes ?? '',
+        getRepairStatusLabel(repair.status),
       ]
         .join(' ')
         .toLowerCase()
 
-      const matchesSearch = !query || haystack.includes(query)
-      return matchesStatus && matchesSearch
+      return matchesStatus && haystack.includes(query)
     })
   }, [repairs, search, statusFilter])
-
-  const selectedServicesTotal = createForm.serviceIds.reduce((total, serviceId) => {
-    const service = services.find((item) => item.id === serviceId)
-    return total + (service ? service.laborCost + (service.part?.costPrice ?? 0) : 0)
-  }, 0)
 
   const activeRepairs = repairs.filter((repair) =>
     ['PENDING', 'DIAGNOSIS', 'IN_PROGRESS'].includes(repair.status)
   ).length
   const readyRepairs = repairs.filter((repair) => repair.status === 'READY').length
-  const deliveredRepairs = repairs.filter((repair) => repair.status === 'DELIVERED').length
+  const closedRepairs = repairs.filter((repair) => ['DELIVERED', 'ARCHIVED'].includes(repair.status)).length
 
   return (
     <div className="space-y-8 pb-8">
@@ -405,28 +413,28 @@ export default function RepairsPage() {
             Dossiers clôturés
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-            {deliveredRepairs}
+            {closedRepairs}
           </p>
         </article>
       </section>
 
-      <section className="rounded-[2rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex w-full flex-col gap-4 lg:flex-row">
-            <div className="relative w-full max-w-md">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Rechercher ticket, client ou prestation"
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-300 focus:bg-white"
-              />
-            </div>
+      <section className="rounded-[2.2rem] border border-white/80 bg-white/85 p-6 shadow-xl shadow-slate-200/50 backdrop-blur">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher un ticket par client, téléphone ou notes..."
+              className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 py-4 pl-12 pr-4 outline-none transition focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
+            />
+          </div>
 
+          <div className="flex flex-wrap items-center gap-3">
             <select
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-              className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-300 focus:bg-white"
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="rounded-2xl border border-slate-100 bg-white px-4 py-4 text-sm font-bold text-slate-700 outline-none transition hover:border-slate-200 focus:ring-4 focus:ring-slate-50"
             >
               <option value="ALL">Tous les statuts</option>
               {repairStatuses.map((status) => (
@@ -435,74 +443,79 @@ export default function RepairsPage() {
                 </option>
               ))}
             </select>
-          </div>
 
-          <button
-            type="button"
-            onClick={openCreateTicketModal}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
-          >
-            <Plus className="h-4 w-4" />
-            Nouveau ticket
-          </button>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+            >
+              <Plus className="h-5 w-5" />
+              Nouveau ticket
+            </button>
+          </div>
         </div>
 
-        {error ? (
-          <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
-            {error}
-          </div>
-        ) : null}
-
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full text-left">
+        <div className="mt-8 overflow-hidden rounded-[1.8rem] border border-slate-100 bg-white shadow-sm">
+          <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-slate-100 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
-                <th className="px-4 py-4">Ticket</th>
-                <th className="px-4 py-4">Client</th>
-                <th className="px-4 py-4">Prestations</th>
-                <th className="px-4 py-4">Statut</th>
-                <th className="px-4 py-4">Montant</th>
-                <th className="px-4 py-4 text-right">Action</th>
+              <tr className="bg-slate-50/50 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-400">
+                <th className="px-6 py-5">Référence</th>
+                <th className="px-6 py-5">Client</th>
+                <th className="px-6 py-5">Prestations</th>
+                <th className="px-6 py-5">Statut</th>
+                <th className="px-6 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {!isLoading && filteredRepairs.length > 0 ? (
+            <tbody className="divide-y divide-slate-50">
+              {filteredRepairs.length > 0 ? (
                 filteredRepairs.map((repair) => (
-                  <tr key={repair.id} className="hover:bg-slate-50/80">
-                    <td className="px-4 py-4">
-                      <div>
-                        <p className="font-mono text-sm font-black text-slate-950">
-                          #{repair.id.slice(-6).toUpperCase()}
-                        </p>
-                        <p className="text-sm text-slate-500">
-                          {formatDate(repair.createdAt)}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <p className="font-black text-slate-950">{repair.client.name}</p>
-                      <p className="text-sm text-slate-500">{repair.client.phone}</p>
-                    </td>
-                    <td className="px-4 py-4">
-                      <p className="text-sm font-medium text-slate-700">
-                        {repair.services.map((line) => line.service.name).join(', ')}
+                  <tr
+                    key={repair.id}
+                    className="group transition hover:bg-blue-50/30"
+                  >
+                    <td className="px-6 py-5">
+                      <p className="font-mono text-xs font-bold text-slate-400 uppercase">
+                        #{repair.id.slice(-6)}
+                      </p>
+                      <p className="mt-1 text-[0.65rem] font-medium text-slate-400">
+                        {formatDate(repair.createdAt)}
                       </p>
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="px-6 py-5">
+                      <p className="font-black text-slate-950">{repair.client.name}</p>
+                      <p className="mt-1 text-xs font-medium text-slate-500">
+                        {repair.client.phone}
+                      </p>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="flex flex-wrap gap-1.5">
+                        {repair.services.slice(0, 2).map((line) => (
+                          <span
+                            key={line.id}
+                            className="rounded-lg bg-slate-100 px-2 py-1 text-[0.65rem] font-bold text-slate-600"
+                          >
+                            {line.service.name}
+                          </span>
+                        ))}
+                        {repair.services.length > 2 && (
+                          <span className="rounded-lg bg-slate-100 px-2 py-1 text-[0.65rem] font-bold text-slate-400">
+                            +{repair.services.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-5">
                       <span
-                        className={`rounded-full px-3 py-1.5 text-xs font-bold ${getRepairStatusStyle(repair.status)}`}
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${getRepairStatusStyle(
+                          repair.status
+                        )}`}
                       >
                         {getRepairStatusLabel(repair.status)}
                       </span>
                     </td>
-                    <td className="px-4 py-4 font-black text-slate-950">
-                      {formatCurrency(getRepairTotal(repair))}
-                    </td>
-                    <td className="px-4 py-4 text-right">
+                    <td className="px-6 py-5 text-right">
                       <button
-                        type="button"
                         onClick={() => openManageModal(repair)}
-                        className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                        className="rounded-xl border border-slate-100 bg-white px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-blue-200 hover:text-blue-600 hover:shadow-md"
                       >
                         Gérer
                       </button>
@@ -511,10 +524,8 @@ export default function RepairsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-4 py-16 text-center text-sm text-slate-500">
-                    {isLoading
-                      ? 'Chargement des tickets...'
-                      : 'Aucun ticket ne correspond à la recherche.'}
+                  <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-500">
+                    {isLoading ? 'Chargement...' : 'Aucun ticket trouvé.'}
                   </td>
                 </tr>
               )}
@@ -523,271 +534,228 @@ export default function RepairsPage() {
         </div>
       </section>
 
-      {showCreateModal ? (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm"
-          onClick={() => setShowCreateModal(false)}
-        >
-          <div
-            className="w-full max-w-3xl rounded-[2rem] border border-white/60 bg-white p-6 shadow-2xl shadow-slate-900/15"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-4">
+      {/* Modal Création Ticket */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-[2.5rem] border border-white/70 bg-white p-8 shadow-2xl">
+            <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.26em] text-blue-600">
-                  Réception atelier
+                <p className="text-[0.7rem] font-black uppercase tracking-[0.3em] text-blue-600">
+                  Nouveau dossier
                 </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                  Nouveau ticket
-                </h2>
+                <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+                  Ouvrir un ticket atelier
+                </h3>
               </div>
               <button
-                type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="rounded-2xl bg-slate-100 p-3 text-slate-500 transition hover:bg-slate-200"
+                className="rounded-2xl border border-slate-100 p-2 text-slate-400 transition hover:bg-slate-50 hover:text-slate-900"
               >
-                <X className="h-5 w-5" />
+                <X className="h-6 w-6" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateTicket} className="mt-6 space-y-6">
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
+            <form onSubmit={handleCreateTicket} className="mt-8 space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
                   Client
                 </label>
-                <div className="grid gap-3 md:grid-cols-[1fr_auto]">
-                  <div className="relative">
-                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <select
-                      required
-                      value={createForm.clientId}
-                      onChange={(event) =>
-                        setCreateForm((current) => ({
-                          ...current,
-                          clientId: event.target.value,
-                        }))
-                      }
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 outline-none transition focus:border-blue-300 focus:bg-white"
-                    >
-                      <option value="">Choisir un client</option>
-                      {clients.map((client) => (
-                        <option key={client.id} value={client.id}>
-                          {client.name} ({client.phone})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <Link
-                    href="/clients"
-                    className="inline-flex items-center justify-center rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                  >
-                    Créer un client
-                  </Link>
-                </div>
+                <select
+                  required
+                  value={createForm.clientId}
+                  onChange={(e) => setCreateForm({ ...createForm, clientId: e.target.value })}
+                  className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                >
+                  <option value="">Sélectionner un client</option>
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.name} — {client.phone}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Prestations à appliquer
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                  Prestations
                 </label>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {services.map((service) => {
-                    const selected = createForm.serviceIds.includes(service.id)
-                    const totalPrice = service.laborCost + (service.part?.costPrice ?? 0)
-
-                    return (
-                      <button
-                        key={service.id}
-                        type="button"
-                        onClick={() => toggleService(service.id)}
-                        className={`rounded-[1.5rem] border p-4 text-left transition ${
-                          selected
-                            ? 'border-blue-300 bg-blue-50'
-                            : 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white'
-                        }`}
-                      >
-                        <p className="font-black text-slate-950">{service.name}</p>
-                        <p className="mt-2 text-sm text-slate-500">
-                          Main d'œuvre : {formatCurrency(service.laborCost)}
-                        </p>
-                        <p className="mt-1 text-sm text-slate-500">
-                          Pièce :{' '}
-                          {service.part ? service.part.name : 'Aucune pièce associée'}
-                        </p>
-                        <p className="mt-3 text-lg font-black text-slate-950">
-                          {formatCurrency(totalPrice)}
-                        </p>
-                      </button>
-                    )
-                  })}
+                <div className="grid grid-cols-2 gap-3">
+                  {services.map((service) => (
+                    <button
+                      key={service.id}
+                      type="button"
+                      onClick={() => toggleService(service.id)}
+                      className={`flex flex-col rounded-2xl border p-4 text-left transition ${
+                        createForm.serviceIds.includes(service.id)
+                          ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
+                          : 'border-slate-100 bg-white hover:border-slate-200'
+                      }`}
+                    >
+                      <span className="font-bold text-slate-950">{service.name}</span>
+                      <span className="mt-1 text-xs font-medium text-slate-500">
+                        {formatCurrency(service.laborCost)}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Notes atelier
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                  Notes
                 </label>
                 <textarea
                   value={createForm.notes}
-                  onChange={(event) =>
-                    setCreateForm((current) => ({
-                      ...current,
-                      notes: event.target.value,
-                    }))
-                  }
-                  rows={4}
-                  placeholder="Décrire rapidement l'appareil, la panne et les accessoires confiés."
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
+                  onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })}
+                  placeholder="Informations sur la panne, état de l'appareil..."
+                  className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                  rows={3}
                 />
               </div>
 
-              <div className="flex flex-col gap-4 rounded-[1.5rem] bg-slate-950 p-5 text-white md:flex-row md:items-center md:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
-                    Montant estimé
-                  </p>
-                  <p className="mt-2 text-3xl font-black">
-                    {formatCurrency(selectedServicesTotal)}
-                  </p>
-                </div>
-
+              <div className="flex items-center justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="rounded-2xl px-6 py-4 font-bold text-slate-400 transition hover:bg-slate-50"
+                >
+                  Annuler
+                </button>
                 <button
                   type="submit"
-                  disabled={isSaving || !createForm.clientId || createForm.serviceIds.length === 0}
-                  className="rounded-2xl bg-blue-600 px-5 py-3 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isSaving}
+                  className="rounded-2xl bg-blue-600 px-8 py-4 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:opacity-60"
                 >
-                  {isSaving ? 'Création...' : 'Créer le ticket et ouvrir le devis'}
+                  {isSaving ? 'Création...' : 'Créer et facturer'}
                 </button>
               </div>
             </form>
           </div>
         </div>
-      ) : null}
+      )}
 
+      {/* Modal Gestion Ticket */}
       {selectedRepair ? (
-        <div
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
-          onClick={closeManageModal}
-        >
-          <div
-            className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-[2rem] border border-white/60 bg-white shadow-2xl shadow-slate-900/20"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.26em] text-slate-500">
-                  Ticket #{selectedRepair.id.slice(-6).toUpperCase()}
-                </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                  {selectedRepair.client.name}
-                </h2>
-                <p className="mt-2 text-sm text-slate-500">
-                  Créé le {formatDate(selectedRepair.createdAt)}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                aria-label="Fermer la fiche ticket"
-                onClick={closeManageModal}
-                className="rounded-2xl bg-slate-100 p-3 text-slate-500 transition hover:bg-slate-200"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="grid flex-1 gap-0 overflow-hidden xl:grid-cols-[minmax(0,1.15fr)_360px]">
-              <div className="min-h-0 overflow-y-auto px-6 py-6">
-                <form onSubmit={handleUpdateTicket} className="space-y-5">
-                  <div>
-                    <label className="mb-2 block text-sm font-bold text-slate-700">
-                      Statut
-                    </label>
-                    <select
-                      value={manageForm.status}
-                      onChange={(event) =>
-                        setManageForm((current) => ({
-                          ...current,
-                          status: event.target.value,
-                        }))
-                      }
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    >
-                      {repairStatuses.map((status) => (
-                        <option key={status} value={status}>
-                          {getRepairStatusLabel(status)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-bold text-slate-700">
-                      Notes atelier
-                    </label>
-                    <textarea
-                      value={manageForm.notes}
-                      onChange={(event) =>
-                        setManageForm((current) => ({
-                          ...current,
-                          notes: event.target.value,
-                        }))
-                      }
-                      rows={10}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-bold text-slate-700">
-                      Commentaire de suivi
-                    </label>
-                    <textarea
-                      value={manageForm.comment}
-                      onChange={(event) =>
-                        setManageForm((current) => ({
-                          ...current,
-                          comment: event.target.value,
-                        }))
-                      }
-                      rows={4}
-                      placeholder="Ex: en attente d'accord client, test batterie OK, micro-soudure terminée."
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-blue-300 focus:bg-white"
-                    />
-                  </div>
-
-                  <div className="sticky bottom-0 flex flex-col gap-4 rounded-[1.5rem] border border-slate-200 bg-white/95 p-5 backdrop-blur md:flex-row md:items-center md:justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/70 bg-white shadow-2xl">
+            <div className="grid h-[85vh] grid-cols-1 xl:grid-cols-[1fr_360px]">
+              <div className="flex flex-col min-h-0 bg-white">
+                <div className="flex items-center justify-between border-b border-slate-100 p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 font-bold">
+                      #{selectedRepair.id.slice(-4).toUpperCase()}
+                    </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
-                        Total dossier
-                      </p>
-                      <p className="mt-2 text-3xl font-black text-slate-950">
-                        {formatCurrency(getRepairTotal(selectedRepair))}
+                      <h2 className="text-xl font-black tracking-tight text-slate-950">
+                        {selectedRepair.client.name}
+                      </h2>
+                      <p className="text-sm text-slate-500">
+                        Créé le {formatDate(selectedRepair.createdAt)}
                       </p>
                     </div>
+                  </div>
+                  <button
+                    onClick={closeManageModal}
+                    className="rounded-2xl border border-slate-100 p-2 text-slate-400 transition hover:bg-slate-50 hover:text-slate-900"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
 
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                      <button
-                        type="button"
-                        onClick={closeManageModal}
-                        className="rounded-2xl border border-slate-200 px-4 py-3 font-bold text-slate-700 transition hover:bg-slate-50"
-                      >
-                        Annuler
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={isSaving}
-                        className="rounded-2xl bg-blue-600 px-5 py-3 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {isSaving ? 'Enregistrement...' : 'Enregistrer et fermer'}
-                      </button>
+                <form onSubmit={handleUpdateTicket} className="flex flex-1 flex-col overflow-hidden">
+                  <div className="flex-1 overflow-y-auto p-6 space-y-8 text-slate-950">
+                    {error && (
+                      <div className="rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-600 ring-1 ring-inset ring-rose-200">
+                        {error}
+                      </div>
+                    )}
+
+                    <div className="grid gap-8 sm:grid-cols-2">
+                      <div className="space-y-3">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                          Statut actuel
+                        </label>
+                        <select
+                          value={manageForm.status}
+                          onChange={(e) => setManageForm({ ...manageForm, status: e.target.value })}
+                          className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 font-bold text-slate-950 outline-none transition focus:border-blue-200 focus:bg-white"
+                        >
+                          {repairStatuses.map((status) => (
+                            <option key={status} value={status}>
+                              {getRepairStatusLabel(status)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-3">
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                          Nouveau commentaire
+                        </label>
+                        <input
+                          value={manageForm.comment}
+                          onChange={(e) => setManageForm({ ...manageForm, comment: e.target.value })}
+                          placeholder="Ex: Écran reçu, en attente de montage..."
+                          className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                        Notes détaillées
+                      </label>
+                      <textarea
+                        value={manageForm.notes}
+                        onChange={(e) => setManageForm({ ...manageForm, notes: e.target.value })}
+                        rows={10}
+                        className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="sticky bottom-0 border-t border-slate-100 bg-white p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={handleDeleteTicket}
+                          className="text-sm font-bold text-rose-500 hover:text-rose-700 hover:underline"
+                        >
+                          Supprimer
+                        </button>
+                        {selectedRepair.status !== 'ARCHIVED' && (
+                          <button
+                            type="button"
+                            onClick={handleArchiveTicket}
+                            className="text-sm font-bold text-slate-400 hover:text-slate-900 hover:underline ml-4"
+                          >
+                            Archiver
+                          </button>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={closeManageModal}
+                          className="rounded-2xl px-4 py-3 font-bold text-slate-400 transition hover:bg-slate-50"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={isSaving}
+                          className="rounded-2xl bg-blue-600 px-5 py-3 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:opacity-60"
+                        >
+                          {isSaving ? 'Enregistrement...' : 'Enregistrer et fermer'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </form>
               </div>
 
-              <aside className="min-h-0 overflow-y-auto border-t border-slate-100 bg-slate-50/80 px-6 py-6 xl:border-l xl:border-t-0">
+              <aside className="min-h-0 overflow-y-auto border-t border-slate-100 bg-slate-50/80 px-6 py-6 xl:border-l xl:border-t-0 text-slate-950">
                 <div className="space-y-6">
                   <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4">
                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">

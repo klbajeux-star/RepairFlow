@@ -38,7 +38,7 @@ type QuickFlowMode = 'repair' | 'quote'
 type BoardDensity = 'compact' | 'detail'
 type WorkflowStep = 'client' | 'device' | 'services' | 'summary' | 'signature'
 
-// ... existing code ...
+
 
 function SignaturePad({ onSign }: { onSign: (data: string) => void }) {
   const [isDrawing, setIsDrawing] = useState(false)
@@ -643,6 +643,66 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
     })
   }
 
+  async function deleteRepair(repairId: string) {
+    if (!confirm('Voulez-vous vraiment supprimer ce ticket ? Cette action est irréversible.')) {
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setError(null)
+      const res = await fetch(`/api/repairs/${repairId}`, {
+        method: 'DELETE',
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Impossible de supprimer le ticket.')
+      }
+
+      setRepairs((current) => current.filter((r) => r.id !== repairId))
+      setSelectedRepairId(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function archiveRepair(repairId: string) {
+    const repair = repairs.find((r) => r.id === repairId)
+    if (!repair) return
+
+    try {
+      setIsLoading(true)
+      setError(null)
+      const res = await fetch(`/api/repairs/${repairId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status: 'ARCHIVED',
+          notes: repair.notes || '',
+          comment: 'Dossier archivé par l’utilisateur.',
+        }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Impossible d’archiver le ticket.')
+      }
+
+      const updatedRepair = await res.json()
+      setRepairs((current) => current.map((r) => (r.id === repairId ? updatedRepair : r)))
+      setSelectedRepairId(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+
+
   function resetWorkflow() {
     setDrawerOpen(false)
     setWorkflowStep('client')
@@ -1008,11 +1068,29 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
+                    onClick={() => deleteRepair(selectedRepair.id)}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-100 hover:text-rose-700 shadow-sm"
+                  >
+                    <X className="h-4 w-4" />
+                    Supprimer
+                  </button>
+                  {selectedRepair.status !== 'ARCHIVED' && (
+                    <button
+                      type="button"
+                      onClick={() => archiveRepair(selectedRepair.id)}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 shadow-sm"
+                    >
+                      <Package className="h-4 w-4" />
+                      Archiver
+                    </button>
+                  )}
+                  <button
+                    type="button"
                     onClick={() => router.push(`/repairs?repairId=${selectedRepair.id}`)}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 shadow-sm"
                   >
                     <PencilLine className="h-4 w-4" />
-                    Modifier le ticket
+                    Modifier
                   </button>
                   <Link
                     href={`/billing?repairId=${selectedRepair.id}&mode=devis`}
