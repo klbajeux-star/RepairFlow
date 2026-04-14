@@ -1176,22 +1176,38 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       Historique récent
                     </p>
                     <div className="mt-4 space-y-2">
-                      {(selectedRepair.logs ?? []).slice(0, 4).map((log) => (
-                        <div
-                          key={log.id}
-                          className="rounded-2xl bg-white px-4 py-3 text-sm shadow-sm"
-                        >
-                          <p className="font-semibold text-slate-900">
-                            {getRepairStatusLabel(log.status)}
-                          </p>
-                          <p className="mt-1 text-slate-500">
-                            {log.comment?.trim() || 'Mise à jour sans commentaire.'}
-                          </p>
-                          <p className="mt-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
-                            {formatDate(log.createdAt)}
-                          </p>
-                        </div>
-                      ))}
+                      {(selectedRepair.logs ?? []).slice(0, 4).map((log) => {
+                        const vividColors = {
+                          PENDING: 'bg-amber-500',
+                          DIAGNOSIS: 'bg-sky-500',
+                          IN_PROGRESS: 'bg-violet-500',
+                          READY: 'bg-emerald-500',
+                          DELIVERED: 'bg-slate-500',
+                          CANCELLED: 'bg-rose-500',
+                          ARCHIVED: 'bg-slate-400',
+                        }
+                        const accentColor = vividColors[log.status] || 'bg-slate-400'
+
+                        return (
+                          <div
+                            key={log.id}
+                            className="group relative overflow-hidden rounded-2xl bg-white pl-7 pr-4 py-3 text-sm shadow-sm transition-all hover:shadow-md"
+                          >
+                            <div className={`absolute left-0 top-0 h-full w-2 ${accentColor}`} />
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="font-black tracking-tight text-slate-950 uppercase text-[0.85rem]">
+                                {getRepairStatusLabel(log.status)}
+                              </p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                {formatDate(log.createdAt)}
+                              </p>
+                            </div>
+                            <p className="mt-1.5 leading-relaxed text-slate-600 font-medium">
+                              {log.comment?.trim() || 'Mise à jour sans commentaire.'}
+                            </p>
+                          </div>
+                        )
+                      })}
 
                       {(selectedRepair.logs ?? []).length === 0 ? (
                         <div className="rounded-2xl bg-white px-4 py-6 text-sm text-slate-500 shadow-sm">
