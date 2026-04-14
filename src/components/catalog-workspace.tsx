@@ -380,7 +380,7 @@ export function CatalogWorkspace() {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="flex items-center gap-2 rounded-[2rem] border border-slate-100 bg-white p-1.5 shadow-sm">
+      <nav className="flex items-center gap-2 rounded-[2rem] border border-white/60 bg-white/40 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
         <TabButton active={activeTab === 'models'} onClick={() => changeTab('models')} icon={<Smartphone className="h-4 w-4" />} label="Modèles" count={models.length} />
         <TabButton active={activeTab === 'services'} onClick={() => changeTab('services')} icon={<Wrench className="h-4 w-4" />} label="Prestations" count={services.length} />
         <TabButton active={activeTab === 'parts'} onClick={() => changeTab('parts')} icon={<Package className="h-4 w-4" />} label="Pièces détachées" count={parts.length} />
@@ -390,7 +390,7 @@ export function CatalogWorkspace() {
       <section className="grid gap-6 lg:grid-cols-[280px_1fr]">
         {/* Sidebar Filters */}
         <aside className="space-y-6">
-          <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+          <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
             <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Recherche</p>
             <div className="relative mt-4">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -398,17 +398,17 @@ export function CatalogWorkspace() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Filtrer..."
-                className="w-full rounded-xl border border-slate-50 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-blue-100 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
+                className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 pl-10 pr-4 text-sm outline-none transition-all focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
               />
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+          <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
             <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Catégories</p>
             <div className="mt-4 space-y-2">
               <button 
                 onClick={() => setSelectedTypeId(null)}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition ${!selectedTypeId ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-all ${!selectedTypeId ? 'bg-slate-950 text-white shadow-lg' : 'bg-white/60 text-slate-600 hover:bg-white shadow-sm'}`}
               >
                 Toutes les catégories
               </button>
@@ -416,7 +416,7 @@ export function CatalogWorkspace() {
                 <button 
                   key={t.id}
                   onClick={() => setSelectedTypeId(t.id)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition ring-1 ring-inset ${selectedTypeId === t.id ? getTypeActiveColor(t.name) : getTypeColor(t.name) + ' hover:opacity-80'}`}
+                  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all ring-1 ring-inset ${selectedTypeId === t.id ? getTypeActiveColor(t.name) : getTypeColor(t.name) + ' hover:opacity-80'}`}
                 >
                   <TypeIcon type={t.name} className="h-4 w-4" />
                   {t.name}
@@ -425,12 +425,12 @@ export function CatalogWorkspace() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+          <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
             <div className="flex items-center justify-between">
               <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Marques</p>
               <button 
                 onClick={() => openDrawer('brand')}
-                className="rounded-lg bg-slate-50 p-1.5 text-slate-400 transition hover:bg-blue-50 hover:text-blue-600"
+                className="rounded-lg bg-white/60 p-1.5 text-slate-400 transition-all hover:bg-blue-50 hover:text-blue-600 shadow-sm"
                 title="Ajouter une marque"
               >
                 <Plus className="h-3.5 w-3.5" />
@@ -439,7 +439,7 @@ export function CatalogWorkspace() {
             <div className="mt-4 space-y-1">
               <button 
                 onClick={() => setSelectedBrandId(null)}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition ${!selectedBrandId ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${!selectedBrandId ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-600 hover:bg-white/80'}`}
               >
                 Toutes
               </button>
@@ -447,13 +447,13 @@ export function CatalogWorkspace() {
                 <div key={b.id} className="group relative">
                   <button 
                     onClick={() => setSelectedBrandId(b.id)}
-                    className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition ${selectedBrandId === b.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-600 hover:bg-slate-50'}`}
+                    className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${selectedBrandId === b.id ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-600 hover:bg-white/80'}`}
                   >
                     {b.name}
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); openDrawer('brand', b); }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex h-7 w-7 items-center justify-center rounded-lg bg-white/20 text-slate-400 hover:bg-white hover:text-blue-600 shadow-sm border border-slate-100"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex h-7 w-7 items-center justify-center rounded-lg bg-white/20 text-slate-400 hover:bg-white hover:text-blue-600 shadow-sm border border-white/60"
                     title="Modifier la marque"
                   >
                     <PencilLine className="h-3 w-3" />
@@ -467,13 +467,13 @@ export function CatalogWorkspace() {
         {/* List Content */}
         <main>
           {isLoading ? (
-            <div className="flex h-64 items-center justify-center rounded-[2.5rem] bg-white shadow-sm">
+            <div className="flex h-64 items-center justify-center rounded-[2.5rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
               <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
             </div>
           ) : (
-            <div className="overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-[2.5rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
               <table className="w-full text-left">
-                <thead className="bg-slate-50/50">
+                <thead className="bg-white/50 backdrop-blur-sm">
                   <tr className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">
                     {activeTab === 'models' ? (
                       <>
@@ -499,9 +499,9 @@ export function CatalogWorkspace() {
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-white/20">
                   {activeTab === 'models' && filteredModels.map(m => (
-                    <tr key={m.id} className="group hover:bg-blue-50/30 transition">
+                    <tr key={m.id} className="group hover:bg-white/40 transition-colors">
                       <td className="px-8 py-5">
                         <div className="flex flex-col gap-2">
                           <span className="w-fit rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">{m.brand.name}</span>
@@ -532,7 +532,7 @@ export function CatalogWorkspace() {
                   ))}
                   
                   {activeTab === 'services' && filteredServices.map(s => (
-                    <tr key={s.id} className="group hover:bg-blue-50/30 transition">
+                    <tr key={s.id} className="group hover:bg-white/40 transition-colors">
                       <td className="px-8 py-5">
                         <p className="font-black text-slate-950">{s.name}</p>
                         <p className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
@@ -561,7 +561,7 @@ export function CatalogWorkspace() {
                   ))}
 
                   {activeTab === 'parts' && filteredParts.map(p => (
-                    <tr key={p.id} className="group hover:bg-blue-50/30 transition">
+                    <tr key={p.id} className="group hover:bg-white/40 transition-colors">
                       <td className="px-8 py-5">
                         <p className="font-black text-slate-950">{p.name}</p>
                         <div className="flex flex-col gap-1.5 mt-1">
