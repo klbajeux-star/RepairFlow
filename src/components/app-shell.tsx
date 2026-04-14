@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -87,10 +87,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.11),_transparent_34%),linear-gradient(180deg,_#f8fbff_0%,_#eef4fb_100%)] text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-white/60 bg-white/82 backdrop-blur-xl print:hidden">
+      <header className="sticky top-0 z-40 border-b border-white/60 bg-white/40 backdrop-blur-md shadow-[0_4px_20px_rgb(0,0,0,0.02)] print:hidden">
         <div className="mx-auto flex w-full max-w-[1600px] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex min-w-fit items-center gap-3">
-            <div className="rounded-2xl bg-blue-600 p-3 text-white shadow-lg shadow-blue-600/20">
+            <div className="rounded-2xl bg-blue-600 p-3 text-white shadow-lg shadow-blue-600/10">
               <Wrench className="h-5 w-5" />
             </div>
             <div className="hidden sm:block">
@@ -124,8 +124,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="ml-auto hidden items-center gap-3 xl:flex">
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2">
-              <div className="rounded-xl bg-white p-2 text-slate-500 shadow-sm">
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/40 px-4 py-2 ring-1 ring-white/60 backdrop-blur-sm">
+              <div className="rounded-xl bg-white/60 p-2 text-slate-500 shadow-sm ring-1 ring-white/60">
                 <CalendarClock className="h-4 w-4" />
               </div>
               <div>
@@ -164,7 +164,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-[1600px] flex-col px-4 py-6 sm:px-6 lg:px-8">
-        <section className="mb-6 rounded-[2rem] border border-white/70 bg-white/72 px-5 py-5 shadow-[0_20px_70px_-30px_rgba(15,23,42,0.18)] backdrop-blur sm:px-6">
+        <section className="mb-6 rounded-[2rem] border border-white/70 bg-white/40 px-5 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md border border-white/60 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <p className="mb-2 text-[0.72rem] font-bold uppercase tracking-[0.32em] text-blue-600">
@@ -193,7 +193,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
               <Link
                 href="/billing"
-                className="inline-flex items-center rounded-2xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+                className="inline-flex items-center rounded-2xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/10 transition hover:bg-blue-700"
               >
                 Devis & factures
               </Link>

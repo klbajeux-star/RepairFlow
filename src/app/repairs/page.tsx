@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -382,11 +382,11 @@ function RepairsContent() {
   return (
     <div className="space-y-8 pb-8">
       <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
+        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
           <div className="inline-flex rounded-2xl bg-blue-100 p-3 text-blue-700">
             <Wrench className="h-6 w-6" />
           </div>
-          <p className="mt-5 text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
+          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
             Tickets actifs
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
@@ -394,11 +394,11 @@ function RepairsContent() {
           </p>
         </article>
 
-        <article className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
-          <div className="inline-flex rounded-2xl bg-emerald-100 p-3 text-emerald-700">
+        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
+          <div className="inline-flex rounded-2xl bg-emerald-100 p-3 text-emerald-700 shadow-sm ring-1 ring-inset ring-emerald-200/50">
             <CheckCircle className="h-6 w-6" />
           </div>
-          <p className="mt-5 text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
+          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
             Appareils prêts
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
@@ -406,11 +406,11 @@ function RepairsContent() {
           </p>
         </article>
 
-        <article className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
-          <div className="inline-flex rounded-2xl bg-slate-100 p-3 text-slate-700">
+        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
+          <div className="inline-flex rounded-2xl bg-slate-100 p-3 text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200/50">
             <Clock className="h-6 w-6" />
           </div>
-          <p className="mt-5 text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
+          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
             Dossiers clôturés
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
@@ -419,7 +419,7 @@ function RepairsContent() {
         </article>
       </section>
 
-      <section className="rounded-[2.2rem] border border-white/80 bg-white/85 p-6 shadow-xl shadow-slate-200/50 backdrop-blur">
+      <section className="rounded-[2.5rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -427,7 +427,7 @@ function RepairsContent() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un ticket par client, téléphone ou notes..."
-              className="w-full rounded-2xl border border-slate-100 bg-slate-50/50 py-4 pl-12 pr-4 outline-none transition focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
+              className="w-full rounded-2xl border border-slate-100 bg-white/60 py-4 pl-12 pr-4 outline-none transition focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-50/50 transition focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
             />
           </div>
 
@@ -435,7 +435,7 @@ function RepairsContent() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-2xl border border-slate-100 bg-white px-4 py-4 text-sm font-bold text-slate-700 outline-none transition hover:border-slate-200 focus:ring-4 focus:ring-slate-50"
+              className="rounded-2xl border border-slate-100 bg-white/60 px-4 py-4 text-sm font-bold text-slate-700 outline-none transition hover:border-slate-200 focus:bg-white focus:ring-4 focus:ring-slate-50"
             >
               <option value="ALL">Tous les statuts</option>
               {repairStatuses.map((status) => (
@@ -447,7 +447,7 @@ function RepairsContent() {
 
             <button
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+              className="inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800"
             >
               <Plus className="h-5 w-5" />
               Nouveau ticket
@@ -455,10 +455,10 @@ function RepairsContent() {
           </div>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-[1.8rem] border border-slate-100 bg-white shadow-sm">
+        <div className="mt-8 overflow-hidden rounded-[2.2rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-slate-50/50 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-400">
+              <tr className="bg-white/50 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-400 backdrop-blur-sm">
                 <th className="px-6 py-5">Référence</th>
                 <th className="px-6 py-5">Client</th>
                 <th className="px-6 py-5">Prestations</th>
@@ -466,12 +466,12 @@ function RepairsContent() {
                 <th className="px-6 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-white/20">
               {filteredRepairs.length > 0 ? (
                 filteredRepairs.map((repair) => (
                   <tr
                     key={repair.id}
-                    className="group transition hover:bg-blue-50/30"
+                    className="group transition-colors hover:bg-white/40"
                   >
                     <td className="px-6 py-5">
                       <p className="font-mono text-xs font-bold text-slate-400 uppercase">
@@ -625,7 +625,7 @@ function RepairsContent() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="rounded-2xl bg-blue-600 px-8 py-4 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:opacity-60"
+                  className="rounded-2xl bg-blue-600 px-8 py-4 font-bold text-white shadow-lg shadow-blue-600/10 transition hover:bg-blue-700 disabled:opacity-60"
                 >
                   {isSaving ? 'Création...' : 'Créer et facturer'}
                 </button>
@@ -746,7 +746,7 @@ function RepairsContent() {
                         <button
                           type="submit"
                           disabled={isSaving}
-                          className="rounded-2xl bg-blue-600 px-5 py-3 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 disabled:opacity-60"
+                          className="rounded-2xl bg-blue-600 px-5 py-3 font-bold text-white shadow-lg shadow-blue-600/10 transition hover:bg-blue-700 disabled:opacity-60"
                         >
                           {isSaving ? 'Enregistrement...' : 'Enregistrer et fermer'}
                         </button>
@@ -759,7 +759,7 @@ function RepairsContent() {
               <aside className="min-h-0 overflow-y-auto border-t border-slate-100 bg-slate-50/80 px-6 py-6 xl:border-l xl:border-t-0 text-slate-950">
                 <div className="space-y-6">
                   <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
+                    <p className="text-[0.7rem] font-black uppercase tracking-[0.24em] text-slate-400">
                       Prestations
                     </p>
                     <div className="mt-3 space-y-3">
@@ -780,7 +780,7 @@ function RepairsContent() {
                   </div>
 
                   <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
+                    <p className="text-[0.7rem] font-black uppercase tracking-[0.24em] text-slate-400">
                       Historique
                     </p>
                     <div className="mt-3 space-y-3">

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState, useMemo } from 'react'
 import {
@@ -95,7 +95,7 @@ export default function StatsPage() {
         <div className="flex flex-wrap items-center gap-6">
           <div className="flex flex-col gap-2">
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Année</p>
-            <div className="flex items-center gap-2 rounded-2xl bg-white p-1 shadow-sm ring-1 ring-slate-100">
+            <div className="flex items-center gap-2 rounded-2xl bg-white/60 p-1 shadow-sm ring-1 ring-white/60 backdrop-blur-sm">
               <button 
                 onClick={() => setYear(year - 1)}
                 className="rounded-xl p-2 transition hover:bg-slate-50 text-slate-400 hover:text-slate-900"
@@ -117,7 +117,7 @@ export default function StatsPage() {
             <select
               value={month}
               onChange={(e) => setMonth(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-              className="h-[46px] rounded-2xl border-none bg-white px-4 text-sm font-black text-slate-950 shadow-sm ring-1 ring-slate-100 focus:ring-2 focus:ring-blue-500"
+              className="h-[46px] rounded-2xl border-none bg-white/60 px-4 text-sm font-black text-slate-950 shadow-sm ring-1 ring-white/60 backdrop-blur-sm focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Tous les mois</option>
               {MONTHS.map((name, i) => (
@@ -295,7 +295,7 @@ export default function StatsPage() {
           </div>
           <div className="space-y-4">
             {data.topServices.length > 0 ? data.topServices.map((service, i) => (
-              <div key={i} className="flex items-center justify-between rounded-2xl bg-white/50 p-4 ring-1 ring-slate-100">
+              <div key={i} className="flex items-center justify-between rounded-2xl bg-white/60 p-4 ring-1 ring-white/60 backdrop-blur-sm transition-all hover:bg-white/80">
                 <div className="flex items-center gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 font-black text-slate-400">
                     {i + 1}
@@ -322,7 +322,7 @@ export default function StatsPage() {
           </div>
           <div className="space-y-4">
             {data.topClients.length > 0 ? data.topClients.map((client, i) => (
-              <div key={i} className="flex items-center justify-between rounded-2xl bg-white/50 p-4 ring-1 ring-slate-100">
+              <div key={i} className="flex items-center justify-between rounded-2xl bg-white/60 p-4 ring-1 ring-white/60 backdrop-blur-sm transition-all hover:bg-white/80">
                 <div className="flex items-center gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 font-black text-indigo-400">
                     {i + 1}
@@ -364,7 +364,7 @@ function MetricCard({
   }
 
   return (
-    <div className="rounded-[2.5rem] border border-white/90 bg-white/60 p-6 shadow-lg shadow-slate-200/50 backdrop-blur-sm">
+    <div className="rounded-[2.5rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
       <div className={`inline-flex rounded-2xl p-3 ${colorClasses[color]}`}>
         {icon}
       </div>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { Mail, Phone, Plus, Search, Users, X } from 'lucide-react'
@@ -132,11 +132,11 @@ export default function ClientsPage() {
   return (
     <div className="space-y-8 pb-8">
       <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
-          <div className="inline-flex rounded-2xl bg-emerald-100 p-3 text-emerald-700">
+        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
+          <div className="inline-flex rounded-2xl bg-emerald-100 p-3 text-emerald-700 shadow-sm ring-1 ring-inset ring-emerald-200/50">
             <Users className="h-6 w-6" />
           </div>
-          <p className="mt-5 text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
+          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
             Fichier clients
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
@@ -144,11 +144,11 @@ export default function ClientsPage() {
           </p>
         </article>
 
-        <article className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
-          <div className="inline-flex rounded-2xl bg-blue-100 p-3 text-blue-700">
+        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
+          <div className="inline-flex rounded-2xl bg-blue-100 p-3 text-blue-700 shadow-sm ring-1 ring-inset ring-blue-200/50">
             <Phone className="h-6 w-6" />
           </div>
-          <p className="mt-5 text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
+          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
             Clients récurrents
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
@@ -156,11 +156,11 @@ export default function ClientsPage() {
           </p>
         </article>
 
-        <article className="rounded-[1.75rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
-          <div className="inline-flex rounded-2xl bg-violet-100 p-3 text-violet-700">
+        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
+          <div className="inline-flex rounded-2xl bg-violet-100 p-3 text-violet-700 shadow-sm ring-1 ring-inset ring-violet-200/50">
             <Mail className="h-6 w-6" />
           </div>
-          <p className="mt-5 text-xs font-bold uppercase tracking-[0.26em] text-slate-400">
+          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
             Emails renseignés
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
@@ -169,7 +169,7 @@ export default function ClientsPage() {
         </article>
       </section>
 
-      <section className="rounded-[2rem] border border-white/70 bg-white p-6 shadow-sm shadow-slate-200/60">
+      <section className="rounded-[2.5rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full max-w-md">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -177,14 +177,14 @@ export default function ClientsPage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Rechercher par nom, téléphone ou email"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-300 focus:bg-white"
+              className="w-full rounded-2xl border border-slate-200 bg-white/60 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
             />
           </div>
 
           <button
             type="button"
             onClick={openCreateModal}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800"
           >
             <Plus className="h-4 w-4" />
             Ajouter un client
@@ -200,7 +200,7 @@ export default function ClientsPage() {
         <div className="mt-6 overflow-x-auto">
           <table className="min-w-full text-left">
             <thead>
-              <tr className="border-b border-slate-100 text-xs font-bold uppercase tracking-[0.24em] text-slate-400">
+              <tr className="border-b border-slate-100 text-[0.7rem] font-black uppercase tracking-[0.24em] text-slate-400">
                 <th className="px-4 py-4">Client</th>
                 <th className="px-4 py-4">Coordonnées</th>
                 <th className="px-4 py-4">Historique</th>
@@ -208,10 +208,10 @@ export default function ClientsPage() {
                 <th className="px-4 py-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/20">
               {!isLoading && filteredClients.length > 0 ? (
                 filteredClients.map((client) => (
-                  <tr key={client.id} className="hover:bg-slate-50/80">
+                  <tr key={client.id} className="group hover:bg-white/40 transition-colors">
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 font-black text-emerald-700">
@@ -339,7 +339,7 @@ export default function ClientsPage() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex-1 rounded-2xl bg-emerald-600 px-4 py-3 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex-1 rounded-2xl bg-emerald-600 px-4 py-3 font-bold text-white shadow-lg shadow-emerald-600/10 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving ? 'Enregistrement...' : 'Enregistrer'}
                 </button>

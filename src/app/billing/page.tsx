@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useMemo, useState } from 'react'
@@ -402,7 +402,7 @@ function BillingContent() {
               </div>
               
               {/* Optional Notes Section (Non-Printable or Separate Page if needed) */}
-              <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm print:hidden">
+              <div className="bg-white/40 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] print:hidden">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Notes complémentaires (Apparaissent sur le document)</label>
                 <textarea 
                   className="w-full bg-slate-50 border-none rounded-2xl p-6 text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all min-h-[120px]"
@@ -414,7 +414,7 @@ function BillingContent() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center max-w-sm mt-20">
-              <div className="w-24 h-24 bg-white rounded-[2.5rem] shadow-xl flex items-center justify-center mb-8">
+              <div className="w-24 h-24 bg-white/60 backdrop-blur-md rounded-[2.5rem] shadow-xl flex items-center justify-center mb-8 ring-1 ring-white/60">
                 <FileText className="w-10 h-10 text-blue-600" />
               </div>
               <h2 className="text-2xl font-black text-slate-900 mb-4">Prêt à facturer ?</h2>
