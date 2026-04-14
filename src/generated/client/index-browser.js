@@ -176,6 +176,7 @@ exports.Prisma.ServiceScalarFieldEnum = {
 exports.Prisma.RepairScalarFieldEnum = {
   id: 'id',
   status: 'status',
+  partStatus: 'partStatus',
   clientId: 'clientId',
   notes: 'notes',
   createdAt: 'createdAt',

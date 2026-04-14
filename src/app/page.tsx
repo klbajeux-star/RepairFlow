@@ -16,12 +16,15 @@ import {
   Loader2,
   Monitor,
   Package,
+  PackageCheck,
   PencilLine,
   Plus,
   Search,
+  ShoppingCart,
   StickyNote,
   Smartphone,
   Tablet,
+  Truck,
   User,
   UserPlus,
   Wrench,
@@ -30,9 +33,13 @@ import {
 import {
   formatCurrency,
   formatDate,
+  getPartStatusLabel,
+  getPartStatusStyle,
   getRepairStatusLabel,
   getRepairStatusStyle,
   getRepairTotal,
+  PartStatus,
+  partStatuses,
 } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
 
@@ -197,6 +204,8 @@ interface RepairLog {
 interface Repair {
   id: string
   status: string
+  partStatus: string
+  partStatus: string
   notes?: string | null
   createdAt: string
   updatedAt: string
@@ -600,37 +609,69 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
       updatedAt: new Date().toISOString(),
     }
 
-    setRepairs((currentRepairs) =>
-      currentRepairs.map((repair) => (repair.id === repairId ? optimisticRepair : repair))
-    )
+    setRepairs((current) => current.map((r) => (r.id === repairId ? optimisticRepair : r)))
     setSelectedRepairId(repairId)
     setHoveredStatus(null)
 
     try {
       setError(null)
 
-      const data = await apiRequest<Repair>(
-        `/api/repairs/${repairId}`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            status: nextStatus,
-            notes: currentRepair.notes ?? '',
-            comment: `Déplacé dans la colonne ${getRepairStatusLabel(nextStatus)} depuis le tableau de bord.`,
-          }),
-        },
-        'Impossible de déplacer le ticket.'
-      )
+      const response = await fetch(`/api/repairs/${repairId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus }),
+      })
 
-      setRepairs((currentRepairs) =>
-        currentRepairs.map((repair) => (repair.id === repairId ? data : repair))
-      )
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload.error || 'Impossible de déplacer le ticket.')
+      }
+
+      const data = await response.json()
+      if (data && data.id) {
+        setRepairs((current) => current.map((r) => (r.id === repairId ? data : r)))
+      }
     } catch (moveError) {
       setRepairs(previousRepairs)
       setError(
-        moveError instanceof Error ? moveError.message : 'Impossible de déplacer le ticket.'
+        moveError instanceof Error ? moveError.message : 'Une erreur est survenue lors du déplacement.'
       )
+    }
+  }
+
+  async function updatePartStatus(repairId: string, nextPartStatus: PartStatus) {
+    const currentRepair = repairs.find((repair) => repair.id === repairId)
+    if (!currentRepair || currentRepair.partStatus === nextPartStatus) return
+
+    const previousRepairs = repairs
+    const optimisticRepair: Repair = {
+      ...currentRepair,
+      partStatus: nextPartStatus,
+      updatedAt: new Date().toISOString(),
+    }
+
+    setRepairs((current) => current.map((r) => (r.id === repairId ? optimisticRepair : r)))
+
+    try {
+      setError(null)
+      const response = await fetch(`/api/repairs/${repairId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partStatus: nextPartStatus }),
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload.error || 'Impossible de mettre à jour le statut de la pièce.')
+      }
+
+      const data = await response.json()
+      if (data && data.id) {
+        setRepairs((current) => current.map((r) => (r.id === repairId ? data : r)))
+      }
+    } catch (err) {
+      setRepairs(previousRepairs)
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue.')
     }
   }
 
@@ -991,13 +1032,29 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                               </div>
 
                               <div className="mt-4 flex items-center justify-between gap-3">
-                                <span
-                                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getRepairStatusStyle(
-                                    repair.status
-                                  )}`}
-                                >
-                                  {getRepairStatusLabel(repair.status)}
-                                </span>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span
+                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getRepairStatusStyle(
+                                      repair.status
+                                    )}`}
+                                  >
+                                    {getRepairStatusLabel(repair.status)}
+                                  </span>
+                                  {repair.partStatus && repair.partStatus !== 'IN_STOCK' && (
+                                    <span
+                                      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-black uppercase tracking-widest ${getPartStatusStyle(
+                                        repair.partStatus
+                                      )}`}
+                                    >
+                                      {repair.partStatus === 'TO_ORDER' ? (
+                                        <ShoppingCart className="h-3.5 w-3.5" />
+                                      ) : (
+                                        <Truck className="h-3.5 w-3.5" />
+                                      )}
+                                      {getPartStatusLabel(repair.partStatus)}
+                                    </span>
+                                  )}
+                                </div>
                                 <span className="text-sm font-semibold text-slate-400">
                                   {formatDate(repair.updatedAt)}
                                 </span>
@@ -1152,6 +1209,42 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 </div>
 
                 <div className="space-y-4">
+                  
+                  <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.24em] text-slate-400">
+                      Disponibilité pièces
+                    </p>
+                    <div className="mt-4 flex flex-col gap-2">
+                      {partStatuses.map((status) => {
+                        const isSelected = selectedRepair.partStatus === status
+                        return (
+                          <button
+                            key={status}
+                            type="button"
+                            onClick={() => updatePartStatus(selectedRepair.id, status)}
+                            className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm transition-all ${
+                              isSelected
+                                ? `${getPartStatusStyle(status)} border-current shadow-sm`
+                                : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              {status === 'IN_STOCK' ? (
+                                <PackageCheck className="h-4 w-4" />
+                              ) : status === 'TO_ORDER' ? (
+                                <ShoppingCart className="h-4 w-4" />
+                              ) : (
+                                <Truck className="h-4 w-4" />
+                              )}
+                              <span className="font-bold">{getPartStatusLabel(status)}</span>
+                            </div>
+                            {isSelected && <CheckCircle2 className="h-4 w-4" />}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
                   <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.24em] text-slate-400">
                       Prestations prévues

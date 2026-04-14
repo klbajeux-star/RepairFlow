@@ -54,12 +54,12 @@ export async function POST(request: Request) {
       throw new ApiError('Au moins un forfait sélectionné est introuvable.')
     }
 
-    for (const service of services) {
-      if (service.part && service.part.stock < 1) {
-        throw new ApiError(
-          `La pièce "${service.part.name}" n'est plus disponible en stock.`
-        )
-      }
+    // Determine initial part status based on stock if not provided
+    let partStatus = json.partStatus || 'IN_STOCK'
+    const hasOutOfStockParts = services.some(s => s.part && s.part.stock < 1)
+    
+    if (hasOutOfStockParts && !json.partStatus) {
+      partStatus = 'TO_ORDER'
     }
 
     const repair = await prisma.$transaction(async (tx) => {
@@ -68,6 +68,7 @@ export async function POST(request: Request) {
           clientId,
           notes,
           status: 'PENDING',
+          partStatus,
         },
       })
 
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
           },
         })
 
-        if (service.partId) {
+        if (service.partId && service.part && service.part.stock > 0) {
           await tx.part.update({
             where: { id: service.partId },
             data: { stock: { decrement: 1 } },

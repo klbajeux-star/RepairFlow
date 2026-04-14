@@ -7516,6 +7516,7 @@ export namespace Prisma {
   export type RepairMinAggregateOutputType = {
     id: string | null
     status: string | null
+    partStatus: string | null
     clientId: string | null
     notes: string | null
     createdAt: Date | null
@@ -7525,6 +7526,7 @@ export namespace Prisma {
   export type RepairMaxAggregateOutputType = {
     id: string | null
     status: string | null
+    partStatus: string | null
     clientId: string | null
     notes: string | null
     createdAt: Date | null
@@ -7534,6 +7536,7 @@ export namespace Prisma {
   export type RepairCountAggregateOutputType = {
     id: number
     status: number
+    partStatus: number
     clientId: number
     notes: number
     createdAt: number
@@ -7545,6 +7548,7 @@ export namespace Prisma {
   export type RepairMinAggregateInputType = {
     id?: true
     status?: true
+    partStatus?: true
     clientId?: true
     notes?: true
     createdAt?: true
@@ -7554,6 +7558,7 @@ export namespace Prisma {
   export type RepairMaxAggregateInputType = {
     id?: true
     status?: true
+    partStatus?: true
     clientId?: true
     notes?: true
     createdAt?: true
@@ -7563,6 +7568,7 @@ export namespace Prisma {
   export type RepairCountAggregateInputType = {
     id?: true
     status?: true
+    partStatus?: true
     clientId?: true
     notes?: true
     createdAt?: true
@@ -7645,6 +7651,7 @@ export namespace Prisma {
   export type RepairGroupByOutputType = {
     id: string
     status: string
+    partStatus: string
     clientId: string
     notes: string | null
     createdAt: Date
@@ -7671,6 +7678,7 @@ export namespace Prisma {
   export type RepairSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
+    partStatus?: boolean
     clientId?: boolean
     notes?: boolean
     createdAt?: boolean
@@ -7684,6 +7692,7 @@ export namespace Prisma {
   export type RepairSelectScalar = {
     id?: boolean
     status?: boolean
+    partStatus?: boolean
     clientId?: boolean
     notes?: boolean
     createdAt?: boolean
@@ -7708,6 +7717,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       status: string
+      partStatus: string
       clientId: string
       notes: string | null
       createdAt: Date
@@ -8097,6 +8107,7 @@ export namespace Prisma {
   interface RepairFieldRefs {
     readonly id: FieldRef<"Repair", 'String'>
     readonly status: FieldRef<"Repair", 'String'>
+    readonly partStatus: FieldRef<"Repair", 'String'>
     readonly clientId: FieldRef<"Repair", 'String'>
     readonly notes: FieldRef<"Repair", 'String'>
     readonly createdAt: FieldRef<"Repair", 'DateTime'>
@@ -10370,6 +10381,7 @@ export namespace Prisma {
   export const RepairScalarFieldEnum: {
     id: 'id',
     status: 'status',
+    partStatus: 'partStatus',
     clientId: 'clientId',
     notes: 'notes',
     createdAt: 'createdAt',
@@ -10857,6 +10869,7 @@ export namespace Prisma {
     NOT?: RepairWhereInput | RepairWhereInput[]
     id?: StringFilter<"Repair"> | string
     status?: StringFilter<"Repair"> | string
+    partStatus?: StringFilter<"Repair"> | string
     clientId?: StringFilter<"Repair"> | string
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
@@ -10869,6 +10882,7 @@ export namespace Prisma {
   export type RepairOrderByWithRelationInput = {
     id?: SortOrder
     status?: SortOrder
+    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -10884,6 +10898,7 @@ export namespace Prisma {
     OR?: RepairWhereInput[]
     NOT?: RepairWhereInput | RepairWhereInput[]
     status?: StringFilter<"Repair"> | string
+    partStatus?: StringFilter<"Repair"> | string
     clientId?: StringFilter<"Repair"> | string
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
@@ -10896,6 +10911,7 @@ export namespace Prisma {
   export type RepairOrderByWithAggregationInput = {
     id?: SortOrder
     status?: SortOrder
+    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -10911,6 +10927,7 @@ export namespace Prisma {
     NOT?: RepairScalarWhereWithAggregatesInput | RepairScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Repair"> | string
     status?: StringWithAggregatesFilter<"Repair"> | string
+    partStatus?: StringWithAggregatesFilter<"Repair"> | string
     clientId?: StringWithAggregatesFilter<"Repair"> | string
     notes?: StringNullableWithAggregatesFilter<"Repair"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Repair"> | Date | string
@@ -11400,6 +11417,7 @@ export namespace Prisma {
   export type RepairCreateInput = {
     id?: string
     status?: string
+    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11411,6 +11429,7 @@ export namespace Prisma {
   export type RepairUncheckedCreateInput = {
     id?: string
     status?: string
+    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
@@ -11422,6 +11441,7 @@ export namespace Prisma {
   export type RepairUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11433,6 +11453,7 @@ export namespace Prisma {
   export type RepairUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11444,6 +11465,7 @@ export namespace Prisma {
   export type RepairUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11452,6 +11474,7 @@ export namespace Prisma {
   export type RepairUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11985,6 +12008,7 @@ export namespace Prisma {
   export type RepairCountOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -11994,6 +12018,7 @@ export namespace Prisma {
   export type RepairMaxOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -12003,6 +12028,7 @@ export namespace Prisma {
   export type RepairMinOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
+    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -12734,6 +12760,7 @@ export namespace Prisma {
   export type RepairCreateWithoutClientInput = {
     id?: string
     status?: string
+    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12744,6 +12771,7 @@ export namespace Prisma {
   export type RepairUncheckedCreateWithoutClientInput = {
     id?: string
     status?: string
+    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12778,6 +12806,7 @@ export namespace Prisma {
     NOT?: RepairScalarWhereInput | RepairScalarWhereInput[]
     id?: StringFilter<"Repair"> | string
     status?: StringFilter<"Repair"> | string
+    partStatus?: StringFilter<"Repair"> | string
     clientId?: StringFilter<"Repair"> | string
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
@@ -13505,6 +13534,7 @@ export namespace Prisma {
   export type RepairCreateWithoutServicesInput = {
     id?: string
     status?: string
+    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13515,6 +13545,7 @@ export namespace Prisma {
   export type RepairUncheckedCreateWithoutServicesInput = {
     id?: string
     status?: string
+    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
@@ -13570,6 +13601,7 @@ export namespace Prisma {
   export type RepairUpdateWithoutServicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13580,6 +13612,7 @@ export namespace Prisma {
   export type RepairUncheckedUpdateWithoutServicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13625,6 +13658,7 @@ export namespace Prisma {
   export type RepairCreateWithoutLogsInput = {
     id?: string
     status?: string
+    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13635,6 +13669,7 @@ export namespace Prisma {
   export type RepairUncheckedCreateWithoutLogsInput = {
     id?: string
     status?: string
+    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
@@ -13661,6 +13696,7 @@ export namespace Prisma {
   export type RepairUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13671,6 +13707,7 @@ export namespace Prisma {
   export type RepairUncheckedUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13681,6 +13718,7 @@ export namespace Prisma {
   export type RepairUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13691,6 +13729,7 @@ export namespace Prisma {
   export type RepairUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13701,6 +13740,7 @@ export namespace Prisma {
   export type RepairUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
