@@ -1035,7 +1035,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                               <div className="mt-4 flex items-center justify-between gap-3">
                                 <div className="flex flex-wrap items-center gap-2">
                                   <span
-                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getRepairStatusStyle(
+                                    className={`inline-flex rounded-full px-4 py-1.5 text-xs font-bold shadow-sm ${getRepairStatusStyle(
                                       repair.status
                                     )}`}
                                   >
@@ -1173,19 +1173,24 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
 
             {selectedRepair ? (
               <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-                <div className="rounded-[1.6rem] bg-slate-950 px-5 py-5 text-white">
+                <div className="rounded-[2.2rem] border border-slate-200 bg-slate-50/50 p-6 shadow-sm transition-all hover:bg-slate-50">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <p className="text-sm font-black tracking-tight text-emerald-300">
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
+                        <p className="text-[0.7rem] font-black uppercase tracking-widest text-emerald-600">
                         {getTicketReference(selectedRepair)}
                       </p>
-                      <p className="mt-2 text-2xl font-black tracking-tight">
+                      <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
                         {selectedRepair.client.name}
                       </p>
-                      <p className="mt-1 text-sm text-slate-300">{selectedRepair.client.phone}</p>
+                      <div className="mt-2 flex items-center gap-2 text-slate-500">
+                        <User className="h-3.5 w-3.5" />
+                        <p className="text-sm font-semibold tracking-tight">{selectedRepair.client.phone}</p>
+                      </div>
                     </div>
                     <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getRepairStatusStyle(
+                      className={`inline-flex rounded-full px-4 py-1.5 text-xs font-bold shadow-sm ${getRepairStatusStyle(
                         selectedRepair.status
                       )}`}
                     >
@@ -1193,7 +1198,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     </span>
                   </div>
 
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     <MetricMini label="Créé le" value={formatDate(selectedRepair.createdAt)} />
                     <MetricMini label="Mis à jour" value={formatDate(selectedRepair.updatedAt)} />
                     <MetricMini label="Prestations" value={String(selectedRepair.services.length)} />
@@ -1203,11 +1208,12 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     />
                   </div>
 
-                  <div className="mt-5 rounded-[1.4rem] bg-white/8 px-4 py-4">
+                  <div className="mt-6 rounded-[1.8rem] border border-slate-200/60 bg-white p-5 shadow-sm">
                     <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-400">
                       Notes atelier
                     </p>
-                    <p className="mt-3 text-sm leading-6 text-slate-100">
+                    <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
+                      <p className="text-sm font-medium leading-relaxed text-slate-700">
                       {selectedRepair.notes?.trim() || 'Aucune note enregistrée pour ce ticket.'}
                     </p>
                   </div>
@@ -1892,11 +1898,11 @@ function StatCard({
 
 function MetricMini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white/8 px-3 py-3">
-      <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">
+    <div className="rounded-[1.4rem] border border-slate-200 bg-white px-4 py-4 shadow-sm transition-all hover:border-slate-300">
+      <p className="text-[0.62rem] font-black uppercase tracking-[0.24em] text-slate-400">
         {label}
       </p>
-      <p className="mt-2 text-sm font-semibold text-white">{value}</p>
+      <p className="mt-1.5 text-sm font-black tracking-tight text-slate-950">{value}</p>
     </div>
   )
 }
