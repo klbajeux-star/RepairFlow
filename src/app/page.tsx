@@ -860,7 +860,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             </div>
 
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-              <label className="flex min-w-[290px] items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <label className="flex min-w-[290px] items-center gap-3 rounded-2xl border border-slate-200 bg-white/50 px-4 py-3 shadow-sm transition-all focus-within:border-blue-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-50/50">
                 <Search className="h-4 w-4 text-slate-400" />
                 <input
                   value={search}
@@ -870,7 +870,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 />
               </label>
 
-              <div className="inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1">
+              <div className="inline-flex rounded-2xl border border-slate-200 bg-slate-100/50 p-1 shadow-inner">
                 <button
                   type="button"
                   onClick={() => setDensity('detail')}
@@ -933,11 +933,11 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                         await moveRepairToStatus(draggedRepairId, column.status)
                         setDraggedRepairId(null)
                       }}
-                      className={`flex min-h-[620px] flex-col rounded-[1.75rem] border border-slate-200/80 bg-slate-50/70 p-3 transition ${
-                        isDropTarget ? `ring-2 ${column.ring}` : ''
+                      className={`flex min-h-[620px] flex-col rounded-[2.2rem] border border-slate-200 bg-slate-100/40 p-3 transition-all duration-300 ${
+                        isDropTarget ? `ring-2 ${column.ring} bg-slate-100/80` : ''
                       }`}
                     >
-                      <div className="border-b border-slate-200/80 px-1 pb-3">
+                      <div className="border-b border-slate-200 px-1 pb-3">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-3">
@@ -959,11 +959,11 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                             </div>
                           </div>
 
-                          <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-right">
+                          <div className="rounded-2xl border border-white/60 bg-white px-3 py-1.5 text-right shadow-sm">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                               Valeur
                               </p>
-                            <p className="text-sm font-bold text-slate-950">
+                            <p className="text-sm font-black text-slate-950">
                               {formatCurrency(column.totalValue)}
                               </p>
                           </div>
@@ -973,10 +973,10 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       <div className="mt-3 flex-1 space-y-3">
                         {column.items.length === 0 ? (
                           <div
-                            className={`flex min-h-[180px] items-center justify-center rounded-[1.4rem] border border-dashed px-4 text-center text-sm ${
+                            className={`flex min-h-[180px] items-center justify-center rounded-[2.2rem] border border-dashed px-4 text-center text-sm transition-all duration-300 ${
                               isDropTarget
-                                ? 'border-slate-300 bg-white text-slate-600'
-                                : 'border-slate-200 bg-white/70 text-slate-400'
+                                ? 'border-blue-300 bg-white shadow-inner text-slate-600'
+                                : 'border-slate-200 bg-white/40 text-slate-400'
                             }`}
                           >
                             Déposez un ticket ici ou laissez la colonne vide pour l’instant.
@@ -998,10 +998,10 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                                 setHoveredStatus(null)
                               }}
                               onClick={() => setSelectedRepairId(repair.id)}
-                              className={`group rounded-[1.45rem] border bg-white p-4 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] transition ${
+                              className={`group rounded-[1.75rem] border p-4 transition-all duration-300 ${
                                 isSelected
-                                  ? `border-transparent ${column.accentSoft} ring-2 ${column.ring}`
-                                  : 'border-slate-200/80 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_22px_40px_-28px_rgba(15,23,42,0.4)]'
+                                  ? `border-transparent ${column.accentSoft} shadow-lg ring-2 ${column.ring}`
+                                  : 'border-white/60 bg-white/70 backdrop-blur-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:border-slate-300 hover:bg-white/90 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]'
                               }`}
                             >
                               <div className="flex items-start justify-between gap-3">
