@@ -43,6 +43,7 @@ import {
   partStatuses,
 } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
+import { generateIntakePDF } from '@/lib/pdf'
 
 type KanbanStatus = 'PENDING' | 'DIAGNOSIS' | 'IN_PROGRESS' | 'READY'
 type QuickFlowMode = 'repair' | 'quote'
@@ -575,6 +576,28 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
         },
         'Impossible de créer le ticket.'
       )
+
+      // Génération PDF de pris en charge automatique pour les nouveaux tickets
+      if (drawerMode === 'repair' && data?.id) {
+        const selectedClient = clients.find((c) => c.id === quickFlowForm.clientId)
+        const selectedServices = services.filter((s) => quickFlowForm.serviceIds.includes(s.id))
+        if (selectedClient) {
+          generateIntakePDF({
+            repairId: data.id,
+            client: selectedClient,
+            device: {
+              model: deviceForm.model,
+              imei: deviceForm.imei,
+              unlockCode: deviceForm.unlockCode,
+              condition: deviceForm.condition,
+            },
+            services: selectedServices,
+            notes: quickFlowForm.notes,
+            signature: signatureData,
+            date: formatDate(new Date()),
+          })
+        }
+      }
 
       resetWorkflow()
       await loadDashboard()
