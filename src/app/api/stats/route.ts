@@ -19,11 +19,17 @@ export async function GET(request: Request) {
         }
       },
       include: {
+        client: true,
         services: {
           include: {
             service: {
               include: {
-                part: true
+                part: true,
+                model: {
+                  include: {
+                    type: true
+                  }
+                }
               }
             }
           }

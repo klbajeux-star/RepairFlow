@@ -150,6 +150,7 @@ interface DeviceType {
 interface DeviceModel {
   id: string
   name: string
+  modelReference?: string | null
   brandId: string
   typeId: string
   brand: DeviceBrand
@@ -175,6 +176,7 @@ interface Service {
   id: string
   name: string
   laborCost: number
+  duration: number
   description?: string | null
   modelId?: string | null
   model?: DeviceModel | null
@@ -205,7 +207,6 @@ interface RepairLog {
 interface Repair {
   id: string
   status: string
-  partStatus: string
   partStatus: string
   notes?: string | null
   createdAt: string
@@ -482,7 +483,6 @@ export default function Dashboard() {
         .includes(query)
     })
   }, [repairs, search])
-
   const selectedClient = useMemo(() => {
     return clients.find((c) => c.id === quickFlowForm.clientId) ?? null
   }, [clients, quickFlowForm.clientId])
@@ -962,10 +962,10 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                           <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-right">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                               Valeur
-                            </p>
+                              </p>
                             <p className="text-sm font-bold text-slate-950">
                               {formatCurrency(column.totalValue)}
-                            </p>
+                              </p>
                           </div>
                         </div>
                       </div>
@@ -1008,10 +1008,10 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                                 <div className="min-w-0">
                                   <p className="text-sm font-black tracking-tight text-emerald-500">
                                     {getTicketReference(repair)}
-                                  </p>
+                                    </p>
                                   <p className="mt-2 line-clamp-1 text-[1.05rem] font-semibold text-slate-950">
                                     {repair.client.name}
-                                  </p>
+                                    </p>
                                   <p className="mt-1 text-sm text-slate-500">{repair.client.phone}</p>
                                 </div>
 
@@ -1068,7 +1068,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                               <div className="mt-4 rounded-2xl bg-slate-50 px-3 py-3">
                                 <p className="line-clamp-2 text-sm font-medium leading-6 text-slate-700">
                                   {summary}
-                                </p>
+                                  </p>
                               </div>
 
                               {density === 'detail' ? (
@@ -1077,17 +1077,17 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                                     <StickyNote className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
                                     <p className="line-clamp-2">
                                       {repair.notes?.trim() || 'Aucune note enregistrée sur ce ticket.'}
-                                    </p>
+                                      </p>
                                   </div>
 
                                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
                                     <div>
                                       <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-400">
                                         Total estimé
-                                      </p>
+                                        </p>
                                       <p className="mt-2 text-lg font-black tracking-tight text-slate-950">
                                         {formatCurrency(total)}
-                                      </p>
+                                        </p>
                                     </div>
                                     <button
                                       type="button"
@@ -1119,58 +1119,37 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             </div>
           )}
         </section>
-
-        <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="rounded-[2rem] border border-white/80 bg-white/85 p-5 shadow-[0_24px_60px_-35px_rgba(15,23,42,0.28)] backdrop-blur sm:p-6">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <p className="text-[0.72rem] font-bold uppercase tracking-[0.28em] text-blue-600">
-                  Ticket sélectionné
-                </p>
-                <h2 className="mt-2 text-xl font-black tracking-tight text-slate-950">
-                  Focus intervention
-                </h2>
-              </div>
-
-              {selectedRepair ? (
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => deleteRepair(selectedRepair.id)}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-100 hover:text-rose-700 shadow-sm"
-                  >
-                    <X className="h-4 w-4" />
-                    Supprimer
-                  </button>
-                  {selectedRepair.status !== 'ARCHIVED' && (
-                    <button
-                      type="button"
-                      onClick={() => archiveRepair(selectedRepair.id)}
-                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 shadow-sm"
-                    >
-                      <Package className="h-4 w-4" />
-                      Archiver
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => router.push(`/repairs?repairId=${selectedRepair.id}`)}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 shadow-sm"
-                  >
-                    <PencilLine className="h-4 w-4" />
-                    Modifier
-                  </button>
-                  <Link
-                    href={`/billing?repairId=${selectedRepair.id}&mode=devis`}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
-                  >
-                    Ouvrir le devis
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              ) : null}
+        <section className="rounded-[2rem] border border-white/80 bg-white/85 p-5 shadow-[0_24px_60px_-35px_rgba(15,23,42,0.28)] backdrop-blur sm:p-6">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+            <div>
+              <p className="text-[0.72rem] font-bold uppercase tracking-[0.3em] text-blue-600">
+                Focus intervention
+              </p>
+              <h2 className="mt-2 text-[1.65rem] font-black tracking-tight text-slate-950">
+                Informations du ticket sélectionné
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                Visualisez les détails de l’intervention sélectionnée, le montant estimé, le statut
+                du ticket, ainsi que les notes de l’atelier et le client associé.
+              </p>
             </div>
 
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => selectedRepair && router.push(`/repairs?repairId=${selectedRepair.id}`)}
+                className="inline-flex h-12 items-center gap-2 rounded-2xl bg-slate-950 px-6 text-sm font-bold text-white transition hover:bg-slate-800"
+              >
+                Accéder au dossier complet
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-400">
+                <StickyNote className="h-5 w-5" />
+              </div>
+            </div>
+          </div>
+
+          <div>
             {selectedRepair ? (
               <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
                 <div className="rounded-[2.2rem] border border-slate-200 bg-slate-50/50 p-6 shadow-sm transition-all hover:bg-slate-50">
@@ -1179,8 +1158,9 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       <div className="flex items-center gap-2">
                         <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
                         <p className="text-[0.7rem] font-black uppercase tracking-widest text-emerald-600">
-                        {getTicketReference(selectedRepair)}
-                      </p>
+                          {getTicketReference(selectedRepair)}
+                        </p>
+                      </div>
                       <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
                         {selectedRepair.client.name}
                       </p>
@@ -1214,13 +1194,13 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     </p>
                     <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
                       <p className="text-sm font-medium leading-relaxed text-slate-700">
-                      {selectedRepair.notes?.trim() || 'Aucune note enregistrée pour ce ticket.'}
-                    </p>
+                        {selectedRepair.notes?.trim() || 'Aucune note enregistrée pour ce ticket.'}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  
                   <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.24em] text-slate-400">
                       Disponibilité pièces
@@ -1236,17 +1216,17 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                             className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm transition-all ${
                               isSelected
                                 ? `${getPartStatusStyle(status)} border-current shadow-sm`
-                                : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50'
+                                : "border-slate-100 bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50"
                             }`}
                           >
                             <div className="flex items-center gap-3">
-                              {status === 'IN_STOCK' ? (
+                              {status === "IN_STOCK" ? (
                                 <PackageCheck className="h-4 w-4" />
-                              ) : status === 'TO_ORDER' ? (
+                              ) : status === "TO_ORDER" ? (
                                 <ShoppingCart className="h-4 w-4" />
-                              ) : status === 'ORDERED' ? (
+                              ) : status === "ORDERED" ? (
                                 <Truck className="h-4 w-4" />
-                              ) : status === 'WAITING_SIGNATURE' ? (
+                              ) : status === "WAITING_SIGNATURE" ? (
                                 <PencilLine className="h-4 w-4" />
                               ) : (
                                 <Cpu className="h-4 w-4" />
@@ -1285,7 +1265,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     </p>
                     <div className="mt-4 space-y-2">
                       {(selectedRepair.logs ?? []).slice(0, 4).map((log) => {
-                        const vividColors = {
+                        const vividColors: Record<string, string> = {
                           PENDING: 'bg-amber-500',
                           DIAGNOSIS: 'bg-sky-500',
                           IN_PROGRESS: 'bg-violet-500',
@@ -1295,7 +1275,6 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                           ARCHIVED: 'bg-slate-400',
                         }
                         const accentColor = vividColors[log.status] || 'bg-slate-400'
-
                         return (
                           <div
                             key={log.id}
@@ -1332,158 +1311,27 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
               </div>
             )}
           </div>
-
-          <aside className="space-y-5">
-            <section className="rounded-[2rem] border border-white/80 bg-white/85 p-5 shadow-[0_24px_60px_-35px_rgba(15,23,42,0.28)] backdrop-blur sm:p-6">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.28em] text-blue-600">
-                    Priorités atelier
-                  </p>
-                  <h2 className="mt-2 text-xl font-black tracking-tight text-slate-950">
-                    Points d’attention
-                  </h2>
-                </div>
-                <AlertTriangle className="h-5 w-5 text-amber-500" />
-              </div>
-
-              <div className="mt-5 space-y-3">
-                <AlertItem
-                  title={`${readyCount} appareil(s) terminé(s)`}
-                  description="À contacter ou restituer rapidement pour garder un flux atelier propre."
-                />
-                <AlertItem
-                  title={`${quoteWaitingCount} devis à valider`}
-                  description="Les dossiers en diagnostic doivent avancer vite pour éviter les blocages."
-                />
-                <AlertItem
-                  title={`${lowStockParts.length} pièce(s) en stock faible`}
-                  description={
-                    lowStockParts.length > 0
-                      ? lowStockParts
-                          .slice(0, 3)
-                          .map((part) => `${part.name} (${part.stock})`)
-                          .join(' • ')
-                      : 'Aucune alerte stock critique pour le moment.'
-                  }
-                  tone={lowStockParts.length > 0 ? 'warning' : 'neutral'}
-                />
-              </div>
-            </section>
-
-            <section className="rounded-[2rem] border border-white/80 bg-white/85 p-5 shadow-[0_24px_60px_-35px_rgba(15,23,42,0.28)] backdrop-blur sm:p-6">
-              <p className="text-[0.72rem] font-bold uppercase tracking-[0.28em] text-blue-600">
-                Raccourcis utiles
-              </p>
-              <div className="mt-4 grid gap-2">
-                <Link
-                  href="/clients"
-                  className="inline-flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-                >
-                  Base clients
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/repairs"
-                  className="inline-flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-                >
-                  Gestion complète des tickets
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/billing"
-                  className="inline-flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-950"
-                >
-                  Facturation
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </section>
-          </aside>
         </section>
       </div>
 
       <SideDrawer
         isOpen={drawerOpen}
         onClose={resetWorkflow}
-        title={
-          workflowStep === 'client'
-            ? 'Sélection Client'
-            : workflowStep === 'device'
-              ? 'Appareil'
-              : workflowStep === 'services'
-                ? 'Prestations'
-                : workflowStep === 'summary'
-                  ? 'Résumé'
-                  : 'Validation & Signature'
-        }
-        subtitle={drawerMode === 'quote' ? 'Nouveau Devis' : 'Nouveau Ticket'}
-        footer={
-          <div className="flex items-center justify-between">
-            {workflowStep !== 'client' ? (
-              <button
-                type="button"
-                onClick={() => {
-                  if (workflowStep === 'device') setWorkflowStep('client')
-                  if (workflowStep === 'services') setWorkflowStep('device')
-                  if (workflowStep === 'summary') setWorkflowStep('services')
-                  if (workflowStep === 'signature') setWorkflowStep('summary')
-                }}
-                className="flex items-center gap-2 text-sm font-bold text-slate-400 transition hover:text-slate-900"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Retour
-              </button>
-            ) : (
-              <div />
-            )}
-
-            <div className="flex items-center gap-4">
-              {workflowStep !== 'signature' ? (
-                <button
-                  type="button"
-                  disabled={
-                    (workflowStep === 'client' && !quickFlowForm.clientId) ||
-                    (workflowStep === 'device' && !deviceForm.model)
-                  }
-                  onClick={() => {
-                    if (workflowStep === 'client') setWorkflowStep('device')
-                    else if (workflowStep === 'device') setWorkflowStep('services')
-                    else if (workflowStep === 'services') setWorkflowStep('summary')
-                    else if (workflowStep === 'summary') setWorkflowStep('signature')
-                  }}
-                  className="flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-600 disabled:opacity-30"
-                >
-                  Suivant
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={createQuickFlow}
-                  disabled={isSavingFlow || !signatureData}
-                  className="flex items-center gap-2 rounded-2xl bg-blue-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-700 disabled:opacity-50"
-                >
-                  {isSavingFlow ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                  {drawerMode === 'quote' ? 'Générer le devis' : 'Valider & Ouvrir'}
-                </button>
-              )}
-            </div>
-          </div>
-        }
+        title={drawerMode === 'quote' ? 'Nouveau Devis Express' : 'Nouveau Ticket Atelier'}
+        subtitle="Créez un dossier complet en moins de 30 secondes."
       >
-        <div className="space-y-6">
+        <div className="space-y-8">
           <StepIndicator
             current={
               workflowStep === 'client'
                 ? 1
                 : workflowStep === 'device'
-                  ? 2
-                  : workflowStep === 'services'
-                    ? 3
-                    : workflowStep === 'summary'
-                      ? 4
-                      : 5
+                ? 2
+                : workflowStep === 'services'
+                ? 3
+                : workflowStep === 'summary'
+                ? 4
+                : 5
             }
             total={5}
           />
@@ -1491,11 +1339,11 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
           {workflowStep === 'client' && (
             <div className="space-y-6">
               <SectionTitle label="Étape 1" title="Qui est le client ?" icon={<User className="h-5 w-5" />} />
-              
+
               {!showNewClientForm ? (
                 <>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                    <Search className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
                     <input
                       autoFocus
                       value={clientSearch}
@@ -1558,127 +1406,143 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       <input 
                         value={clientForm.name} 
                         onChange={e => setClientForm(p => ({ ...p, name: e.target.value }))}
-                        className="w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 outline-none focus:border-blue-200"
-                        placeholder="Ex: Marc Lefebvre"
+                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                        placeholder="Jean Dupont"
                       />
                     </Field>
                     <Field label="Téléphone">
                       <input 
                         value={clientForm.phone} 
                         onChange={e => setClientForm(p => ({ ...p, phone: e.target.value }))}
-                        className="w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 outline-none focus:border-blue-200"
-                        placeholder="06 00 00 00 00"
+                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                        placeholder="06 12 34 56 78"
                       />
                     </Field>
-                    <Field label="Email (optionnel)">
-                      <input 
-                        value={clientForm.email} 
-                        onChange={e => setClientForm(p => ({ ...p, email: e.target.value }))}
-                        className="w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 outline-none focus:border-blue-200"
-                        placeholder="contact@client.com"
-                      />
-                    </Field>
-                    <button 
-                      onClick={createClient}
-                      disabled={isSavingClient || !clientForm.name || !clientForm.phone}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 py-4 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-50 shadow-lg shadow-blue-600/20"
-                    >
-                      {isSavingClient ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
-                      Enregistrer et continuer
-                    </button>
                   </div>
+                  <button
+                    disabled={isSavingClient}
+                    onClick={createClient}
+                    className="w-full rounded-2xl bg-blue-600 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {isSavingClient ? 'Enregistrement...' : 'Enregistrer le client'}
+                  </button>
                 </div>
               )}
+
+              <div className="flex justify-end pt-4">
+                <button
+                  disabled={!quickFlowForm.clientId}
+                  onClick={() => setWorkflowStep('device')}
+                  className="inline-flex h-14 items-center gap-2 rounded-2xl bg-slate-950 px-8 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-30"
+                >
+                  Continuer
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
 
           {workflowStep === 'device' && (
             <div className="space-y-6">
               <SectionTitle label="Étape 2" title="Quel est l'appareil ?" icon={<Smartphone className="h-5 w-5" />} />
-              
-              <div className="grid gap-5">
+
+              <div className="space-y-4">
                 <div className="relative">
                   <Field label="Modèle de l'appareil">
-                    <div className="relative">
-                      <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                      <input
-                        value={deviceForm.model}
-                        onChange={(e) => {
-                          setDeviceForm((prev) => ({ ...prev, model: e.target.value, modelId: '' }))
-                          setShowModelSuggestions(true)
-                        }}
-                        placeholder="Chercher ou saisir un modèle..."
-                        className="w-full rounded-2xl border border-slate-100 bg-slate-50 py-4 pl-12 pr-4 outline-none transition focus:border-blue-200 focus:bg-white"
-                      />
-                    </div>
+                    <input
+                      value={deviceForm.model}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setDeviceForm((prev) => ({ ...prev, model: val }))
+                        setShowModelSuggestions(val.length > 1)
+                      }}
+                      placeholder="iPhone 13, Galaxy S21..."
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-bold outline-none focus:border-blue-400"
+                    />
                   </Field>
-                  {showModelSuggestions &&
-                    deviceForm.model.length > 1 &&
-                    models.filter((m) =>
-                      `${m.brand.name} ${m.name}`.toLowerCase().includes(deviceForm.model.toLowerCase())
-                    ).length > 0 && (
-                      <div className="absolute z-10 mt-2 w-full rounded-2xl border border-slate-100 bg-white p-2 shadow-xl">
-                        {models
-                          .filter((m) =>
-                            `${m.brand.name} ${m.name}`
-                              .toLowerCase()
-                              .includes(deviceForm.model.toLowerCase())
-                          )
-                          .slice(0, 5)
-                          .map((m) => (
-                            <button
-                              key={m.id}
-                              onClick={() => {
-                                setDeviceForm((prev) => ({
-                                  ...prev,
-                                  model: `${m.brand.name} ${m.name}`,
-                                  modelId: m.id,
-                                }))
-                                setShowModelSuggestions(false)
-                              }}
-                              className="flex w-full items-center gap-2 rounded-xl p-3 text-sm font-bold text-slate-700 hover:bg-slate-50 text-left"
-                            >
-                                <TypeIcon type={m.type.name} className="h-4 w-4 text-slate-400" /> {m.brand.name} {m.name}
-                             </button>
-                          ))}
-                     </div>
+
+                  {showModelSuggestions && (
+                    <div className="absolute left-0 top-full z-20 mt-2 w-full space-y-1 rounded-2xl border border-slate-100 bg-white p-2 shadow-2xl">
+                      {models
+                        .filter((m) => m.name.toLowerCase().includes(deviceForm.model.toLowerCase()))
+                        .slice(0, 4)
+                        .map((m) => (
+                          <button
+                            key={m.id}
+                            onClick={() => {
+                              setDeviceForm((prev) => ({ ...prev, model: m.name, modelId: m.id }))
+                              setShowModelSuggestions(false)
+                            }}
+                            className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition hover:bg-slate-50"
+                          >
+                            <div>
+                              <p className="font-bold text-slate-950">{m.name}</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                {m.brand.name} • {m.type.name}
+                              </p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-slate-300" />
+                          </button>
+                        ))}
+                    </div>
                   )}
                 </div>
 
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <Field label="IMEI / Numéro de série">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="IMEI / No de série">
                     <input
                       value={deviceForm.imei}
-                      onChange={(e) => setDeviceForm(prev => ({ ...prev, imei: e.target.value }))}
-                      placeholder="15 chiffres"
-                      className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                      onChange={(e) => setDeviceForm((prev) => ({ ...prev, imei: e.target.value }))}
+                      placeholder="Facultatif"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                     />
                   </Field>
-                  <Field label="Code de déverrouillage">
+                  <Field label="Code déverrouillage">
                     <input
                       value={deviceForm.unlockCode}
-                      onChange={(e) => setDeviceForm(prev => ({ ...prev, unlockCode: e.target.value }))}
-                      placeholder="ex: 123456"
-                      className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                      onChange={(e) =>
+                        setDeviceForm((prev) => ({ ...prev, unlockCode: e.target.value }))
+                      }
+                      placeholder="Schéma ou PIN"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                     />
                   </Field>
                 </div>
 
                 <Field label={`État cosmétique : ${deviceForm.condition}/5`}>
-                  <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    step="1"
-                    value={deviceForm.condition}
-                    onChange={(e) => setDeviceForm(prev => ({ ...prev, condition: parseInt(e.target.value) }))}
-                    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-100 accent-blue-600"
-                  />
-                  <div className="mt-2 flex justify-between text-[0.6rem] font-bold uppercase tracking-widest text-slate-400">
-                    <span>Médiocre</span>
-                    <span>Excellent</span>
+                  <div className="mt-2 flex items-center gap-3">
+                    <span className="text-xs font-bold text-rose-500">Médiocre</span>
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      step="1"
+                      value={deviceForm.condition}
+                      onChange={(e) =>
+                        setDeviceForm((prev) => ({ ...prev, condition: Number(e.target.value) }))
+                      }
+                      className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-blue-600"
+                    />
+                    <span className="text-xs font-bold text-emerald-500">Parfait</span>
                   </div>
                 </Field>
+              </div>
+
+              <div className="flex items-center justify-between pt-4">
+                <button
+                  onClick={() => setWorkflowStep('client')}
+                  className="text-sm font-bold text-slate-400 hover:text-slate-950"
+                >
+                  Retour
+                </button>
+                <button
+                  disabled={!deviceForm.model}
+                  onClick={() => setWorkflowStep('services')}
+                  className="inline-flex h-14 items-center gap-2 rounded-2xl bg-slate-950 px-8 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-30"
+                >
+                  Continuer
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
           )}
@@ -1687,61 +1551,64 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <SectionTitle label="Étape 3" title="Prestations" icon={<Wrench className="h-5 w-5" />} />
-                {deviceForm.model && (
-                  <span className="rounded-lg bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-blue-600 ring-1 ring-inset ring-blue-200">
-                    Filtre : {deviceForm.model}
-                  </span>
-                )}
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600">
+                  {quickFlowForm.serviceIds.length} sélectionnée(s)
+                </span>
               </div>
-              
-              <div className="grid gap-3 sm:grid-cols-2">
+
+              <div className="max-h-[380px] space-y-2 overflow-y-auto pr-2 scrollbar-thin">
                 {services
-                  .filter((s) => {
-                    if (deviceForm.modelId) {
-                      return s.modelId === deviceForm.modelId || !s.modelId
-                    }
-                    return !s.modelId
-                  }).length > 0 ? (
-                  services
-                    .filter((s) => {
-                      if (deviceForm.modelId) {
-                        return s.modelId === deviceForm.modelId || !s.modelId
-                      }
-                      return !s.modelId
-                    })
-                    .map((s) => {
-                      const isSelected = quickFlowForm.serviceIds.includes(s.id)
-                      const totalPrice = s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0))
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => toggleService(s.id)}
-                          className={`flex flex-col rounded-2xl border p-4 text-left transition ${
-                            isSelected
-                              ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
-                              : 'border-slate-100 bg-white hover:border-slate-200 shadow-sm'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between">
-                            <span className={`rounded-lg p-2 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-50 text-slate-400'}`}>
-                              <Plus className="h-4 w-4" />
-                            </span>
-                            <span className="text-sm font-bold text-slate-900">{formatCurrency(totalPrice)}</span>
+                  .filter((s) => !deviceForm.modelId || s.modelId === deviceForm.modelId)
+                  .map((s) => {
+                    const isSelected = quickFlowForm.serviceIds.includes(s.id)
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => toggleService(s.id)}
+                        className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left transition ${
+                          isSelected
+                            ? 'border-blue-200 bg-blue-50/50 ring-2 ring-blue-100'
+                            : 'border-slate-100 bg-white hover:border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`rounded-xl p-2 ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                            <Wrench className="h-4 w-4" />
                           </div>
-                          <p className="mt-4 font-bold text-slate-950">{s.name}</p>
-                          <div className="mt-1 flex items-center gap-2">
-                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.duration || 30} min</p>
-                             <p className="text-xs text-slate-500 line-clamp-1">— {s.description || 'Intervention atelier'}</p>
+                          <div>
+                            <p className="font-bold text-slate-950">{s.name}</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              Forfait main d'œuvre incluse
+                            </p>
                           </div>
-                        </button>
-                      )
-                    })
-                ) : (
-                  <div className="col-span-full rounded-2xl border border-dashed border-slate-200 p-8 text-center">
-                    <p className="text-sm font-bold text-slate-400">Aucune prestation spécifique trouvée pour ce modèle.</p>
-                    <p className="mt-1 text-xs text-slate-400">Ajoutez des forfaits universels dans le catalogue.</p>
+                        </div>
+                        <p className="font-black text-slate-950">{formatCurrency(s.laborCost + (s.part?.costPrice ?? 0))}</p>
+                      </button>
+                    )
+                  })}
+
+                {services.filter((s) => !deviceForm.modelId || s.modelId === deviceForm.modelId).length === 0 && (
+                  <div className="rounded-2xl border border-dashed border-slate-200 py-12 text-center text-sm text-slate-400">
+                    Aucune prestation spécifique trouvée pour ce modèle.
                   </div>
                 )}
+              </div>
+
+              <div className="flex items-center justify-between pt-4">
+                <button
+                  onClick={() => setWorkflowStep('device')}
+                  className="text-sm font-bold text-slate-400 hover:text-slate-950"
+                >
+                  Retour
+                </button>
+                <button
+                  disabled={quickFlowForm.serviceIds.length === 0}
+                  onClick={() => setWorkflowStep('summary')}
+                  className="inline-flex h-14 items-center gap-2 rounded-2xl bg-slate-950 px-8 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-30"
+                >
+                  Récapitulatif
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
           )}
@@ -1749,52 +1616,69 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
           {workflowStep === 'summary' && (
             <div className="space-y-6">
               <SectionTitle label="Étape 4" title="Finalisation" icon={<StickyNote className="h-5 w-5" />} />
-              
-              <div className="rounded-3xl bg-slate-900 p-6 text-white shadow-xl">
-                <div className="flex items-center gap-4 border-b border-white/10 pb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/20 text-blue-400">
-                    <User className="h-6 w-6" />
-                  </div>
+
+              <div className="rounded-[2rem] border border-slate-100 bg-slate-50/50 p-6">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                   <div>
-                    <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Client</p>
-                    <p className="text-lg font-bold">{selectedClient?.name || 'Inconnu'}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Client</p>
+                    <p className="font-black text-slate-950">{selectedClient?.name}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Appareil</p>
+                    <p className="font-black text-slate-950">{deviceForm.model}</p>
                   </div>
                 </div>
 
-                <div className="mt-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600/20 text-emerald-400">
-                    <Smartphone className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Appareil</p>
-                    <p className="text-lg font-bold">{deviceForm.model || 'Modèle non spécifié'}</p>
-                  </div>
+                <div className="mt-4 space-y-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Services sélectionnés</p>
+                  {services
+                    .filter((s) => quickFlowForm.serviceIds.includes(s.id))
+                    .map((s) => (
+                      <div key={s.id} className="flex items-center justify-between text-sm">
+                        <span className="text-slate-600">{s.name}</span>
+                        <span className="font-bold text-slate-950">
+                          {formatCurrency(s.laborCost + (s.part?.costPrice ?? 0))}
+                        </span>
+                      </div>
+                    ))}
                 </div>
 
-                <div className="mt-8 rounded-2xl bg-white/5 p-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-500">Total estimé</p>
-                    <p className="text-2xl font-black text-white">
-                      {formatCurrency(
-                        quickFlowForm.serviceIds.reduce((total, id) => {
-                          const s = services.find(x => x.id === id)
-                          return total + (s ? s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0)) : 0)
-                        }, 0)
-                      )}
-                    </p>
-                  </div>
+                <div className="mt-6 flex items-center justify-between rounded-2xl bg-slate-950 p-4 text-white">
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Total estimé</span>
+                  <span className="text-xl font-black">
+                    {formatCurrency(
+                      services
+                        .filter((s) => quickFlowForm.serviceIds.includes(s.id))
+                        .reduce((sum, s) => sum + s.laborCost + (s.part?.costPrice ?? 0), 0)
+                    )}
+                  </span>
                 </div>
               </div>
 
-              <Field label="Notes & Observations">
+              <Field label="Notes complémentaires (panne, état...)">
                 <textarea
-                  rows={4}
                   value={quickFlowForm.notes}
-                  onChange={(e) => setQuickFlowForm(prev => ({ ...prev, notes: e.target.value }))}
-                  placeholder="Informations complémentaires, code promo, urgence..."
-                  className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 outline-none transition focus:border-blue-200 focus:bg-white"
+                  onChange={(e) => setQuickFlowForm((prev) => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Écran fissuré, ne s'allume plus..."
+                  className="h-24 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                 />
               </Field>
+
+              <div className="flex items-center justify-between pt-4">
+                <button
+                  onClick={() => setWorkflowStep('services')}
+                  className="text-sm font-bold text-slate-400 hover:text-slate-950"
+                >
+                  Retour
+                </button>
+                <button
+                  onClick={() => setWorkflowStep('signature')}
+                  className="inline-flex h-14 items-center gap-2 rounded-2xl bg-blue-600 px-8 text-sm font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-700"
+                >
+                  Valider & Signer
+                  <PencilLine className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -1802,14 +1686,38 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             <div className="space-y-6">
               <SectionTitle label="Étape 5" title="Signature du client" icon={<PencilLine className="h-5 w-5" />} />
               
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                <p className="text-[11px] leading-relaxed text-slate-500">
-                  En signant, le client reconnaît avoir pris connaissance des conditions générales de réparation 
-                  et valide l'état cosmétique de l'appareil mentionné à l'étape 2.
-                </p>
-              </div>
+              <p className="text-sm leading-6 text-slate-600">
+                En signant ci-dessous, le client reconnaît avoir déposé l'appareil pour réparation 
+                et valide l'état cosmétique de l'appareil mentionné à l'étape 2.
+              </p>
 
               <SignaturePad onSign={setSignatureData} />
+
+              <div className="flex items-center justify-between pt-4">
+                <button
+                  onClick={() => setWorkflowStep('summary')}
+                  className="text-sm font-bold text-slate-400 hover:text-slate-950"
+                >
+                  Retour
+                </button>
+                <button
+                  disabled={isSavingFlow}
+                  onClick={createQuickFlow}
+                  className="inline-flex h-14 items-center gap-2 rounded-2xl bg-emerald-600 px-8 text-sm font-bold text-white shadow-lg shadow-emerald-100 transition hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {isSavingFlow ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Création...
+                    </>
+                  ) : (
+                    <>
+                      Finaliser le ticket
+                      <CheckCircle2 className="h-4 w-4" />
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -1823,39 +1731,28 @@ function QuickActionCard({
   title,
   description,
   onClick,
-  tone,
+  tone = 'light',
 }: {
   icon: React.ReactNode
   title: string
   description: string
-  onClick: () => void
-  tone: 'light' | 'brand' | 'dark'
+  onClick?: () => void
+  tone?: 'light' | 'dark' | 'brand'
 }) {
-  const toneClasses =
-    tone === 'brand'
-      ? 'bg-blue-600 text-white hover:bg-blue-500'
-      : tone === 'dark'
-        ? 'border border-white/12 bg-white/8 text-white hover:bg-white/12'
-        : 'bg-white text-slate-900 hover:-translate-y-0.5'
-
-  const iconClasses =
-    tone === 'brand'
-      ? 'bg-white/15 text-white'
-      : tone === 'dark'
-        ? 'bg-white/12 text-white'
-        : 'bg-blue-50 text-blue-600'
+  const styles = {
+    light: 'bg-white/10 text-white hover:bg-white/15',
+    dark: 'bg-slate-900 text-white hover:bg-slate-800',
+    brand: 'bg-blue-600 text-white hover:bg-blue-700',
+  }
 
   return (
     <button
-      type="button"
       onClick={onClick}
-      className={`rounded-[1.6rem] px-4 py-4 text-left transition ${toneClasses}`}
+      className={`group flex flex-col items-start rounded-[1.8rem] p-4 text-left transition-all hover:-translate-y-1 ${styles[tone]}`}
     >
-      <div className={`mb-3 inline-flex rounded-2xl p-3 ${iconClasses}`}>{icon}</div>
-      <p className="font-semibold">{title}</p>
-      <p className={`mt-1 text-sm ${tone === 'light' ? 'text-slate-500' : tone === 'brand' ? 'text-blue-100' : 'text-slate-300'}`}>
-        {description}
-      </p>
+      <div className="rounded-2xl bg-white/20 p-2.5 transition group-hover:scale-110">{icon}</div>
+      <h3 className="mt-4 text-sm font-black tracking-tight">{title}</h3>
+      <p className="mt-1 text-[0.68rem] font-medium leading-relaxed opacity-70">{description}</p>
     </button>
   )
 }
@@ -1865,28 +1762,35 @@ function StatCard({
   title,
   value,
   subtitle,
-  compactValue = false,
   onClick,
+  compactValue = false,
 }: {
   icon: React.ReactNode
   title: string
   value: string | number
   subtitle: string
-  compactValue?: boolean;
-  onClick?: () => void;
+  onClick?: () => void
+  compactValue?: boolean
 }) {
   return (
-    <article 
+    <article
       onClick={onClick}
-      className={`rounded-[1.7rem] border border-white/90 bg-white/88 p-5 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.35)] transition-all ${
-        onClick ? 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_-32px_rgba(15,23,42,0.45)] hover:border-blue-100' : ''
+      className={`group cursor-pointer rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-blue-200 hover:shadow-md ${
+        onClick ? 'active:scale-95' : ''
       }`}
     >
-      <div className="inline-flex rounded-2xl bg-blue-50 p-3 text-blue-600">{icon}</div>
-      <p className="mt-4 text-sm font-semibold text-slate-500">{title}</p>
+      <div className="flex items-start justify-between">
+        <div className="rounded-2xl bg-slate-50 p-3 text-slate-400 transition group-hover:bg-blue-50 group-hover:text-blue-600">
+          {icon}
+        </div>
+        <div className="h-2 w-2 rounded-full bg-slate-200 transition group-hover:bg-blue-400" />
+      </div>
+      <p className="mt-5 text-[0.68rem] font-black uppercase tracking-[0.24em] text-slate-400">
+        {title}
+      </p>
       <p
         className={`mt-2 font-black tracking-tight text-slate-950 ${
-          compactValue ? 'text-2xl' : 'text-3xl'
+          compactValue ? 'text-[1.3rem]' : 'text-3xl'
         }`}
       >
         {value}

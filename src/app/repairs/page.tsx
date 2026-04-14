@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import {
   CheckCircle,
   Clock,
@@ -37,6 +37,7 @@ interface Service {
   id: string
   name: string
   laborCost: number
+  duration: number
   part?: Part | null
 }
 
@@ -93,7 +94,7 @@ async function parseJsonResponse<T>(response: Response): Promise<T> {
   return response.json()
 }
 
-export default function RepairsPage() {
+function RepairsContent() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -815,5 +816,13 @@ export default function RepairsPage() {
         </div>
       ) : null}
     </div>
+  )
+}
+
+export default function RepairsPage() {
+  return (
+    <Suspense fallback={null}>
+      <RepairsContent />
+    </Suspense>
   )
 }

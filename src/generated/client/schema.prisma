@@ -85,7 +85,7 @@ model Service {
 model Repair {
   id          String   @id @default(cuid())
   status      String   @default("PENDING") // PENDING, DIAGNOSIS, IN_PROGRESS, READY, DELIVERED, CANCELLED, ARCHIVED
-  partStatus  String   @default("IN_STOCK") // IN_STOCK, TO_ORDER, ORDERED
+  partStatus  String   @default("IN_STOCK") // IN_STOCK, TO_ORDER, ORDERED, WAITING_SIGNATURE, MICROSOLDERING
   clientId    String
   client      Client   @relation(fields: [clientId], references: [id])
   services    RepairService[]

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import {
+  ApiError,
   handleApiError,
   optionalString,
   requireInteger,

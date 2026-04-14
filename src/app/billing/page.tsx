@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import {
   ChevronRight,
   Download,
@@ -52,7 +52,7 @@ interface Repair {
   services: RepairService[]
 }
 
-export default function BillingPage() {
+function BillingContent() {
   const searchParams = useSearchParams()
   const [repairs, setRepairs] = useState<Repair[]>([])
   const [selectedRepairId, setSelectedRepairId] = useState<string | null>(null)
@@ -468,5 +468,13 @@ export default function BillingPage() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function BillingPage() {
+  return (
+    <Suspense fallback={null}>
+      <BillingContent />
+    </Suspense>
   )
 }

@@ -39,6 +39,7 @@ interface DeviceType {
 interface DeviceModel {
   id: string
   name: string
+  modelReference?: string | null
   brandId: string
   typeId: string
   brand: Brand
@@ -70,6 +71,8 @@ interface Service {
   id: string
   name: string
   laborCost: number
+  suggestedPrice: number
+  duration: number
   partId?: string | null
   part?: { name: string; costPrice: number } | null
   modelId?: string | null
