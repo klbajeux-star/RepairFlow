@@ -15,11 +15,11 @@ import {
 
 const navItems = [
   { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
-  { name: 'Statistiques', href: '/stats', icon: BarChart3 },
   { name: 'Réparations', href: '/repairs', icon: Wrench },
   { name: 'Clients', href: '/clients', icon: Users },
   { name: 'Catalogue', href: '/catalog', icon: Package },
   { name: 'Facturation', href: '/billing', icon: FileText },
+  { name: 'Stats', href: '/stats', icon: BarChart3 },
 ]
 
 const pageMeta: Record<string, { title: string; subtitle: string }> = {
