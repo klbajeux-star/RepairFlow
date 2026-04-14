@@ -176,6 +176,7 @@ interface Service {
   id: string
   name: string
   laborCost: number
+  suggestedPrice: number
   duration: number
   description?: string | null
   modelId?: string | null
@@ -1582,7 +1583,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                             </p>
                           </div>
                         </div>
-                        <p className="font-black text-slate-950">{formatCurrency(s.laborCost + (s.part?.costPrice ?? 0))}</p>
+                        <p className="font-black text-slate-950">{formatCurrency(s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0)))}</p>
                       </button>
                     )
                   })}
@@ -1637,7 +1638,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       <div key={s.id} className="flex items-center justify-between text-sm">
                         <span className="text-slate-600">{s.name}</span>
                         <span className="font-bold text-slate-950">
-                          {formatCurrency(s.laborCost + (s.part?.costPrice ?? 0))}
+                          {formatCurrency(s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0)))}
                         </span>
                       </div>
                     ))}
@@ -1649,7 +1650,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     {formatCurrency(
                       services
                         .filter((s) => quickFlowForm.serviceIds.includes(s.id))
-                        .reduce((sum, s) => sum + s.laborCost + (s.part?.costPrice ?? 0), 0)
+                        .reduce((sum, s) => sum + (s.suggestedPrice || (s.laborCost + (s.part?.costPrice ?? 0))), 0)
                     )}
                   </span>
                 </div>

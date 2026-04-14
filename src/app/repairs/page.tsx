@@ -37,6 +37,7 @@ interface Service {
   id: string
   name: string
   laborCost: number
+  suggestedPrice: number
   duration: number
   part?: Part | null
 }
@@ -594,7 +595,7 @@ function RepairsContent() {
                     >
                       <span className="font-bold text-slate-950">{service.name}</span>
                       <span className="mt-1 text-xs font-medium text-slate-500">
-                        {formatCurrency(service.laborCost)}
+                        {formatCurrency(service.suggestedPrice || (service.laborCost + (service.part?.costPrice ?? 0)))}
                       </span>
                     </button>
                   ))}

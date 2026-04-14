@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       })
 
       for (const service of services) {
-        const totalPrice = service.laborCost + (service.part?.costPrice ?? 0)
+        const totalPrice = service.suggestedPrice || (service.laborCost + (service.part?.costPrice ?? 0))
 
         await tx.repairService.create({
           data: {
