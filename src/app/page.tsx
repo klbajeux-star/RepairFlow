@@ -28,6 +28,7 @@ import {
   User,
   UserPlus,
   Wrench,
+  Cpu,
   X,
 } from 'lucide-react'
 import {
@@ -1048,8 +1049,12 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                                     >
                                       {repair.partStatus === 'TO_ORDER' ? (
                                         <ShoppingCart className="h-3.5 w-3.5" />
-                                      ) : (
+                                      ) : repair.partStatus === 'ORDERED' ? (
                                         <Truck className="h-3.5 w-3.5" />
+                                      ) : repair.partStatus === 'WAITING_SIGNATURE' ? (
+                                        <PencilLine className="h-3.5 w-3.5" />
+                                      ) : (
+                                        <Cpu className="h-3.5 w-3.5" />
                                       )}
                                       {getPartStatusLabel(repair.partStatus)}
                                     </span>
@@ -1233,8 +1238,12 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                                 <PackageCheck className="h-4 w-4" />
                               ) : status === 'TO_ORDER' ? (
                                 <ShoppingCart className="h-4 w-4" />
-                              ) : (
+                              ) : status === 'ORDERED' ? (
                                 <Truck className="h-4 w-4" />
+                              ) : status === 'WAITING_SIGNATURE' ? (
+                                <PencilLine className="h-4 w-4" />
+                              ) : (
+                                <Cpu className="h-4 w-4" />
                               )}
                               <span className="font-bold">{getPartStatusLabel(status)}</span>
                             </div>

@@ -30,19 +30,29 @@ export const repairStatusStyles: Record<RepairStatus, string> = {
   ARCHIVED: 'bg-slate-100 text-slate-500 opacity-60',
 }
 
-export const partStatuses = ['IN_STOCK', 'TO_ORDER', 'ORDERED'] as const
+export const partStatuses = [
+  'IN_STOCK',
+  'TO_ORDER',
+  'ORDERED',
+  'WAITING_SIGNATURE',
+  'MICROSOLDERING',
+] as const
 export type PartStatus = (typeof partStatuses)[number]
 
 export const partStatusLabels: Record<PartStatus, string> = {
   IN_STOCK: 'En stock',
   TO_ORDER: 'À commander',
   ORDERED: 'Commandé',
+  WAITING_SIGNATURE: 'Attente signature',
+  MICROSOLDERING: 'Microsoudure',
 }
 
 export const partStatusStyles: Record<PartStatus, string> = {
   IN_STOCK: 'bg-emerald-50 text-emerald-600 border-emerald-100',
   TO_ORDER: 'bg-rose-50 text-rose-600 border-rose-100',
   ORDERED: 'bg-amber-50 text-amber-600 border-amber-100',
+  WAITING_SIGNATURE: 'bg-orange-50 text-orange-600 border-orange-100',
+  MICROSOLDERING: 'bg-indigo-50 text-indigo-600 border-indigo-100',
 }
 
 export function isRepairStatus(value: unknown): value is RepairStatus {
