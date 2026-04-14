@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
 import {
+  BarChart3,
   CalendarClock,
   FileText,
   LayoutDashboard,
@@ -14,6 +15,7 @@ import {
 
 const navItems = [
   { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+  { name: 'Statistiques', href: '/stats', icon: BarChart3 },
   { name: 'Réparations', href: '/repairs', icon: Wrench },
   { name: 'Clients', href: '/clients', icon: Users },
   { name: 'Catalogue', href: '/catalog', icon: Package },
@@ -24,6 +26,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/': {
     title: 'Tableau de bord atelier',
     subtitle: 'Pilotez les tickets, les priorités et les actions du jour depuis un seul écran.',
+  },
+  '/stats': {
+    title: 'Statistiques & Performance',
+    subtitle: 'Analysez l’activité de votre atelier, suivez votre chiffre d’affaires et votre rentabilité.',
   },
   '/repairs': {
     title: 'Gestion des réparations',
