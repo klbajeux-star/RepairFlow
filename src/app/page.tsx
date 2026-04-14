@@ -776,18 +776,21 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
               title="Tickets ouverts"
               value={pendingCount + diagnosisCount + inProgressCount + readyCount}
               subtitle="Vision instantanée de la charge atelier"
+            onClick={() => router.push('/repairs')}
             />
             <StatCard
               icon={<FileText className="h-5 w-5" />}
               title="Devis à traiter"
               value={quoteWaitingCount}
               subtitle="Dossiers au stade diagnostic"
+            onClick={() => router.push('/billing')}
             />
             <StatCard
               icon={<Package className="h-5 w-5" />}
               title="Stock faible"
               value={lowStockParts.length}
               subtitle="Pièces à surveiller rapidement"
+            onClick={() => router.push('/inventory')}
             />
             <StatCard
               icon={<CheckCircle2 className="h-5 w-5" />}
@@ -1739,15 +1742,22 @@ function StatCard({
   value,
   subtitle,
   compactValue = false,
+  onClick,
 }: {
   icon: React.ReactNode
   title: string
   value: string | number
   subtitle: string
-  compactValue?: boolean
+  compactValue?: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <article className="rounded-[1.7rem] border border-white/90 bg-white/88 p-5 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.35)]">
+    <article 
+      onClick={onClick}
+      className={`rounded-[1.7rem] border border-white/90 bg-white/88 p-5 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.35)] transition-all ${
+        onClick ? 'cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_50px_-32px_rgba(15,23,42,0.45)] hover:border-blue-100' : ''
+      }`}
+    >
       <div className="inline-flex rounded-2xl bg-blue-50 p-3 text-blue-600">{icon}</div>
       <p className="mt-4 text-sm font-semibold text-slate-500">{title}</p>
       <p
