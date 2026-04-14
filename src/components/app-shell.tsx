@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -9,6 +9,7 @@ import {
   FileText,
   LayoutDashboard,
   Package,
+  ShoppingBag,
   Users,
   Wrench,
 } from 'lucide-react'
@@ -18,6 +19,7 @@ const navItems = [
   { name: 'Réparations', href: '/repairs', icon: Wrench },
   { name: 'Clients', href: '/clients', icon: Users },
   { name: 'Catalogue', href: '/catalog', icon: Package },
+  { name: 'Boutique', href: '/boutique', icon: ShoppingBag },
   { name: 'Facturation', href: '/billing', icon: FileText },
   { name: 'Stats', href: '/stats', icon: BarChart3 },
 ]
@@ -38,6 +40,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/catalog': {
     title: 'Catalogue atelier',
     subtitle: 'Gérez les pièces et les forfaits avec une lecture plus homogène et opérationnelle.',
+  },
+  '/boutique': {
+    title: 'Gestion Boutique',
+    subtitle: 'Suivez vos stocks de produits finis, accessoires et smartphones reconditionnés.',
   },
   '/inventory': {
     title: 'Catalogue atelier',

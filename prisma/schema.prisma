@@ -119,3 +119,20 @@ model RepairLog {
   comment   String?
   createdAt DateTime @default(now())
 }
+
+model ShopProduct {
+  id            String   @id @default(cuid())
+  name          String   // Ex: "Chargeur USB-C 20W"
+  category      String   // Chargeur, Protection, Coque, Smartphone, etc.
+  sku           String?  @unique
+  barcode       String?  @unique
+  purchasePrice Float    // Prix d'achat HT
+  sellingPrice  Float    // Prix de vente TTC
+  stock         Int      @default(0)
+  minStock      Int      @default(2)
+  supplier      String?
+  description   String?
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
