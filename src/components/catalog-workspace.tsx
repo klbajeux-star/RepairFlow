@@ -152,7 +152,17 @@ export function CatalogWorkspace() {
   const [parts, setParts] = useState<Part[]>([])
   
   const [search, setSearch] = useState('')
+  const [modelSearch, setModelSearch] = useState('')
+  const [showModelSuggestions, setShowModelSuggestions] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+
+  const filteredModelSuggestions = useMemo(() => {
+    const q = modelSearch.trim().toLowerCase()
+    if (!q) return []
+    return models
+      .filter((m) => m.name.toLowerCase().includes(q) || m.brand.name.toLowerCase().includes(q))
+      .slice(0, 5)
+  }, [models, modelSearch])
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [drawerError, setDrawerError] = useState<string | null>(null)
@@ -248,6 +258,15 @@ export function CatalogWorkspace() {
     setDrawerType(type)
     setEditingId(item?.id || null)
     setDrawerError(null)
+    setShowModelSuggestions(false)
+    
+    if (type === 'service' || type === 'part') {
+      if (item?.model) {
+        setModelSearch(`${item.model.brand.name} ${item.model.name}`)
+      } else {
+        setModelSearch('')
+      }
+    }
     
     if (type === 'model') setModelForm(item ? { name: item.name, modelReference: item.modelReference || '', brandId: item.brandId, typeId: item.typeId } : initialModelForm)
     if (type === 'service') setServiceForm(item ? { name: item.name, laborCost: item.laborCost.toString(), suggestedPrice: item.suggestedPrice?.toString() || '', duration: item.duration?.toString() || '30', partId: item.partId || '', modelId: item.modelId || '', description: item.description || '' } : initialServiceForm)
@@ -666,10 +685,51 @@ export function CatalogWorkspace() {
               </Field>
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Modèle concerné">
-                  <select value={serviceForm.modelId} onChange={e => setServiceForm(p => ({...p, modelId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                    <option value="">Universel</option>
-                    {models.map(m => <option key={m.id} value={m.id}>{m.brand.name} {m.name}</option>)}
-                  </select>
+                  <div className="relative">
+                    <input
+                      value={modelSearch}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setModelSearch(val)
+                        setShowModelSuggestions(val.length > 0)
+                        if (!val) setServiceForm(prev => ({ ...prev, modelId: '' }))
+                      }}
+                      placeholder="Cherchez un modèle (ex: iPhone 13)..."
+                      className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 outline-none focus:border-blue-400 focus:bg-white font-bold placeholder:font-normal"
+                    />
+                    
+                    {showModelSuggestions && filteredModelSuggestions.length > 0 && (
+                      <div className="absolute left-0 top-full z-20 mt-2 w-full space-y-1 rounded-xl border border-slate-100 bg-white p-2 shadow-2xl">
+                        {filteredModelSuggestions.map((m) => (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => {
+                              setServiceForm((prev) => ({ ...prev, modelId: m.id }))
+                              setModelSearch(`${m.brand.name} ${m.name}`)
+                              setShowModelSuggestions(false)
+                            }}
+                            className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-sm transition hover:bg-slate-50"
+                          >
+                            <div>
+                              <p className="font-bold text-slate-950">{m.name}</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                {m.brand.name} • {m.type.name}
+                              </p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-slate-300" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {!serviceForm.modelId && (
+                      <div className="mt-2 flex items-center gap-2 rounded-xl bg-slate-100/50 px-3 py-1.5 ring-1 ring-inset ring-slate-100">
+                        <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Service Universel</span>
+                      </div>
+                    )}
+                  </div>
                 </Field>
                 <Field label="Durée (min)">
                   <input type="number" value={serviceForm.duration} onChange={e => setServiceForm(p => ({...p, duration: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3" />
@@ -741,10 +801,51 @@ export function CatalogWorkspace() {
                   <input type="number" value={partForm.minStock} onChange={e => setPartForm(p => ({...p, minStock: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-red-600 font-bold" />
                 </Field>
                 <Field label="Modèle spécifique">
-                  <select value={partForm.modelId} onChange={e => setPartForm(p => ({...p, modelId: e.target.value}))} className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                    <option value="">Générique</option>
-                    {models.map(m => <option key={m.id} value={m.id}>{m.brand.name} {m.name}</option>)}
-                  </select>
+                  <div className="relative">
+                    <input
+                      value={modelSearch}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setModelSearch(val)
+                        setShowModelSuggestions(val.length > 0)
+                        if (!val) setPartForm(prev => ({ ...prev, modelId: '' }))
+                      }}
+                      placeholder="Cherchez un modèle (ex: iPhone 13)..."
+                      className="w-full rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 outline-none focus:border-blue-400 focus:bg-white font-bold placeholder:font-normal"
+                    />
+                    
+                    {showModelSuggestions && filteredModelSuggestions.length > 0 && (
+                      <div className="absolute left-0 top-full z-20 mt-2 w-full space-y-1 rounded-xl border border-slate-100 bg-white p-2 shadow-2xl">
+                        {filteredModelSuggestions.map((m) => (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => {
+                              setPartForm((prev) => ({ ...prev, modelId: m.id }))
+                              setModelSearch(`${m.brand.name} ${m.name}`)
+                              setShowModelSuggestions(false)
+                            }}
+                            className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-sm transition hover:bg-slate-50"
+                          >
+                            <div>
+                              <p className="font-bold text-slate-950">{m.name}</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                {m.brand.name} • {m.type.name}
+                              </p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-slate-300" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {!partForm.modelId && (
+                      <div className="mt-2 flex items-center gap-2 rounded-xl bg-slate-100/50 px-3 py-1.5 ring-1 ring-inset ring-slate-100">
+                        <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Pièce Générique</span>
+                      </div>
+                    )}
+                  </div>
                 </Field>
               </div>
               <div className="grid grid-cols-2 gap-4">
