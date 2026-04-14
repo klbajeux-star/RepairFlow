@@ -1756,24 +1756,42 @@ export namespace Prisma {
   export type ClientMinAggregateOutputType = {
     id: string | null
     name: string | null
+    firstName: string | null
+    lastName: string | null
+    clientType: string | null
     email: string | null
     phone: string | null
+    address: string | null
+    zipCode: string | null
+    city: string | null
     createdAt: Date | null
   }
 
   export type ClientMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    firstName: string | null
+    lastName: string | null
+    clientType: string | null
     email: string | null
     phone: string | null
+    address: string | null
+    zipCode: string | null
+    city: string | null
     createdAt: Date | null
   }
 
   export type ClientCountAggregateOutputType = {
     id: number
     name: number
+    firstName: number
+    lastName: number
+    clientType: number
     email: number
     phone: number
+    address: number
+    zipCode: number
+    city: number
     createdAt: number
     _all: number
   }
@@ -1782,24 +1800,42 @@ export namespace Prisma {
   export type ClientMinAggregateInputType = {
     id?: true
     name?: true
+    firstName?: true
+    lastName?: true
+    clientType?: true
     email?: true
     phone?: true
+    address?: true
+    zipCode?: true
+    city?: true
     createdAt?: true
   }
 
   export type ClientMaxAggregateInputType = {
     id?: true
     name?: true
+    firstName?: true
+    lastName?: true
+    clientType?: true
     email?: true
     phone?: true
+    address?: true
+    zipCode?: true
+    city?: true
     createdAt?: true
   }
 
   export type ClientCountAggregateInputType = {
     id?: true
     name?: true
+    firstName?: true
+    lastName?: true
+    clientType?: true
     email?: true
     phone?: true
+    address?: true
+    zipCode?: true
+    city?: true
     createdAt?: true
     _all?: true
   }
@@ -1879,8 +1915,14 @@ export namespace Prisma {
   export type ClientGroupByOutputType = {
     id: string
     name: string
+    firstName: string | null
+    lastName: string | null
+    clientType: string
     email: string | null
     phone: string
+    address: string | null
+    zipCode: string | null
+    city: string | null
     createdAt: Date
     _count: ClientCountAggregateOutputType | null
     _min: ClientMinAggregateOutputType | null
@@ -1904,8 +1946,14 @@ export namespace Prisma {
   export type ClientSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    clientType?: boolean
     email?: boolean
     phone?: boolean
+    address?: boolean
+    zipCode?: boolean
+    city?: boolean
     createdAt?: boolean
     repairs?: boolean | Client$repairsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
@@ -1914,8 +1962,14 @@ export namespace Prisma {
   export type ClientSelectScalar = {
     id?: boolean
     name?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    clientType?: boolean
     email?: boolean
     phone?: boolean
+    address?: boolean
+    zipCode?: boolean
+    city?: boolean
     createdAt?: boolean
   }
 
@@ -1933,8 +1987,14 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      firstName: string | null
+      lastName: string | null
+      clientType: string
       email: string | null
       phone: string
+      address: string | null
+      zipCode: string | null
+      city: string | null
       createdAt: Date
     }, ExtArgs["result"]["client"]>
     composites: {}
@@ -2317,8 +2377,14 @@ export namespace Prisma {
   interface ClientFieldRefs {
     readonly id: FieldRef<"Client", 'String'>
     readonly name: FieldRef<"Client", 'String'>
+    readonly firstName: FieldRef<"Client", 'String'>
+    readonly lastName: FieldRef<"Client", 'String'>
+    readonly clientType: FieldRef<"Client", 'String'>
     readonly email: FieldRef<"Client", 'String'>
     readonly phone: FieldRef<"Client", 'String'>
+    readonly address: FieldRef<"Client", 'String'>
+    readonly zipCode: FieldRef<"Client", 'String'>
+    readonly city: FieldRef<"Client", 'String'>
     readonly createdAt: FieldRef<"Client", 'DateTime'>
   }
     
@@ -10306,8 +10372,14 @@ export namespace Prisma {
   export const ClientScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    clientType: 'clientType',
     email: 'email',
     phone: 'phone',
+    address: 'address',
+    zipCode: 'zipCode',
+    city: 'city',
     createdAt: 'createdAt'
   };
 
@@ -10471,8 +10543,14 @@ export namespace Prisma {
     NOT?: ClientWhereInput | ClientWhereInput[]
     id?: StringFilter<"Client"> | string
     name?: StringFilter<"Client"> | string
+    firstName?: StringNullableFilter<"Client"> | string | null
+    lastName?: StringNullableFilter<"Client"> | string | null
+    clientType?: StringFilter<"Client"> | string
     email?: StringNullableFilter<"Client"> | string | null
     phone?: StringFilter<"Client"> | string
+    address?: StringNullableFilter<"Client"> | string | null
+    zipCode?: StringNullableFilter<"Client"> | string | null
+    city?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
     repairs?: RepairListRelationFilter
   }
@@ -10480,8 +10558,14 @@ export namespace Prisma {
   export type ClientOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    firstName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    clientType?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrder
+    address?: SortOrderInput | SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     repairs?: RepairOrderByRelationAggregateInput
   }
@@ -10492,8 +10576,14 @@ export namespace Prisma {
     OR?: ClientWhereInput[]
     NOT?: ClientWhereInput | ClientWhereInput[]
     name?: StringFilter<"Client"> | string
+    firstName?: StringNullableFilter<"Client"> | string | null
+    lastName?: StringNullableFilter<"Client"> | string | null
+    clientType?: StringFilter<"Client"> | string
     email?: StringNullableFilter<"Client"> | string | null
     phone?: StringFilter<"Client"> | string
+    address?: StringNullableFilter<"Client"> | string | null
+    zipCode?: StringNullableFilter<"Client"> | string | null
+    city?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
     repairs?: RepairListRelationFilter
   }, "id">
@@ -10501,8 +10591,14 @@ export namespace Prisma {
   export type ClientOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    firstName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    clientType?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrder
+    address?: SortOrderInput | SortOrder
+    zipCode?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ClientCountOrderByAggregateInput
     _max?: ClientMaxOrderByAggregateInput
@@ -10515,8 +10611,14 @@ export namespace Prisma {
     NOT?: ClientScalarWhereWithAggregatesInput | ClientScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Client"> | string
     name?: StringWithAggregatesFilter<"Client"> | string
+    firstName?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    lastName?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    clientType?: StringWithAggregatesFilter<"Client"> | string
     email?: StringNullableWithAggregatesFilter<"Client"> | string | null
     phone?: StringWithAggregatesFilter<"Client"> | string
+    address?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    zipCode?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    city?: StringNullableWithAggregatesFilter<"Client"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
   }
 
@@ -11052,8 +11154,14 @@ export namespace Prisma {
   export type ClientCreateInput = {
     id?: string
     name: string
+    firstName?: string | null
+    lastName?: string | null
+    clientType?: string
     email?: string | null
     phone: string
+    address?: string | null
+    zipCode?: string | null
+    city?: string | null
     createdAt?: Date | string
     repairs?: RepairCreateNestedManyWithoutClientInput
   }
@@ -11061,8 +11169,14 @@ export namespace Prisma {
   export type ClientUncheckedCreateInput = {
     id?: string
     name: string
+    firstName?: string | null
+    lastName?: string | null
+    clientType?: string
     email?: string | null
     phone: string
+    address?: string | null
+    zipCode?: string | null
+    city?: string | null
     createdAt?: Date | string
     repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
   }
@@ -11070,8 +11184,14 @@ export namespace Prisma {
   export type ClientUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    clientType?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairUpdateManyWithoutClientNestedInput
   }
@@ -11079,8 +11199,14 @@ export namespace Prisma {
   export type ClientUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    clientType?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
   }
@@ -11088,16 +11214,28 @@ export namespace Prisma {
   export type ClientUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    clientType?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    clientType?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11631,24 +11769,42 @@ export namespace Prisma {
   export type ClientCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    clientType?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ClientMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    clientType?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ClientMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    clientType?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -13405,16 +13561,28 @@ export namespace Prisma {
   export type ClientCreateWithoutRepairsInput = {
     id?: string
     name: string
+    firstName?: string | null
+    lastName?: string | null
+    clientType?: string
     email?: string | null
     phone: string
+    address?: string | null
+    zipCode?: string | null
+    city?: string | null
     createdAt?: Date | string
   }
 
   export type ClientUncheckedCreateWithoutRepairsInput = {
     id?: string
     name: string
+    firstName?: string | null
+    lastName?: string | null
+    clientType?: string
     email?: string | null
     phone: string
+    address?: string | null
+    zipCode?: string | null
+    city?: string | null
     createdAt?: Date | string
   }
 
@@ -13475,16 +13643,28 @@ export namespace Prisma {
   export type ClientUpdateWithoutRepairsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    clientType?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientUncheckedUpdateWithoutRepairsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    clientType?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    zipCode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

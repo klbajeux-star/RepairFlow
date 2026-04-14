@@ -1,22 +1,34 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Mail, Phone, Plus, Search, Users, X } from 'lucide-react'
+import { Mail, MapPin, Phone, Plus, Search, Users, X } from 'lucide-react'
 import { formatDate } from '@/lib/repair'
 
 interface Client {
   id: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
   email?: string | null
   phone: string
+  clientType?: string | null
+  address?: string | null
+  zipCode?: string | null
+  city?: string | null
   createdAt: string
   repairCount?: number
 }
 
 const initialForm = {
+  firstName: '',
+  lastName: '',
   name: '',
   email: '',
   phone: '',
+  clientType: 'Particulier',
+  address: '',
+  zipCode: '',
+  city: '',
 }
 
 export default function ClientsPage() {
@@ -67,9 +79,15 @@ export default function ClientsPage() {
   function openEditModal(client: Client) {
     setEditingClient(client)
     setFormData({
+      firstName: client.firstName ?? '',
+      lastName: client.lastName ?? '',
       name: client.name,
       email: client.email ?? '',
       phone: client.phone,
+      clientType: client.clientType ?? 'Particulier',
+      address: client.address ?? '',
+      zipCode: client.zipCode ?? '',
+      city: client.city ?? '',
     })
     setError(null)
     setShowModal(true)
@@ -82,12 +100,19 @@ export default function ClientsPage() {
       setIsSaving(true)
       setError(null)
 
+      const payload = {
+        ...formData,
+        name: formData.firstName && formData.lastName 
+          ? `${formData.firstName} ${formData.lastName}`.trim()
+          : formData.name || `${formData.firstName} ${formData.lastName}`.trim()
+      }
+
       const response = await fetch(
         editingClient ? `/api/clients/${editingClient.id}` : '/api/clients',
         {
           method: editingClient ? 'PATCH' : 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         }
       )
 
@@ -120,7 +145,7 @@ export default function ClientsPage() {
     }
 
     return clients.filter((client) =>
-      [client.name, client.phone, client.email ?? '']
+      [client.name, client.phone, client.email ?? '', client.city ?? '']
         .join(' ')
         .toLowerCase()
         .includes(query)
@@ -158,13 +183,13 @@ export default function ClientsPage() {
 
         <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
           <div className="inline-flex rounded-2xl bg-violet-100 p-3 text-violet-700 shadow-sm ring-1 ring-inset ring-violet-200/50">
-            <Mail className="h-6 w-6" />
+            <MapPin className="h-6 w-6" />
           </div>
           <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
-            Emails renseignés
+            Zones desservies
           </p>
           <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-            {clients.filter((client) => Boolean(client.email)).length}
+            {new Set(clients.map(c => c.city).filter(Boolean)).size}
           </p>
         </article>
       </section>
@@ -176,7 +201,7 @@ export default function ClientsPage() {
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Rechercher par nom, téléphone ou email"
+              placeholder="Rechercher par nom, téléphone, ville..."
               className="w-full rounded-2xl border border-slate-200 bg-white/60 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
             />
           </div>
@@ -202,7 +227,7 @@ export default function ClientsPage() {
             <thead>
               <tr className="border-b border-slate-100 text-[0.7rem] font-black uppercase tracking-[0.24em] text-slate-400">
                 <th className="px-4 py-4">Client</th>
-                <th className="px-4 py-4">Coordonnées</th>
+                <th className="px-4 py-4">Localisation</th>
                 <th className="px-4 py-4">Historique</th>
                 <th className="px-4 py-4">Créé le</th>
                 <th className="px-4 py-4 text-right">Action</th>
@@ -214,21 +239,21 @@ export default function ClientsPage() {
                   <tr key={client.id} className="group hover:bg-white/40 transition-colors">
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 font-black text-emerald-700">
-                          {client.name.charAt(0).toUpperCase()}
+                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 font-black text-emerald-700 uppercase">
+                          {client.name.charAt(0)}
                         </div>
                         <div>
                           <p className="font-black text-slate-950">{client.name}</p>
                           <p className="text-sm text-slate-500">
-                            ID client {client.id.slice(-6).toUpperCase()}
+                            {client.phone}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-4">
                       <div className="space-y-1 text-sm text-slate-600">
-                        <p>{client.phone}</p>
-                        <p>{client.email || 'Aucun email renseigné'}</p>
+                        <p className="font-bold">{client.city || 'N/A'}</p>
+                        <p className="text-xs text-slate-400">{client.email || 'Aucun email'}</p>
                       </div>
                     </td>
                     <td className="px-4 py-4">
@@ -265,12 +290,12 @@ export default function ClientsPage() {
       </section>
 
       {showModal ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-[2rem] border border-white/60 bg-white p-6 shadow-2xl shadow-slate-900/15">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-2xl my-8 rounded-[2rem] border border-white/60 bg-white p-8 shadow-2xl shadow-slate-900/15">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.26em] text-emerald-600">
-                  Fiche client
+                  Fiche client détaillée
                 </p>
                 <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
                   {editingClient ? 'Modifier le client' : 'Nouveau client'}
@@ -285,63 +310,119 @@ export default function ClientsPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Nom complet
-                </label>
-                <input
-                  required
-                  value={formData.name}
-                  onChange={(event) =>
-                    setFormData((current) => ({ ...current, name: event.target.value }))
-                  }
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
-                />
+            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Prénom
+                  </label>
+                  <input
+                    required
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Nom
+                  </label>
+                  <input
+                    required
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Téléphone
+                  </label>
+                  <input
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Type de client
+                  </label>
+                  <select
+                    value={formData.clientType}
+                    onChange={(e) => setFormData({ ...formData, clientType: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white appearance-none"
+                  >
+                    <option value="Particulier">Particulier</option>
+                    <option value="Professionnel">Professionnel</option>
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
-                  Téléphone
-                </label>
-                <input
-                  required
-                  value={formData.phone}
-                  onChange={(event) =>
-                    setFormData((current) => ({ ...current, phone: event.target.value }))
-                  }
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
+                <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
                   Email
                 </label>
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(event) =>
-                    setFormData((current) => ({ ...current, email: event.target.value }))
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
                 />
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div>
+                <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                  Adresse
+                </label>
+                <input
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Code Postal
+                  </label>
+                  <input
+                    value={formData.zipCode}
+                    onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Ville
+                  </label>
+                  <input
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-2xl border border-slate-200 px-4 py-3 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                  className="flex-1 rounded-2xl border border-slate-200 px-6 py-4 font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex-1 rounded-2xl bg-emerald-600 px-4 py-3 font-bold text-white shadow-lg shadow-emerald-600/10 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex-1 rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white shadow-xl shadow-slate-950/20 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isSaving ? 'Enregistrement...' : 'Enregistrer'}
+                  {isSaving ? 'Enregistrement...' : 'Enregistrer le client'}
                 </button>
               </div>
             </form>

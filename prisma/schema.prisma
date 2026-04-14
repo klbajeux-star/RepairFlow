@@ -12,12 +12,18 @@ datasource db {
 }
 
 model Client {
-  id      String   @id @default(cuid())
-  name    String
-  email   String?
-  phone   String
-  repairs Repair[]
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  name        String   // Champ complet pour l'affichage (Nom + Prénom)
+  firstName   String?
+  lastName    String?
+  clientType  String   @default("Particulier") // Particulier | Professionnel
+  email       String?
+  phone       String
+  address     String?
+  zipCode     String?
+  city        String?
+  repairs     Repair[]
+  createdAt   DateTime @default(now())
 }
 
 model DeviceType {

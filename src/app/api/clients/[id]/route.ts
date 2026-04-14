@@ -15,12 +15,22 @@ export async function PATCH(
     const { id } = await context.params
     const json = await request.json()
 
+    const firstName = optionalString(json.firstName, 60)
+    const lastName = optionalString(json.lastName, 60)
+    const fullName = [firstName, lastName].filter(Boolean).join(' ') || json.name || 'Client Inconnu'
+
     const client = await prisma.client.update({
       where: { id: requireId(id, 'Le client') },
       data: {
-        name: requireString(json.name, 'Le nom du client', { maxLength: 120 }),
+        name: fullName,
+        firstName,
+        lastName,
+        clientType: json.clientType || 'Particulier',
         email: optionalString(json.email, 120),
         phone: requireString(json.phone, 'Le téléphone', { maxLength: 40 }),
+        address: optionalString(json.address, 200),
+        zipCode: optionalString(json.zipCode, 20),
+        city: optionalString(json.city, 100),
       },
     })
 

@@ -4,6 +4,11 @@ interface Client {
   id: string
   name: string
   phone: string
+  email?: string | null
+  address?: string | null
+  zipCode?: string | null
+  city?: string | null
+  clientType?: string | null
 }
 
 interface Service {
@@ -35,7 +40,7 @@ export function generateIntakePDF(data: IntakeData) {
   // Header
   doc.setFontSize(22)
   doc.setFont('helvetica', 'bold')
-  doc.text('BON DE PRIS EN CHARGE', margin, y)
+  doc.text('BON DE PRISE EN CHARGE', margin, y)
   
   doc.setFontSize(10)
   doc.setFont('helvetica', 'normal')
@@ -45,11 +50,11 @@ export function generateIntakePDF(data: IntakeData) {
   doc.text(`Date: ${data.date}`, 210 - margin, y, { align: 'right' })
   y += 15
 
-  // Shop Info (Placeholder)
+  // Shop Info
   doc.setFontSize(12)
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(0)
-  doc.text('REPAIRFLOW - ATELIER DE RÉPARATION', margin, y)
+  doc.text('MOMUY&TECH - REPARATION SMARTPHONE ET ELECTRONIQUE', margin, y)
   y += 6
   doc.setFontSize(10)
   doc.setFont('helvetica', 'normal')
@@ -60,15 +65,23 @@ export function generateIntakePDF(data: IntakeData) {
 
   // Client Info
   doc.setFillColor(245, 247, 250)
-  doc.rect(margin, y, 170, 25, 'F')
+  doc.rect(margin, y, 170, 40, 'F')
   y += 8
   doc.setFont('helvetica', 'bold')
-  doc.text('CLIENT', margin + 5, y)
+  doc.text(`CLIENT (${data.client.clientType || 'Particulier'})`, margin + 5, y)
   y += 6
   doc.setFont('helvetica', 'normal')
   doc.text(`${data.client.name}`, margin + 5, y)
   y += 5
-  doc.text(`${data.client.phone}`, margin + 5, y)
+  doc.text(`${data.client.phone} | ${data.client.email || 'Pas d\'email'}`, margin + 5, y)
+  y += 5
+  if (data.client.address) {
+    doc.text(`${data.client.address}`, margin + 5, y)
+    y += 5
+    doc.text(`${data.client.zipCode || ''} ${data.client.city || ''}`, margin + 5, y)
+  } else {
+    doc.text('Adresse non renseignée', margin + 5, y)
+  }
   y += 15
 
   // Device Info

@@ -161,8 +161,14 @@ interface DeviceModel {
 interface Client {
   id: string
   name: string
+  firstName?: string | null
+  lastName?: string | null
+  clientType?: string | null
   phone: string
   email?: string | null
+  address?: string | null
+  zipCode?: string | null
+  city?: string | null
 }
 
 interface Part {
@@ -261,9 +267,14 @@ const kanbanColumns: Array<{
 ]
 
 const initialClientForm = {
-  name: '',
+  firstName: '',
+  lastName: '',
   phone: '',
   email: '',
+  clientType: 'Particulier',
+  address: '',
+  zipCode: '',
+  city: '',
 }
 
 const initialQuickFlowForm = {
@@ -529,7 +540,10 @@ export default function Dashboard() {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(clientForm),
+          body: JSON.stringify({
+            ...clientForm,
+            name: `${clientForm.firstName} ${clientForm.lastName}`.trim(),
+          }),
         },
         'Impossible de créer le client.'
       )
@@ -1425,23 +1439,83 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       Annuler
                     </button>
                   </div>
-                  <div className="space-y-4">
-                    <Field label="Nom complet">
-                      <input 
-                        value={clientForm.name} 
-                        onChange={e => setClientForm(p => ({ ...p, name: e.target.value }))}
+                                    <div className="space-y-4">
+                    <Field label="Type de client">
+                      <select
+                        value={clientForm.clientType || ''}
+                        onChange={e => setClientForm(p => ({ ...p, clientType: e.target.value }))}
                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
-                        placeholder="Jean Dupont"
+                      >
+                        <option value="Particulier">Particulier</option>
+                        <option value="Professionnel">Professionnel</option>
+                      </select>
+                    </Field>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Prénom">
+                        <input 
+                          value={clientForm.firstName || ''} 
+                          onChange={e => setClientForm(p => ({ ...p, firstName: e.target.value }))}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                          placeholder="Jean"
+                        />
+                      </Field>
+                      <Field label="Nom">
+                        <input 
+                          value={clientForm.lastName || ''} 
+                          onChange={e => setClientForm(p => ({ ...p, lastName: e.target.value }))}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                          placeholder="Dupont"
+                        />
+                      </Field>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Téléphone">
+                        <input 
+                          value={clientForm.phone} 
+                          onChange={e => setClientForm(p => ({ ...p, phone: e.target.value }))}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                          placeholder="06 12 34 56 78"
+                        />
+                      </Field>
+                      <Field label="Email">
+                        <input 
+                          value={clientForm.email || ''} 
+                          onChange={e => setClientForm(p => ({ ...p, email: e.target.value }))}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                          placeholder="jean.dupont@email.com"
+                        />
+                      </Field>
+                    </div>
+
+                    <Field label="Adresse">
+                      <input 
+                        value={clientForm.address || ''} 
+                        onChange={e => setClientForm(p => ({ ...p, address: e.target.value }))}
+                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                        placeholder="123 rue de la Paix"
                       />
                     </Field>
-                    <Field label="Téléphone">
-                      <input 
-                        value={clientForm.phone} 
-                        onChange={e => setClientForm(p => ({ ...p, phone: e.target.value }))}
-                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
-                        placeholder="06 12 34 56 78"
-                      />
-                    </Field>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Code postal">
+                        <input 
+                          value={clientForm.zipCode || ''} 
+                          onChange={e => setClientForm(p => ({ ...p, zipCode: e.target.value }))}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                          placeholder="75000"
+                        />
+                      </Field>
+                      <Field label="Ville">
+                        <input 
+                          value={clientForm.city || ''} 
+                          onChange={e => setClientForm(p => ({ ...p, city: e.target.value }))}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                          placeholder="Paris"
+                        />
+                      </Field>
+                    </div>
                   </div>
                   <button
                     disabled={isSavingClient}
