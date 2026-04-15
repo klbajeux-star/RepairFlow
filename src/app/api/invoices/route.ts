@@ -40,19 +40,30 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const json = await request.json()
-    const number = await generateInvoiceNumber()
+    const json = await request.json().catch(() => null)
+    if (!json) {
+      return NextResponse.json({ error: 'Payload JSON invalide ou manquant.' }, { status: 400 })
+    }
+
+    if (!json.clientId) {
+      return NextResponse.json({ error: 'Le client est obligatoire.' }, { status: 400 })
+    }
+
+    const number = await generateInvoiceNumber().catch(e => {
+      console.error('[INVOICE NUMBER ERROR]', e)
+      throw new Error('Erreur lors de la génération du numéro de facture.')
+    })
     
     const quoteId = optionalString(json.quoteId)
     
     const invoice = await prisma.invoice.create({
       data: {
         number,
-        clientId: requireId(json.clientId, 'Client'),
+        clientId: json.clientId,
         repairId: optionalString(json.repairId),
         items: JSON.stringify(json.items || []),
-        totalHT: requireNumber(json.totalHT, 'Total HT'),
-        totalTTC: requireNumber(json.totalTTC, 'Total TTC'),
+        totalHT: requireNumber(json.totalHT || 0, 'Total HT'),
+        totalTTC: requireNumber(json.totalTTC || 0, 'Total TTC'),
         notes: optionalString(json.notes),
         paid: !!json.paid,
       },

@@ -277,9 +277,13 @@ function BillingContent() {
         body: JSON.stringify(payload)
       })
 
-      if (!res.ok) throw new Error('Erreur lors de l’enregistrement.')
+      const data = await res.json().catch(() => ({ error: 'Impossible de lire la réponse du serveur.' }))
       
-      const saved = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Erreur lors de l’enregistrement.')
+      }
+      
+      const saved = data
       setDraftNumber(saved.number)
       setSelectedDocId(saved.id)
       setSelectedDocType(editorMode)

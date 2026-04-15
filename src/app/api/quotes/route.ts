@@ -44,19 +44,29 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const json = await request.json()
+    const json = await request.json().catch(() => null)
+    if (!json) {
+      return NextResponse.json({ error: 'Payload JSON invalide ou manquant.' }, { status: 400 })
+    }
     
-    const number = await generateQuoteNumber()
+    if (!json.clientId) {
+      return NextResponse.json({ error: 'Le client est obligatoire.' }, { status: 400 })
+    }
+
+    const number = await generateQuoteNumber().catch(e => {
+      console.error('[QUOTE NUMBER ERROR]', e)
+      throw new Error('Erreur lors de la génération du numéro de devis.')
+    })
     
     const quote = await prisma.quote.create({
       data: {
         number,
         status: optionalString(json.status) || 'BROUILLON',
-        clientId: requireId(json.clientId, 'Client'),
+        clientId: json.clientId,
         repairId: optionalString(json.repairId),
         items: JSON.stringify(json.items || []),
-        totalHT: requireNumber(json.totalHT, 'Total HT'),
-        totalTTC: requireNumber(json.totalTTC, 'Total TTC'),
+        totalHT: requireNumber(json.totalHT || 0, 'Total HT'),
+        totalTTC: requireNumber(json.totalTTC || 0, 'Total TTC'),
         notes: optionalString(json.notes),
         validUntil: json.validUntil ? new Date(json.validUntil) : null,
       },
