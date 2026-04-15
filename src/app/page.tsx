@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle,
+  Archive,
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
@@ -29,6 +30,7 @@ import {
   UserPlus,
   Wrench,
   Cpu,
+  Trash2,
   X,
 } from 'lucide-react'
 import {
@@ -1342,11 +1344,32 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                         )
                       })}
 
-                      {(selectedRepair.logs ?? []).length === 0 ? (
+                      {(selectedRepair.logs ?? []).length === 0 ? ( /* marker_abc123 */
                         <div className="rounded-2xl bg-white px-4 py-6 text-sm text-slate-500 shadow-sm">
                           Aucun historique disponible pour ce ticket.
                         </div>
                       ) : null}
+                    </div>
+
+                  <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4 shadow-sm transition-all hover:bg-white mb-4">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.24em] text-slate-400">
+                      Actions de gestion
+                    </p>
+                    <div className="mt-4 flex flex-col gap-2">
+                      <button
+                        onClick={() => archiveRepair(selectedRepair.id)}
+                        className="flex w-full items-center justify-between rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"
+                      >
+                        Archiver le dossier
+                        <Package className="h-4 w-4 text-slate-400" />
+                      </button>
+                      <button
+                        onClick={() => deleteRepair(selectedRepair.id)}
+                        className="flex w-full items-center justify-between rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-600 transition hover:border-rose-200 hover:bg-rose-100"
+                      >
+                        Supprimer le ticket
+                        <X className="h-4 w-4 text-rose-400" />
+                      </button>
                     </div>
                   </div>
                 </div>
