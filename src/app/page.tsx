@@ -41,6 +41,7 @@ import {
   getRepairStatusLabel,
   getRepairStatusStyle,
   getRepairTotal,
+  getTicketReference,
   PartStatus,
   partStatuses,
 } from '@/lib/repair'
@@ -349,15 +350,6 @@ async function apiRequest<T>(input: RequestInfo | URL, init: RequestInit, fallba
   return payload as T
 }
 
-function getTicketReference(repair: Repair) {
-  const createdAt = new Date(repair.createdAt)
-  const dateFragment = `${String(createdAt.getFullYear()).slice(-2)}${String(
-    createdAt.getMonth() + 1
-  ).padStart(2, '0')}${String(createdAt.getDate()).padStart(2, '0')}`
-
-  return `INT-${dateFragment}-${repair.id.slice(-4).toUpperCase()}`
-}
-
 function getRepairSummary(repair: Repair) {
   const serviceLabel = repair.services.map((service) => service.service.name).join(' • ')
   return serviceLabel || 'Aucune prestation renseignée'
@@ -448,8 +440,13 @@ export default function Dashboard() {
             : 'Une partie du tableau de bord est indisponible.'
         )
 
+      const nextQuotes =
+        quotesResult.status === 'fulfilled' && Array.isArray(quotesResult.value)
+          ? quotesResult.value
+          : []
+
       setRepairs(nextRepairs)
-      setQuotes(quotesResult.status === 'fulfilled' ? quotesResult.value : [])
+      setQuotes(nextQuotes)
       setClients(nextClients)
       setParts(nextParts)
       setServices(nextServices)
@@ -871,7 +868,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             <StatCard
               icon={<FileText className="h-5 w-5" />}
               title="Devis à traiter"
-              value={quotes.filter(q => q.status === 'EN_ATTENTE' || q.status === 'BROUILLON').length}
+              value={(quotes || []).filter(q => q.status === 'EN_ATTENTE' || q.status === 'BROUILLON').length}
               subtitle="En attente ou brouillon"
             onClick={() => router.push('/billing?tab=quotes')}
             />
@@ -1349,6 +1346,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                           Aucun historique disponible pour ce ticket.
                         </div>
                       ) : null}
+                  </div>
                     </div>
 
                   <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4 shadow-sm transition-all hover:bg-white mb-4">

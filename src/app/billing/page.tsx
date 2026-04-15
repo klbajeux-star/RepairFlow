@@ -32,6 +32,7 @@ import {
   getRepairStatusLabel,
   getRepairStatusStyle,
   getRepairTotal,
+  getTicketReference,
 } from '@/lib/repair'
 import jsPDF from 'jspdf'
 
@@ -242,7 +243,9 @@ function BillingContent() {
       price: s.priceAtTime,
       quantity: s.quantity
     })))
-    setDraftNotes(repair.notes || '')
+    const ticketRef = getTicketReference(repair)
+    const autoNote = `Document généré à partir du ticket ${ticketRef}`
+    setDraftNotes(repair.notes ? `${repair.notes}\n\n${autoNote}` : autoNote)
     setDraftNumber('NOUVEAU')
     setDraftStatus('BROUILLON')
     setDraftPaid(false)
@@ -415,6 +418,13 @@ function BillingContent() {
       })
   }, [repairs, search])
 
+  const draftTicketRef = useMemo(() => {
+    if (!draftRepairId) return null
+    const r = repairs.find(repair => repair.id === draftRepairId)
+    if (!r) return null
+    return getTicketReference(r)
+  }, [draftRepairId, repairs])
+
   const handleDownload = async () => {
     if (!draftClient) return
     setIsDownloading(true)
@@ -454,6 +464,14 @@ function BillingContent() {
       doc.setFontSize(6)
       doc.setFont('helvetica', 'normal')
       doc.text(`ÉMIS LE ${new Date().toLocaleDateString('fr-FR')}`, 165, y - 10, { align: 'center' })
+      
+      if (draftTicketRef) {
+        doc.setFontSize(5)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(59, 130, 246)
+        doc.text(`RÉF TICKET: ${draftTicketRef}`, 165, y - 6, { align: 'center' })
+        doc.setTextColor(15, 23, 42)
+      }
 
       doc.setDrawColor(241, 245, 249)
       doc.setLineWidth(0.5)
@@ -845,6 +863,11 @@ function BillingContent() {
                            </h2>
                           <p className="text-2xl font-black text-slate-950 mt-2">{draftNumber}</p>
                           <p className="text-[10px] font-black text-slate-400 uppercase mt-1">{formatDate(new Date())}</p>
+                          {draftTicketRef && (
+                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-2 border-t border-slate-100 pt-2 inline-block">
+                              Réf. Ticket: {draftTicketRef}
+                            </p>
+                          )}
                        </div>
                     </div>
 

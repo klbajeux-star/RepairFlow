@@ -111,3 +111,12 @@ export function getPartStatusLabel(status: string) {
 export function getPartStatusStyle(status: string) {
   return partStatusStyles[status as PartStatus] ?? partStatusStyles.IN_STOCK
 }
+
+export function getTicketReference(repair: { id: string; createdAt: string | Date }) {
+  const createdAt = new Date(repair.createdAt)
+  const dateFragment = `${String(createdAt.getFullYear()).slice(-2)}${String(
+    createdAt.getMonth() + 1
+  ).padStart(2, '0')}${String(createdAt.getDate()).padStart(2, '0')}`
+
+  return `INT-${dateFragment}-${repair.id.slice(-4).toUpperCase()}`
+}
