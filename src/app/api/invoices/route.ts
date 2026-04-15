@@ -8,17 +8,35 @@ import {
   requireString,
 } from '@/lib/api-utils'
 
+async function getNextDocSequence() {
+  const year = new Date().getFullYear()
+  
+  // Trouver le dernier numéro dans les deux tables pour éviter les collisions
+  const [lastQuote, lastInvoice] = await Promise.all([
+    prisma.quote.findFirst({
+      where: { number: { contains: `-${year}-` } },
+      orderBy: { number: 'desc' },
+    }),
+    prisma.invoice.findFirst({
+      where: { number: { contains: `-${year}-` } },
+      orderBy: { number: 'desc' },
+    })
+  ])
+
+  const parseSeq = (docNumber: string | undefined) => {
+    if (!docNumber) return 0
+    const parts = docNumber.split('-')
+    const seq = parseInt(parts[parts.length - 1], 10)
+    return isNaN(seq) ? 0 : seq
+  }
+
+  const maxSeq = Math.max(parseSeq(lastQuote?.number), parseSeq(lastInvoice?.number))
+  return maxSeq + 1
+}
+
 async function generateInvoiceNumber() {
   const year = new Date().getFullYear()
-  const last = await prisma.invoice.findFirst({
-    where: { number: { startsWith: `FAC-${year}` } },
-    orderBy: { createdAt: 'desc' },
-  })
-  let seq = 1
-  if (last) {
-    const lastSeq = parseInt(last.number.split('-').pop() || '0')
-    if (!isNaN(lastSeq)) seq = lastSeq + 1
-  }
+  const seq = await getNextDocSequence()
   return `FAC-${year}-${seq.toString().padStart(4, '0')}`
 }
 
@@ -49,13 +67,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Le client est obligatoire.' }, { status: 400 })
     }
 
-    const number = await generateInvoiceNumber().catch(e => {
-      console.error('[INVOICE NUMBER ERROR]', e)
-      throw new Error('Erreur lors de la génération du numéro de facture.')
-    })
-    
     const quoteId = optionalString(json.quoteId)
-    
+    let number: string
+
+    if (quoteId) {
+      // Si on vient d'un devis, on reprend le numéro du devis en changeant le préfixe
+      const quote = await prisma.quote.findUnique({
+        where: { id: quoteId },
+        select: { number: true }
+      })
+      if (!quote) throw new Error('Devis introuvable.')
+      number = quote.number.replace('DEV-', 'FAC-')
+      
+      // Vérifier si ce numéro de facture existe déjà (cas rare de collision manuelle)
+      const existing = await prisma.invoice.findUnique({ where: { number } })
+      if (existing) {
+        // Fallback sur une génération classique si collision (pour ne pas bloquer)
+        number = await generateInvoiceNumber()
+      }
+    } else {
+      number = await generateInvoiceNumber().catch(e => {
+        console.error('[INVOICE NUMBER ERROR]', e)
+        throw new Error('Erreur lors de la génération du numéro de facture.')
+      })
+    }
+
     const invoice = await prisma.invoice.create({
       data: {
         number,
@@ -69,6 +105,7 @@ export async function POST(request: Request) {
       },
       include: {
         client: true,
+        quote: true,
       }
     })
     

@@ -162,6 +162,7 @@ function BillingContent() {
   const [draftClient, setDraftClient] = useState<Client | null>(null)
   const [draftRepairId, setDraftRepairId] = useState<string | null>(null)
   const [draftNumber, setDraftNumber] = useState('')
+  const [draftQuoteNumber, setDraftQuoteNumber] = useState<string | null>(null)
   const [draftStatus, setDraftStatus] = useState<string>('BROUILLON')
   const [draftPaid, setDraftPaid] = useState(false)
   
@@ -261,6 +262,11 @@ function BillingContent() {
     setDraftLines(JSON.parse(doc.items))
     setDraftNotes(doc.notes || '')
     setDraftNumber(doc.number)
+    if (type === 'invoice') {
+      setDraftQuoteNumber((doc as Invoice).quote?.number || null)
+    } else {
+      setDraftQuoteNumber(null)
+    }
     if (type === 'quote') {
       setDraftStatus((doc as Quote).status)
     } else {
@@ -465,11 +471,14 @@ function BillingContent() {
       doc.setFont('helvetica', 'normal')
       doc.text(`ÉMIS LE ${new Date().toLocaleDateString('fr-FR')}`, 165, y - 10, { align: 'center' })
       
-      if (draftTicketRef) {
+      if (draftTicketRef || draftQuoteNumber) {
         doc.setFontSize(5)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(59, 130, 246)
-        doc.text(`RÉF TICKET: ${draftTicketRef}`, 165, y - 6, { align: 'center' })
+        let refText = ''
+        if (draftTicketRef) refText += `RÉF TICKET: ${draftTicketRef}  `
+        if (draftQuoteNumber) refText += `ISSU DU DEVIS: ${draftQuoteNumber}`
+        doc.text(refText.trim(), 165, y - 6, { align: 'center' })
         doc.setTextColor(15, 23, 42)
       }
 
@@ -864,8 +873,13 @@ function BillingContent() {
                           <p className="text-2xl font-black text-slate-950 mt-2">{draftNumber}</p>
                           <p className="text-[10px] font-black text-slate-400 uppercase mt-1">{formatDate(new Date())}</p>
                           {draftTicketRef && (
-                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-2 border-t border-slate-100 pt-2 inline-block">
+                            <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mt-2 border-t border-slate-100 pt-2 inline-block">
                               Réf. Ticket: {draftTicketRef}
+                            </p>
+                          )}
+                          {draftQuoteNumber && (
+                            <p className="ml-4 text-[9px] font-black text-emerald-600 uppercase tracking-widest mt-2 border-t border-slate-100 pt-2 inline-block">
+                              Issu du Devis: {draftQuoteNumber}
                             </p>
                           )}
                        </div>

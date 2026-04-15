@@ -8,22 +8,38 @@ import {
   requireString,
 } from '@/lib/api-utils'
 
-async function generateQuoteNumber() {
+async function getNextDocSequence() {
   const year = new Date().getFullYear()
-  const lastQuote = await prisma.quote.findFirst({
-    where: { number: { startsWith: `DEV-${year}` } },
-    orderBy: { createdAt: 'desc' },
-  })
+  
+  // Trouver le dernier numéro dans les deux tables
+  const [lastQuote, lastInvoice] = await Promise.all([
+    prisma.quote.findFirst({
+      where: { number: { contains: `-${year}-` } },
+      orderBy: { number: 'desc' },
+    }),
+    prisma.invoice.findFirst({
+      where: { number: { contains: `-${year}-` } },
+      orderBy: { number: 'desc' },
+    })
+  ])
 
-  let sequence = 1
-  if (lastQuote) {
-    const parts = lastQuote.number.split('-')
-    const lastSeq = parseInt(parts[parts.length - 1], 10)
-    if (!isNaN(lastSeq)) {
-      sequence = lastSeq + 1
-    }
+  let maxSeq = 0
+  
+  const parseSeq = (docNumber: string | undefined) => {
+    if (!docNumber) return 0
+    const parts = docNumber.split('-')
+    const seq = parseInt(parts[parts.length - 1], 10)
+    return isNaN(seq) ? 0 : seq
   }
 
+  maxSeq = Math.max(parseSeq(lastQuote?.number), parseSeq(lastInvoice?.number))
+  
+  return maxSeq + 1
+}
+
+async function generateQuoteNumber() {
+  const year = new Date().getFullYear()
+  const sequence = await getNextDocSequence()
   return `DEV-${year}-${sequence.toString().padStart(4, '0')}`
 }
 
