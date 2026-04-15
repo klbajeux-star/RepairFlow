@@ -404,56 +404,192 @@ function BillingContent() {
     setIsDownloading(true)
     try {
       const doc = new jsPDF()
-      const margin = 20
+      const margin = 15
       let y = margin
 
-      // Simplified PDF Generation Logic (matching previous premium design)
-      doc.setFontSize(26)
+      // Background Title (Stylized)
+      doc.setFontSize(55)
+      doc.setTextColor(248, 250, 252)
+      doc.setFont('helvetica', 'bold')
+      doc.text(editorMode === 'quote' ? 'DEVIS' : 'FACTURE', 210 - margin, y + 15, { align: 'right' })
+
+      // Header Brand
+      doc.setFillColor(15, 23, 42)
+      doc.roundedRect(margin, y, 12, 12, 3, 3, 'F')
+      doc.setFontSize(20)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(15, 23, 42)
-      doc.text(editorMode === 'quote' ? 'DEVIS' : 'FACTURE', margin, y + 10)
+      doc.text('RepairFlow', margin + 16, y + 8)
       
-      doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100)
-      doc.text(`N°: ${draftNumber}`, 210 - margin, y + 2, { align: 'right' })
-      doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, 210 - margin, y + 8, { align: 'right' })
-      y += 30
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(59, 130, 246)
+      doc.text('EXPERTISE & RÉPARATION MOBILE', margin + 17, y + 12)
 
-      doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(15, 23, 42)
-      doc.text('MOMUY&TECH - REPARATION ET ELECTRONIQUE', margin, y)
-      y += 6; doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(100)
-      doc.text('123 Avenue de la Réparation, 75001 Paris', margin, y)
-      y += 15
+      y += 22
+      
+      // Top Bar Info (Number & Date)
+      doc.setFillColor(15, 23, 42)
+      doc.roundedRect(135, y - 22, 60, 15, 2, 2, 'F')
+      doc.setTextColor(255, 255, 255)
+      doc.setFontSize(11)
+      doc.setFont('helvetica', 'bold')
+      doc.text(draftNumber, 165, y - 14, { align: 'center' })
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'normal')
+      doc.text(`ÉMIS LE ${new Date().toLocaleDateString('fr-FR')}`, 165, y - 10, { align: 'center' })
 
-      // Client Info
-      doc.setFillColor(248, 250, 252); doc.rect(margin, y, 170, 35, 'F')
-      y += 8; doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(148, 163, 184); doc.text('DESTINATAIRE', margin + 8, y)
-      y += 8; doc.setFontSize(14); doc.setTextColor(15, 23, 42); doc.text(draftClient.name.toUpperCase(), margin + 8, y)
-      y += 6; doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(71, 85, 105); doc.text(draftClient.phone, margin + 8, y)
-      y += 20
+      doc.setDrawColor(241, 245, 249)
+      doc.setLineWidth(0.5)
+      doc.line(margin, y, 210 - margin, y)
 
-      // Items Table
-      doc.setFillColor(15, 23, 42); doc.rect(margin, y, 170, 10, 'F')
-      doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255)
-      doc.text('DESCRIPTION', margin + 5, y + 6.5); doc.text('QTÉ', 135, y + 6.5, { align: 'center' }); doc.text('P.U. HT', 155, y + 6.5, { align: 'right' }); doc.text('TOTAL HT', 185, y + 6.5, { align: 'right' })
       y += 10
 
-      doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(15, 23, 42)
-      draftLines.forEach((line, i) => {
-        const rowY = y + 10 + (i * 10)
-        doc.text(line.name, margin + 5, rowY)
-        doc.text(line.quantity.toString(), 135, rowY, { align: 'center' })
-        doc.text(`${(line.price / 1.2).toFixed(2)} €`, 155, rowY, { align: 'right' })
-        doc.text(`${((line.price * line.quantity) / 1.2).toFixed(2)} €`, 185, rowY, { align: 'right' })
-        doc.setDrawColor(241, 245, 249); doc.line(margin, rowY + 3, 190, rowY + 3)
+      // Two Columns: Company vs Client
+      const colWidth = (210 - (margin * 3)) / 2
+      
+      // Left: Company Info
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(148, 163, 184)
+      doc.text('ÉMETTEUR', margin, y)
+      y += 5
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(15, 23, 42)
+      doc.text('MOMUY&TECH SAS', margin, y)
+      y += 4
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(100)
+      doc.text('123 Avenue de la Réparation, 75001 Paris', margin, y)
+      y += 3.5
+      doc.text('Tél: 01 23 45 67 89 — Email: contact@repairflow.fr', margin, y)
+      y += 3.5
+      doc.text('SIRET: 123 456 789 00012 — TVA: FR 12 123 456 789', margin, y)
+
+      // Right: Client Info (Same Y level)
+      let clientY = y - 16
+      doc.setFillColor(248, 250, 252)
+      doc.roundedRect(margin + colWidth + margin, clientY - 5, colWidth, 32, 3, 3, 'F')
+      
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(59, 130, 246)
+      doc.text('DESTINATAIRE', margin + colWidth + margin + 6, clientY)
+      clientY += 6
+      doc.setFontSize(11)
+      doc.setTextColor(15, 23, 42)
+      doc.text(draftClient.name.toUpperCase(), margin + colWidth + margin + 6, clientY)
+      clientY += 5
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(71, 85, 105)
+      if (draftClient.address) {
+        doc.text(draftClient.address, margin + colWidth + margin + 6, clientY)
+        clientY += 4
+      }
+      if (draftClient.zipCode || draftClient.city) {
+        doc.text(`${draftClient.zipCode || ''} ${draftClient.city || ''}`, margin + colWidth + margin + 6, clientY)
+        clientY += 4
+      }
+      doc.text(draftClient.phone, margin + colWidth + margin + 6, clientY)
+      
+      y += 18
+
+      // Table Header
+      doc.setFillColor(248, 250, 252)
+      doc.rect(margin, y, 210 - (margin * 2), 8, 'F')
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(148, 163, 184)
+      doc.text('DESCRIPTION DES PRESTATIONS', margin + 4, y + 5.5)
+      doc.text('QTÉ', 125, y + 5.5, { align: 'center' })
+      doc.text('P.U. HT', 155, y + 5.5, { align: 'right' })
+      doc.text('TOTAL HT', 190, y + 5.5, { align: 'right' })
+      
+      y += 12
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(15, 23, 42)
+      
+      draftLines.forEach((line) => {
+        doc.setFont('helvetica', 'bold')
+        doc.text(line.name, margin + 4, y)
+        doc.setFont('helvetica', 'normal')
+        doc.text(line.quantity.toString(), 125, y, { align: 'center' })
+        doc.text(`${(line.price / 1.2).toFixed(2)} €`, 155, y, { align: 'right' })
+        doc.text(`${((line.price * line.quantity) / 1.2).toFixed(2)} €`, 190, y, { align: 'right' })
+        y += 8
+        doc.setDrawColor(248, 250, 252)
+        doc.setLineWidth(0.1)
+        doc.line(margin, y - 4, 210 - margin, y - 4)
       })
 
-      y += 20 + (draftLines.length * 10)
-      doc.text('TOTAL HT', 150, y, { align: 'right' }); doc.text(`${totals.totalHT.toFixed(2)} €`, 185, y, { align: 'right' })
-      y += 7; doc.text('TVA (20%)', 150, y, { align: 'right' }); doc.text(`${totals.tva.toFixed(2)} €`, 185, y, { align: 'right' })
-      y += 12; doc.setFillColor(15, 23, 42); doc.rect(130, y - 6, 60, 12, 'F')
-      doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255); doc.text('TOTAL TTC', 140, y + 1.5); doc.setFontSize(14); doc.text(`${totals.totalTTC.toFixed(2)} €`, 185, y + 1.5, { align: 'right' })
+      y += 5
+      // Totals Box (Compact)
+      const totalWidth = 65
+      const totalBoxX = 210 - margin - totalWidth
+      doc.setFillColor(15, 23, 42)
+      doc.roundedRect(totalBoxX, y, totalWidth, 25, 2, 2, 'F')
+      
+      y += 7
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(148, 163, 184)
+      doc.text('TOTAL HT', totalBoxX + 6, y)
+      doc.setTextColor(255, 255, 255)
+      doc.text(`${totals.totalHT.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+      
+      y += 5
+      doc.setTextColor(148, 163, 184)
+      doc.text('TVA (20%)', totalBoxX + 6, y)
+      doc.setTextColor(255, 255, 255)
+      doc.text(`${totals.tva.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+      
+      y += 7
+      doc.setFontSize(9)
+      doc.setTextColor(59, 130, 246)
+      doc.text('TOTAL TTC À PAYER', totalBoxX + 6, y)
+      doc.setFontSize(12)
+      doc.setTextColor(255, 255, 255)
+      doc.text(`${totals.totalTTC.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
 
-      doc.save(`${draftNumber}.pdf`)
+      // Notes & Signature
+      y += 15
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(148, 163, 184)
+      doc.text('INFORMATIONS COMPLÉMENTAIRES', margin, y)
+      y += 5
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'italic')
+      doc.setTextColor(100)
+      const splitNotes = doc.splitTextToSize(draftNotes || 'Aucune note spécifique.', 100)
+      doc.text(splitNotes, margin, y)
+      
+      const signatureY = y + 15
+      doc.setDrawColor(241, 245, 249)
+      doc.setLineWidth(0.5)
+      doc.line(margin, signatureY, margin + 70, signatureY)
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(203, 213, 225)
+      doc.text('CACHET & SIGNATURE DE L\'ENTREPRISE', margin, signatureY + 4)
+
+      // Legal Footer (Fixed at the bottom)
+      doc.setDrawColor(241, 245, 249)
+      doc.line(margin, 280, 210 - margin, 280)
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(180)
+      doc.text('RepairFlow — SAS au capital de 1000€ — SIRET 12345678900012 — RCS PARIS — TVA Intra: FR 12 123 456 789', 105, 285, { align: 'center' })
+      doc.text('En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.', 105, 288, { align: 'center' })
+
+      doc.save(`${editorMode === 'quote' ? 'DEVIS' : 'FACTURE'}_${draftNumber}.pdf`)
+    } catch (err) {
+      console.error(err)
+      alert('Erreur lors de la génération du PDF.')
     } finally {
       setIsDownloading(false)
     }
@@ -665,79 +801,152 @@ function BillingContent() {
                     <div className="flex justify-between items-start mb-16">
                        <div>
                           <div className="flex items-center gap-4 mb-6">
-                             <div className="p-3 bg-slate-950 rounded-xl text-white"><Wrench className="w-6 h-6" /></div>
-                             <span className="text-2xl font-black uppercase tracking-tighter">RepairFlow</span>
+                             <div className="p-4 bg-slate-950 rounded-[1.5rem] text-white shadow-xl shadow-slate-950/20"><Wrench className="w-8 h-8" /></div>
+                              <div>
+                                <span className="text-4xl font-black uppercase tracking-tighter block leading-none">RepairFlow</span>
+                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-1 block">Expertise & Réparation</span>
+                              </div>
                           </div>
-                          <div className="text-[10px] font-bold text-slate-400 space-y-0.5 uppercase">
-                             <p className="text-slate-600 font-black">MOMUY&TECH</p>
-                             <p>123 Avenue de la Réparation, 75001 Paris</p>
-                             <p>Tél: 01 23 45 67 89</p>
-                          </div>
+                          <div className="text-[10px] font-bold text-slate-500 space-y-1 uppercase leading-relaxed">
+                              <p className="text-slate-900 font-black text-xs mb-1">MOMUY&TECH SAS</p>
+                              <p>123 Avenue de la Réparation, 75001 Paris</p>
+                              <p>Tél: 01 23 45 67 89 — Email: contact@repairflow.fr</p>
+                              <p>SIRET: 123 456 789 00012 — TVA: FR 12 123 456 789</p>
+                           </div>
                        </div>
                        <div className="text-right">
-                          <h2 className="text-6xl font-black text-slate-100 tracking-tighter uppercase" style={{ WebkitTextStroke: '1px #e2e8f0' }}>{editorMode === 'quote' ? 'Devis' : 'Facture'}</h2>
+                          <h2 className="text-8xl font-black text-slate-100 tracking-tighter uppercase leading-none" style={{ WebkitTextStroke: '2px #f1f5f9' }}>
+                             {editorMode === 'quote' ? 'Devis' : 'Facture'}
+                           </h2>
                           <p className="text-2xl font-black text-slate-950 mt-2">{draftNumber}</p>
                           <p className="text-[10px] font-black text-slate-400 uppercase mt-1">{formatDate(new Date())}</p>
                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-12 mb-12">
-                       <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
-                          <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-3">Client</p>
-                          {draftClient ? (
-                            <>
-                              <p className="text-xl font-black text-slate-950">{draftClient.name.toUpperCase()}</p>
-                              <p className="text-sm font-bold text-slate-500">{draftClient.phone}</p>
-                              <p className="text-xs text-slate-400 mt-2">{draftClient.email || 'Pas d\'email'}</p>
-                            </>
-                          ) : (
-                            <div className="py-4 border-2 border-dashed border-slate-200 rounded-xl text-center text-[10px] font-black text-slate-400">Aucun client sélectionné</div>
-                          )}
-                       </div>
-                    </div>
+                    <div className="grid grid-cols-2 gap-24 mb-16">
+                        <div className="relative">
+                           <div className="absolute -top-3 -left-3 w-12 h-12 border-t-4 border-l-4 border-slate-100 rounded-tl-2xl -z-10" />
+                           <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">À l'attention de</p>
+                           {draftClient ? (
+                             <div className="space-y-1">
+                               <p className="text-2xl font-black text-slate-950 tracking-tight">{draftClient.name.toUpperCase()}</p>
+                               {draftClient.address && <p className="text-sm font-bold text-slate-600">{draftClient.address}</p>}
+                               {(draftClient.zipCode || draftClient.city) && (
+                                 <p className="text-sm font-bold text-slate-600">{draftClient.zipCode} {draftClient.city}</p>
+                               )}
+                               <p className="text-sm font-bold text-slate-500 pt-2">{draftClient.phone}</p>
+                               <p className="text-xs text-slate-400 italic">{draftClient.email || 'Pas d\'email'}</p>
+                             </div>
+                           ) : (
+                             <div className="py-8 border-2 border-dashed border-slate-100 rounded-[2rem] text-center text-[10px] font-black text-slate-300 uppercase tracking-widest bg-slate-50/50">Aucun client sélectionné</div>
+                           )}
+                        </div>
+                        <div className="text-right flex flex-col justify-end">
+                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Conditions de règlement</p>
+                           <p className="text-xs font-bold text-slate-700">Paiement à réception de facture</p>
+                           {editorMode === 'quote' && (
+                             <p className="text-xs font-bold text-slate-700 mt-1">Devis valable 30 jours</p>
+                           )}
+                        </div>
+                     </div>
 
                     <div className="flex-1">
                        <table className="w-full">
-                          <thead className="border-b-2 border-slate-950">
-                             <tr className="text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                                <th className="py-4">Description</th>
-                                <th className="py-4 text-center w-20">Qté</th>
-                                <th className="py-4 text-right w-28">P.U. HT</th>
-                                <th className="py-4 text-right w-28">Total HT</th>
-                             </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100">
-                             {draftLines.map((line, idx) => (
-                               <tr key={line.id}>
-                                  <td className="py-4 pr-4">
-                                     <input className="w-full font-bold text-slate-900 outline-none" value={line.name} onChange={e => updateLine(idx, 'name', e.target.value)} />
-                                  </td>
-                                  <td className="py-4 px-2 text-center font-bold">
-                                     <input className="w-full text-center outline-none" type="number" value={line.quantity} onChange={e => updateLine(idx, 'quantity', parseInt(e.target.value) || 0)} />
-                                  </td>
-                                  <td className="py-4 px-2 text-right font-bold text-slate-600">
-                                     <input className="w-full text-right outline-none" type="number" value={(line.price / 1.2).toFixed(2)} onChange={e => updateLine(idx, 'price', parseFloat(e.target.value) * 1.2 || 0)} />
-                                  </td>
-                                  <td className="py-4 pl-4 text-right font-black text-slate-950">
-                                     {((line.price * line.quantity) / 1.2).toFixed(2)} €
-                                  </td>
-                               </tr>
-                             ))}
-                          </tbody>
+                          <thead>
+                              <tr className="text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b-2 border-slate-100">
+                                 <th className="py-6 px-4">Description de la prestation</th>
+                                 <th className="py-6 px-4 text-center w-24">Quantité</th>
+                                 <th className="py-6 px-4 text-right w-32">P.U. HT</th>
+                                 <th className="py-6 px-4 text-right w-32">Total HT</th>
+                                 <th className="py-6 px-4 text-right w-12 print:hidden"></th>
+                              </tr>
+                           </thead>
+                          <tbody className="divide-y divide-slate-50">
+                              {draftLines.map((line, idx) => (
+                                <tr key={line.id} className="group hover:bg-slate-50/50 transition-colors">
+                                   <td className="py-6 px-4">
+                                      <input 
+                                        className="w-full font-black text-slate-900 bg-transparent outline-none focus:text-blue-600 transition-colors" 
+                                        value={line.name} 
+                                        onChange={e => updateLine(idx, 'name', e.target.value)} 
+                                      />
+                                   </td>
+                                   <td className="py-6 px-4 text-center">
+                                      <input 
+                                        className="w-full text-center font-bold bg-transparent outline-none" 
+                                        type="number" 
+                                        value={line.quantity} 
+                                        onChange={e => updateLine(idx, 'quantity', parseInt(e.target.value) || 0)} 
+                                      />
+                                   </td>
+                                   <td className="py-6 px-4 text-right">
+                                      <input 
+                                        className="w-full text-right font-bold text-slate-600 bg-transparent outline-none" 
+                                        type="number" 
+                                        value={(line.price / 1.2).toFixed(2)} 
+                                        onChange={e => updateLine(idx, 'price', parseFloat(e.target.value) * 1.2 || 0)} 
+                                      />
+                                   </td>
+                                   <td className="py-6 px-4 text-right font-black text-slate-950">
+                                      {((line.price * line.quantity) / 1.2).toFixed(2)} €
+                                   </td>
+                                   <td className="py-6 px-4 text-right print:hidden">
+                                      <button 
+                                        onClick={() => removeLine(idx)}
+                                        className="text-slate-200 hover:text-red-500 transition-colors"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </button>
+                                   </td>
+                                </tr>
+                              ))}
+                           </tbody>
                        </table>
-                       <button onClick={addLine} className="mt-4 flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline print:hidden"><Plus className="w-3 h-3" /> Ajouter une ligne</button>
+                       <button 
+                          onClick={addLine} 
+                          className="mt-6 flex items-center gap-3 px-6 py-3 rounded-xl border-2 border-dashed border-slate-100 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 hover:border-blue-200 transition-all print:hidden"
+                        >
+                          <Plus className="w-4 h-4" /> 
+                          Ajouter une ligne personnalisée
+                        </button>
                     </div>
 
-                    <div className="mt-12 flex justify-end">
-                       <div className="w-72 bg-slate-50 p-6 rounded-[2rem] space-y-3">
-                          <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase"><span>Total HT</span><span>{formatCurrency(totals.totalHT)}</span></div>
-                          <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase pb-3 border-b border-slate-200"><span>TVA (20%)</span><span>{formatCurrency(totals.tva)}</span></div>
-                          <div className="flex justify-between items-center pt-2">
-                             <span className="text-[10px] font-black text-blue-600 uppercase">Total TTC</span>
-                             <span className="text-2xl font-black text-slate-950 tracking-tighter">{formatCurrency(totals.totalTTC)}</span>
-                          </div>
-                       </div>
-                    </div>
+                    <div className="mt-24 pt-12 border-t border-slate-100 flex justify-between items-start">
+                        <div className="max-w-md">
+                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Informations complémentaires</p>
+                           <p className="text-xs text-slate-500 font-medium leading-relaxed italic">{draftNotes || 'Aucune note spécifique sur ce document.'}</p>
+                           <div className="mt-8 pt-8 border-t border-slate-50">
+                              <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Cachet & Signature de l'entreprise</p>
+                           </div>
+                        </div>
+
+                        <div className="w-80 space-y-4">
+                           <div className="bg-slate-50/50 p-8 rounded-[2.5rem] border border-slate-100 space-y-4">
+                              <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                 <span>Total HT</span>
+                                 <span className="text-slate-900">{formatCurrency(totals.totalHT)}</span>
+                              </div>
+                              <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4 border-b border-slate-200">
+                                 <span>TVA (20%)</span>
+                                 <span className="text-slate-900">{formatCurrency(totals.tva)}</span>
+                              </div>
+                              <div className="flex justify-between items-center pt-2">
+                                 <span className="text-sm font-black text-blue-600 uppercase tracking-tighter">Total à payer</span>
+                                 <span className="text-4xl font-black text-slate-950 tracking-tighter">{formatCurrency(totals.totalTTC)}</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="mt-auto pt-16 text-center">
+                        <div className="inline-block px-8 py-4 border-t border-slate-100">
+                           <p className="text-[8px] font-bold text-slate-300 uppercase tracking-[0.2em] leading-loose">
+                              RepairFlow — Logiciel de Gestion d'Atelier de Réparation<br/>
+                              En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.<br/>
+                              Aucun escompte pour paiement anticipé.
+                           </p>
+                        </div>
+                     </div>
                  </div>
               </div>
             </div>
