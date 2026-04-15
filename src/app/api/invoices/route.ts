@@ -100,6 +100,7 @@ export async function POST(request: Request) {
         items: JSON.stringify(json.items || []),
         totalHT: requireNumber(json.totalHT || 0, 'Total HT'),
         totalTTC: requireNumber(json.totalTTC || 0, 'Total TTC'),
+        taxDetails: json.taxDetails ? JSON.stringify(json.taxDetails) : null,
         notes: optionalString(json.notes),
         paid: !!json.paid,
       },

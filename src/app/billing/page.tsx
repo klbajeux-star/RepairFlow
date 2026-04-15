@@ -46,6 +46,25 @@ interface Client {
   address?: string | null
   zipCode?: string | null
   city?: string | null
+  siret?: string | null
+  vatNumber?: string | null
+}
+
+interface WorkshopSettings {
+  name: string
+  address: string
+  zipCode: string
+  city: string
+  countryCode: string
+  phone: string
+  email: string
+  siret: string
+  vatNumber: string
+  legalForm: string
+  capital: string
+  rcs: string
+  iban?: string | null
+  bic?: string | null
 }
 
 interface DraftLine {
@@ -65,6 +84,7 @@ interface Quote {
   items: string // JSON
   totalHT: number
   totalTTC: number
+  taxDetails?: string | null
   notes?: string | null
   validUntil?: string | null
   invoiceId?: string | null
@@ -81,8 +101,10 @@ interface Invoice {
   items: string // JSON
   totalHT: number
   totalTTC: number
+  taxDetails?: string | null
   notes?: string | null
   paid: boolean
+  quote?: Quote | null
   createdAt: string
 }
 
@@ -151,6 +173,7 @@ function BillingContent() {
   const [clients, setClients] = useState<Client[]>([])
   const [repairs, setRepairs] = useState<Repair[]>([])
   const [shopProducts, setShopProducts] = useState<ShopProduct[]>([])
+  const [settings, setSettings] = useState<WorkshopSettings | null>(null)
   
   // Selected Data
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null)
@@ -180,20 +203,22 @@ function BillingContent() {
   async function loadInitialData() {
     try {
       setIsLoading(true)
-      const [quotesRes, invoicesRes, clientsRes, shopRes, repairsRes] = await Promise.all([
+      const [quotesRes, invoicesRes, clientsRes, shopRes, repairsRes, settingsRes] = await Promise.all([
         fetch('/api/quotes'),
         fetch('/api/invoices'),
         fetch('/api/clients'),
         fetch('/api/shop'),
-        fetch('/api/repairs')
+        fetch('/api/repairs'),
+        fetch('/api/settings')
       ])
       
-      const [qData, iData, cData, sData, rData] = await Promise.all([
+      const [qData, iData, cData, sData, rData, sSettData] = await Promise.all([
         quotesRes.json(),
         invoicesRes.json(),
         clientsRes.json(),
         shopRes.json(),
-        repairsRes.json()
+        repairsRes.json(),
+        settingsRes.json()
       ])
 
       setQuotes(Array.isArray(qData) ? qData : [])
@@ -201,6 +226,7 @@ function BillingContent() {
       setClients(Array.isArray(cData) ? cData : [])
       setShopProducts(Array.isArray(sData) ? sData : [])
       setRepairs(Array.isArray(rData) ? rData : [])
+      setSettings(sSettData)
     } catch (err) {
       console.error('Failed to load data:', err)
     } finally {
@@ -291,6 +317,11 @@ function BillingContent() {
         items: draftLines,
         totalHT: totals.totalHT,
         totalTTC: totals.totalTTC,
+        taxDetails: [{
+          baseHT: totals.totalHT,
+          rate: 20,
+          vatAmount: totals.tva
+        }],
         notes: draftNotes,
         status: editorMode === 'quote' ? draftStatus : undefined,
         paid: editorMode === 'invoice' ? draftPaid : undefined,
@@ -336,6 +367,11 @@ function BillingContent() {
           items: draftLines,
           totalHT: totals.totalHT,
           totalTTC: totals.totalTTC,
+          taxDetails: [{
+            baseHT: totals.totalHT,
+            rate: 20,
+            vatAmount: totals.tva
+          }],
           notes: draftNotes,
           paid: false
         })
@@ -500,16 +536,16 @@ function BillingContent() {
       doc.setFontSize(9)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(15, 23, 42)
-      doc.text('MOMUY&TECH SAS', margin, y)
+      doc.text(settings?.name || 'MOMUY&TECH SAS', margin, y)
       y += 4
       doc.setFontSize(7)
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(100)
-      doc.text('123 Avenue de la Réparation, 75001 Paris', margin, y)
+      doc.text(`${settings?.address || '123 Avenue de la Réparation'}, ${settings?.zipCode || '75001'} ${settings?.city || 'Paris'}`, margin, y)
       y += 3.5
-      doc.text('Tél: 01 23 45 67 89 — Email: contact@repairflow.fr', margin, y)
+      doc.text(`Tél: ${settings?.phone || '01 23 45 67 89'} — Email: ${settings?.email || 'contact@repairflow.fr'}`, margin, y)
       y += 3.5
-      doc.text('SIRET: 123 456 789 00012 — TVA: FR 12 123 456 789', margin, y)
+      doc.text(`SIRET: ${settings?.siret || '123 456 789 00012'} — TVA: ${settings?.vatNumber || 'FR 12 123 456 789'}`, margin, y)
 
       // Right: Client Info (Same Y level)
       let clientY = y - 16
@@ -626,8 +662,14 @@ function BillingContent() {
       doc.setFontSize(6)
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(180)
-      doc.text('RepairFlow — SAS au capital de 1000€ — SIRET 12345678900012 — RCS PARIS — TVA Intra: FR 12 123 456 789', 105, 285, { align: 'center' })
-      doc.text('En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.', 105, 288, { align: 'center' })
+      const footerLine1 = `${settings?.name || 'RepairFlow'} — ${settings?.legalForm || 'SAS'} au capital de ${settings?.capital || '1000'}€ — SIRET ${settings?.siret || '12345678900012'} — RCS ${settings?.rcs || 'PARIS'} — TVA Intra: ${settings?.vatNumber || 'FR 12 123 456 789'}`
+      doc.text(footerLine1, 105, 285, { align: 'center' })
+      if (settings?.iban) {
+        doc.text(`IBAN: ${settings.iban} — BIC: ${settings.bic || ''}`, 105, 288, { align: 'center' })
+        doc.text('En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.', 105, 291, { align: 'center' })
+      } else {
+        doc.text('En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.', 105, 288, { align: 'center' })
+      }
 
       doc.save(`${editorMode === 'quote' ? 'DEVIS' : 'FACTURE'}_${draftNumber}.pdf`)
     } catch (err) {

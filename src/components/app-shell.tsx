@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Users,
   Wrench,
+  Settings,
 } from 'lucide-react'
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
   { name: 'Boutique', href: '/boutique', icon: ShoppingBag },
   { name: 'Facturation', href: '/billing', icon: FileText },
   { name: 'Stats', href: '/stats', icon: BarChart3 },
+  { name: 'Paramètres', href: '/settings', icon: Settings },
 ]
 
 const pageMeta: Record<string, { title: string; subtitle: string }> = {
@@ -60,6 +62,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/billing': {
     title: 'Devis et facturation',
     subtitle: 'Préparez vos documents commerciaux à partir des dossiers atelier.',
+  },
+  '/settings': {
+    title: 'Paramètres Atelier',
+    subtitle: 'Configurez vos informations légales, coordonnées et préférences de facturation.',
   },
 }
 

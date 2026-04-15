@@ -31,6 +31,8 @@ export async function PATCH(
         address: optionalString(json.address, 200),
         zipCode: optionalString(json.zipCode, 20),
         city: optionalString(json.city, 100),
+        siret: optionalString(json.siret, 20),
+        vatNumber: optionalString(json.vatNumber, 30),
       },
     })
 

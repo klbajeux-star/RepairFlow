@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/client"
@@ -12,162 +9,166 @@ datasource db {
 }
 
 model Client {
-  id          String   @id @default(cuid())
-  name        String   // Champ complet pour l'affichage (Nom + Prénom)
-  firstName   String?
-  lastName    String?
-  clientType  String   @default("Particulier") // Particulier | Professionnel
-  email       String?
-  phone       String
-  address     String?
-  zipCode     String?
-  city        String?
-  repairs     Repair[]
-  quotes      Quote[]
-  invoices    Invoice[]
-  createdAt   DateTime @default(now())
+  id         String    @id @default(cuid())
+  name       String
+  firstName  String?
+  lastName   String?
+  clientType String    @default("Particulier")
+  email      String?
+  phone      String
+  address    String?
+  zipCode    String?
+  city       String?
+  createdAt  DateTime  @default(now())
+  siret      String?
+  vatNumber  String?
+  invoices   Invoice[]
+  quotes     Quote[]
+  repairs    Repair[]
 }
 
 model Quote {
-  id          String   @id @default(cuid())
-  number      String   @unique // Ex: DEV-2026-0001
-  status      String   @default("BROUILLON") // BROUILLON, EN_ATTENTE, SIGNE, REFUSE, CONVERTI
-  clientId    String
-  client      Client   @relation(fields: [clientId], references: [id])
-  repairId    String?
-  repair      Repair?  @relation(fields: [repairId], references: [id])
-  items       String   // JSON string of { name: string, price: number, quantity: number }[]
-  totalHT     Float
-  totalTTC    Float
-  notes       String?
-  validUntil  DateTime?
-  invoiceId   String?  @unique
-  invoice     Invoice? @relation("QuoteToInvoice", fields: [invoiceId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String    @id @default(cuid())
+  number     String    @unique
+  status     String    @default("BROUILLON")
+  clientId   String
+  repairId   String?
+  items      String
+  totalHT    Float
+  totalTTC   Float
+  notes      String?
+  validUntil DateTime?
+  invoiceId  String?   @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  taxDetails String?
+  invoice    Invoice?  @relation("QuoteToInvoice", fields: [invoiceId], references: [id])
+  repair     Repair?   @relation(fields: [repairId], references: [id])
+  client     Client    @relation(fields: [clientId], references: [id])
 }
 
 model Invoice {
-  id          String   @id @default(cuid())
-  number      String   @unique // Ex: FAC-2026-0001
-  clientId    String
-  client      Client   @relation(fields: [clientId], references: [id])
-  repairId    String?
-  repair      Repair?  @relation(fields: [repairId], references: [id])
-  quote       Quote?   @relation("QuoteToInvoice")
-  items       String   // JSON string of { name: string, price: number, quantity: number }[]
-  totalHT     Float
-  totalTTC    Float
-  notes       String?
-  paid        Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  number     String   @unique
+  clientId   String
+  repairId   String?
+  items      String
+  totalHT    Float
+  totalTTC   Float
+  notes      String?
+  paid       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  taxDetails String?
+  repair     Repair?  @relation(fields: [repairId], references: [id])
+  client     Client   @relation(fields: [clientId], references: [id])
+  quote      Quote?   @relation("QuoteToInvoice")
 }
 
 model DeviceType {
-  id      String         @id @default(cuid())
-  name    String         @unique // Ex: "Smartphone"
-  models  DeviceModel[]
-  createdAt DateTime @default(now())
+  id        String        @id @default(cuid())
+  name      String        @unique
+  createdAt DateTime      @default(now())
+  models    DeviceModel[]
 }
 
 model DeviceBrand {
-  id      String         @id @default(cuid())
-  name    String         @unique // Ex: "Apple"
-  models  DeviceModel[]
-  createdAt DateTime @default(now())
+  id        String        @id @default(cuid())
+  name      String        @unique
+  createdAt DateTime      @default(now())
+  models    DeviceModel[]
 }
 
 model DeviceModel {
-  id          String      @id @default(cuid())
-  name        String      // Ex: "iPhone 13"
-  modelReference String?  // Ex: "A2403"
-  brandId     String
-  typeId      String
-  brand       DeviceBrand @relation(fields: [brandId], references: [id])
-  type        DeviceType  @relation(fields: [typeId], references: [id])
-  services    Service[]
-  parts       Part[]
-  createdAt   DateTime    @default(now())
-  
+  id             String      @id @default(cuid())
+  name           String
+  brandId        String
+  typeId         String
+  createdAt      DateTime    @default(now())
+  modelReference String?
+  type           DeviceType  @relation(fields: [typeId], references: [id])
+  brand          DeviceBrand @relation(fields: [brandId], references: [id])
+  parts          Part[]
+  services       Service[]
+
   @@unique([name, brandId])
 }
 
 model Part {
-  id          String    @id @default(cuid())
+  id          String       @id @default(cuid())
   name        String
-  sku         String    @unique
-  costPrice   Float     // Prix d'achat de la pièce
-  stock       Int       @default(0)
-  minStock    Int       @default(0) // Seuil d'alerte
-  quality     String?   // ORIGINAL | COMPATIBLE
-  supplier    String?   // Fournisseur
-  supplierRef String?   // Référence fournisseur
-  location    String?   // Emplacement rayon
+  sku         String       @unique
+  costPrice   Float
+  stock       Int          @default(0)
+  minStock    Int          @default(0)
+  supplier    String?
+  supplierRef String?
+  location    String?
   description String?
   modelId     String?
+  createdAt   DateTime     @default(now())
+  quality     String?
   model       DeviceModel? @relation(fields: [modelId], references: [id])
   services    Service[]
-  createdAt   DateTime  @default(now())
 }
 
 model Service {
-  id          String   @id @default(cuid())
-  name        String   // Ex: "Remplacement écran iPhone 13"
-  laborCost   Float    // Main d'oeuvre pure
-  suggestedPrice Float @default(0) // Prix de vente conseillé (TTC)
-  duration    Int      @default(30) // Durée en minutes
-  partId      String?  // Pièce associée optionnelle
-  part        Part?    @relation(fields: [partId], references: [id])
-  modelId     String?
-  model       DeviceModel? @relation(fields: [modelId], references: [id])
-  description String?
-  repairs     RepairService[]
-  createdAt   DateTime @default(now())
+  id             String          @id @default(cuid())
+  name           String
+  laborCost      Float
+  suggestedPrice Float           @default(0)
+  duration       Int             @default(30)
+  partId         String?
+  modelId        String?
+  description    String?
+  createdAt      DateTime        @default(now())
+  repairs        RepairService[]
+  model          DeviceModel?    @relation(fields: [modelId], references: [id])
+  part           Part?           @relation(fields: [partId], references: [id])
 }
 
 model Repair {
-  id          String   @id @default(cuid())
-  status      String   @default("PENDING") // PENDING, DIAGNOSIS, IN_PROGRESS, READY, DELIVERED, CANCELLED, ARCHIVED
-  partStatus  String   @default("IN_STOCK") // IN_STOCK, TO_ORDER, ORDERED, WAITING_SIGNATURE, MICROSOLDERING
-  clientId    String
-  client      Client   @relation(fields: [clientId], references: [id])
-  services    RepairService[]
-  logs        RepairLog[]
-  quotes      Quote[]
-  invoices    Invoice[]
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String          @id @default(cuid())
+  status     String          @default("PENDING")
+  partStatus String          @default("IN_STOCK")
+  clientId   String
+  notes      String?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  invoices   Invoice[]
+  quotes     Quote[]
+  client     Client          @relation(fields: [clientId], references: [id])
+  logs       RepairLog[]
+  services   RepairService[]
 }
 
 model RepairService {
-  id        String  @id @default(cuid())
-  repairId  String
-  serviceId String
-  repair    Repair  @relation(fields: [repairId], references: [id], onDelete: Cascade)
-  service   Service @relation(fields: [serviceId], references: [id])
-  quantity  Int     @default(1)
-  priceAtTime Float // Prix total (pièce + MO) fixé au moment de l'édition du ticket
+  id          String  @id @default(cuid())
+  repairId    String
+  serviceId   String
+  quantity    Int     @default(1)
+  priceAtTime Float
+  service     Service @relation(fields: [serviceId], references: [id])
+  repair      Repair  @relation(fields: [repairId], references: [id], onDelete: Cascade)
 }
 
 model RepairLog {
   id        String   @id @default(cuid())
   repairId  String
-  repair    Repair   @relation(fields: [repairId], references: [id], onDelete: Cascade)
   status    String
   comment   String?
   createdAt DateTime @default(now())
+  repair    Repair   @relation(fields: [repairId], references: [id], onDelete: Cascade)
 }
 
 model ShopProduct {
   id            String   @id @default(cuid())
-  name          String   // Ex: "Chargeur USB-C 20W"
-  category      String   // Chargeur, Protection, Coque, Smartphone, etc.
+  name          String
+  category      String
   sku           String?  @unique
   barcode       String?  @unique
-  purchasePrice Float    // Prix d'achat HT
-  sellingPrice  Float    // Prix de vente TTC
+  purchasePrice Float
+  sellingPrice  Float
   stock         Int      @default(0)
   minStock      Int      @default(2)
   supplier      String?
@@ -175,4 +176,23 @@ model ShopProduct {
   imageUrl      String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model WorkshopSettings {
+  id          String   @id @default("singleton")
+  name        String   @default("MOMUY&TECH SAS")
+  address     String   @default("123 Avenue de la Réparation")
+  zipCode     String   @default("75001")
+  city        String   @default("Paris")
+  countryCode String   @default("FR")
+  phone       String   @default("01 23 45 67 89")
+  email       String   @default("contact@momuytech.fr")
+  siret       String   @default("12345678901234")
+  vatNumber   String   @default("FR12345678901")
+  legalForm   String   @default("SAS")
+  capital     String   @default("1000€")
+  rcs         String   @default("Paris B 123 456 789")
+  iban        String?
+  bic         String?
+  updatedAt   DateTime @updatedAt
 }

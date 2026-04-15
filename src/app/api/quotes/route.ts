@@ -83,6 +83,7 @@ export async function POST(request: Request) {
         items: JSON.stringify(json.items || []),
         totalHT: requireNumber(json.totalHT || 0, 'Total HT'),
         totalTTC: requireNumber(json.totalTTC || 0, 'Total TTC'),
+        taxDetails: json.taxDetails ? JSON.stringify(json.taxDetails) : null,
         notes: optionalString(json.notes),
         validUntil: json.validUntil ? new Date(json.validUntil) : null,
       },
@@ -93,6 +94,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json(quote, { status: 201 })
   } catch (error) {
+    console.error('[PRISMA ERROR IN POST]', error)
     return handleApiError(error, 'Impossible de créer le devis.')
   }
 }

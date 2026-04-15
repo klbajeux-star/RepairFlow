@@ -25,6 +25,7 @@ export async function PATCH(
         items: json.items ? JSON.stringify(json.items) : undefined,
         totalHT: json.totalHT !== undefined ? requireNumber(json.totalHT, 'Total HT') : undefined,
         totalTTC: json.totalTTC !== undefined ? requireNumber(json.totalTTC, 'Total TTC') : undefined,
+        taxDetails: json.taxDetails !== undefined ? JSON.stringify(json.taxDetails) : undefined,
         notes: json.notes !== undefined ? optionalString(json.notes) : undefined,
       },
       include: {

@@ -73,6 +73,11 @@ export type RepairLog = $Result.DefaultSelection<Prisma.$RepairLogPayload>
  * 
  */
 export type ShopProduct = $Result.DefaultSelection<Prisma.$ShopProductPayload>
+/**
+ * Model WorkshopSettings
+ * 
+ */
+export type WorkshopSettings = $Result.DefaultSelection<Prisma.$WorkshopSettingsPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -315,6 +320,16 @@ export class PrismaClient<
     * ```
     */
   get shopProduct(): Prisma.ShopProductDelegate<ExtArgs>;
+
+  /**
+   * `prisma.workshopSettings`: Exposes CRUD operations for the **WorkshopSettings** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkshopSettings
+    * const workshopSettings = await prisma.workshopSettings.findMany()
+    * ```
+    */
+  get workshopSettings(): Prisma.WorkshopSettingsDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -796,7 +811,8 @@ export namespace Prisma {
     Repair: 'Repair',
     RepairService: 'RepairService',
     RepairLog: 'RepairLog',
-    ShopProduct: 'ShopProduct'
+    ShopProduct: 'ShopProduct',
+    WorkshopSettings: 'WorkshopSettings'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -813,7 +829,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'client' | 'quote' | 'invoice' | 'deviceType' | 'deviceBrand' | 'deviceModel' | 'part' | 'service' | 'repair' | 'repairService' | 'repairLog' | 'shopProduct'
+      modelProps: 'client' | 'quote' | 'invoice' | 'deviceType' | 'deviceBrand' | 'deviceModel' | 'part' | 'service' | 'repair' | 'repairService' | 'repairLog' | 'shopProduct' | 'workshopSettings'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
@@ -1561,6 +1577,68 @@ export namespace Prisma {
           }
         }
       }
+      WorkshopSettings: {
+        payload: Prisma.$WorkshopSettingsPayload<ExtArgs>
+        fields: Prisma.WorkshopSettingsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkshopSettingsFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkshopSettingsFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkshopSettingsFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkshopSettingsFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>
+          }
+          findMany: {
+            args: Prisma.WorkshopSettingsFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>[]
+          }
+          create: {
+            args: Prisma.WorkshopSettingsCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>
+          }
+          delete: {
+            args: Prisma.WorkshopSettingsDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>
+          }
+          update: {
+            args: Prisma.WorkshopSettingsUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkshopSettingsDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkshopSettingsUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.WorkshopSettingsUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$WorkshopSettingsPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkshopSettingsAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateWorkshopSettings>
+          }
+          groupBy: {
+            args: Prisma.WorkshopSettingsGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<WorkshopSettingsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkshopSettingsCountArgs<ExtArgs>,
+            result: $Utils.Optional<WorkshopSettingsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1720,15 +1798,15 @@ export namespace Prisma {
    */
 
   export type ClientCountOutputType = {
-    repairs: number
-    quotes: number
     invoices: number
+    quotes: number
+    repairs: number
   }
 
   export type ClientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    repairs?: boolean | ClientCountOutputTypeCountRepairsArgs
-    quotes?: boolean | ClientCountOutputTypeCountQuotesArgs
     invoices?: boolean | ClientCountOutputTypeCountInvoicesArgs
+    quotes?: boolean | ClientCountOutputTypeCountQuotesArgs
+    repairs?: boolean | ClientCountOutputTypeCountRepairsArgs
   }
 
   // Custom InputTypes
@@ -1747,8 +1825,8 @@ export namespace Prisma {
   /**
    * ClientCountOutputType without action
    */
-  export type ClientCountOutputTypeCountRepairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RepairWhereInput
+  export type ClientCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvoiceWhereInput
   }
 
 
@@ -1763,8 +1841,8 @@ export namespace Prisma {
   /**
    * ClientCountOutputType without action
    */
-  export type ClientCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: InvoiceWhereInput
+  export type ClientCountOutputTypeCountRepairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RepairWhereInput
   }
 
 
@@ -1842,13 +1920,13 @@ export namespace Prisma {
    */
 
   export type DeviceModelCountOutputType = {
-    services: number
     parts: number
+    services: number
   }
 
   export type DeviceModelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    services?: boolean | DeviceModelCountOutputTypeCountServicesArgs
     parts?: boolean | DeviceModelCountOutputTypeCountPartsArgs
+    services?: boolean | DeviceModelCountOutputTypeCountServicesArgs
   }
 
   // Custom InputTypes
@@ -1867,16 +1945,16 @@ export namespace Prisma {
   /**
    * DeviceModelCountOutputType without action
    */
-  export type DeviceModelCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ServiceWhereInput
+  export type DeviceModelCountOutputTypeCountPartsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PartWhereInput
   }
 
 
   /**
    * DeviceModelCountOutputType without action
    */
-  export type DeviceModelCountOutputTypeCountPartsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PartWhereInput
+  export type DeviceModelCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServiceWhereInput
   }
 
 
@@ -1954,17 +2032,17 @@ export namespace Prisma {
    */
 
   export type RepairCountOutputType = {
-    services: number
-    logs: number
-    quotes: number
     invoices: number
+    quotes: number
+    logs: number
+    services: number
   }
 
   export type RepairCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    services?: boolean | RepairCountOutputTypeCountServicesArgs
-    logs?: boolean | RepairCountOutputTypeCountLogsArgs
-    quotes?: boolean | RepairCountOutputTypeCountQuotesArgs
     invoices?: boolean | RepairCountOutputTypeCountInvoicesArgs
+    quotes?: boolean | RepairCountOutputTypeCountQuotesArgs
+    logs?: boolean | RepairCountOutputTypeCountLogsArgs
+    services?: boolean | RepairCountOutputTypeCountServicesArgs
   }
 
   // Custom InputTypes
@@ -1983,16 +2061,8 @@ export namespace Prisma {
   /**
    * RepairCountOutputType without action
    */
-  export type RepairCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RepairServiceWhereInput
-  }
-
-
-  /**
-   * RepairCountOutputType without action
-   */
-  export type RepairCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RepairLogWhereInput
+  export type RepairCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvoiceWhereInput
   }
 
 
@@ -2007,8 +2077,16 @@ export namespace Prisma {
   /**
    * RepairCountOutputType without action
    */
-  export type RepairCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: InvoiceWhereInput
+  export type RepairCountOutputTypeCountLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RepairLogWhereInput
+  }
+
+
+  /**
+   * RepairCountOutputType without action
+   */
+  export type RepairCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RepairServiceWhereInput
   }
 
 
@@ -2039,6 +2117,8 @@ export namespace Prisma {
     zipCode: string | null
     city: string | null
     createdAt: Date | null
+    siret: string | null
+    vatNumber: string | null
   }
 
   export type ClientMaxAggregateOutputType = {
@@ -2053,6 +2133,8 @@ export namespace Prisma {
     zipCode: string | null
     city: string | null
     createdAt: Date | null
+    siret: string | null
+    vatNumber: string | null
   }
 
   export type ClientCountAggregateOutputType = {
@@ -2067,6 +2149,8 @@ export namespace Prisma {
     zipCode: number
     city: number
     createdAt: number
+    siret: number
+    vatNumber: number
     _all: number
   }
 
@@ -2083,6 +2167,8 @@ export namespace Prisma {
     zipCode?: true
     city?: true
     createdAt?: true
+    siret?: true
+    vatNumber?: true
   }
 
   export type ClientMaxAggregateInputType = {
@@ -2097,6 +2183,8 @@ export namespace Prisma {
     zipCode?: true
     city?: true
     createdAt?: true
+    siret?: true
+    vatNumber?: true
   }
 
   export type ClientCountAggregateInputType = {
@@ -2111,6 +2199,8 @@ export namespace Prisma {
     zipCode?: true
     city?: true
     createdAt?: true
+    siret?: true
+    vatNumber?: true
     _all?: true
   }
 
@@ -2198,6 +2288,8 @@ export namespace Prisma {
     zipCode: string | null
     city: string | null
     createdAt: Date
+    siret: string | null
+    vatNumber: string | null
     _count: ClientCountAggregateOutputType | null
     _min: ClientMinAggregateOutputType | null
     _max: ClientMaxAggregateOutputType | null
@@ -2229,9 +2321,11 @@ export namespace Prisma {
     zipCode?: boolean
     city?: boolean
     createdAt?: boolean
-    repairs?: boolean | Client$repairsArgs<ExtArgs>
-    quotes?: boolean | Client$quotesArgs<ExtArgs>
+    siret?: boolean
+    vatNumber?: boolean
     invoices?: boolean | Client$invoicesArgs<ExtArgs>
+    quotes?: boolean | Client$quotesArgs<ExtArgs>
+    repairs?: boolean | Client$repairsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -2247,12 +2341,14 @@ export namespace Prisma {
     zipCode?: boolean
     city?: boolean
     createdAt?: boolean
+    siret?: boolean
+    vatNumber?: boolean
   }
 
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    repairs?: boolean | Client$repairsArgs<ExtArgs>
-    quotes?: boolean | Client$quotesArgs<ExtArgs>
     invoices?: boolean | Client$invoicesArgs<ExtArgs>
+    quotes?: boolean | Client$quotesArgs<ExtArgs>
+    repairs?: boolean | Client$repairsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -2260,9 +2356,9 @@ export namespace Prisma {
   export type $ClientPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Client"
     objects: {
-      repairs: Prisma.$RepairPayload<ExtArgs>[]
-      quotes: Prisma.$QuotePayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      quotes: Prisma.$QuotePayload<ExtArgs>[]
+      repairs: Prisma.$RepairPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2276,6 +2372,8 @@ export namespace Prisma {
       zipCode: string | null
       city: string | null
       createdAt: Date
+      siret: string | null
+      vatNumber: string | null
     }, ExtArgs["result"]["client"]>
     composites: {}
   }
@@ -2625,11 +2723,11 @@ export namespace Prisma {
   export interface Prisma__ClientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    repairs<T extends Client$repairsArgs<ExtArgs> = {}>(args?: Subset<T, Client$repairsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findMany'> | Null>;
+    invoices<T extends Client$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Client$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     quotes<T extends Client$quotesArgs<ExtArgs> = {}>(args?: Subset<T, Client$quotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, 'findMany'> | Null>;
 
-    invoices<T extends Client$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Client$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findMany'> | Null>;
+    repairs<T extends Client$repairsArgs<ExtArgs> = {}>(args?: Subset<T, Client$repairsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findMany'> | Null>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2670,6 +2768,8 @@ export namespace Prisma {
     readonly zipCode: FieldRef<"Client", 'String'>
     readonly city: FieldRef<"Client", 'String'>
     readonly createdAt: FieldRef<"Client", 'DateTime'>
+    readonly siret: FieldRef<"Client", 'String'>
+    readonly vatNumber: FieldRef<"Client", 'String'>
   }
     
 
@@ -2970,23 +3070,23 @@ export namespace Prisma {
 
 
   /**
-   * Client.repairs
+   * Client.invoices
    */
-  export type Client$repairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Client$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Repair
+     * Select specific fields to fetch from the Invoice
      */
-    select?: RepairSelect<ExtArgs> | null
+    select?: InvoiceSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: RepairInclude<ExtArgs> | null
-    where?: RepairWhereInput
-    orderBy?: RepairOrderByWithRelationInput | RepairOrderByWithRelationInput[]
-    cursor?: RepairWhereUniqueInput
+    include?: InvoiceInclude<ExtArgs> | null
+    where?: InvoiceWhereInput
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    cursor?: InvoiceWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: RepairScalarFieldEnum | RepairScalarFieldEnum[]
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
   }
 
 
@@ -3012,23 +3112,23 @@ export namespace Prisma {
 
 
   /**
-   * Client.invoices
+   * Client.repairs
    */
-  export type Client$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Client$repairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Invoice
+     * Select specific fields to fetch from the Repair
      */
-    select?: InvoiceSelect<ExtArgs> | null
+    select?: RepairSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: InvoiceInclude<ExtArgs> | null
-    where?: InvoiceWhereInput
-    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
-    cursor?: InvoiceWhereUniqueInput
+    include?: RepairInclude<ExtArgs> | null
+    where?: RepairWhereInput
+    orderBy?: RepairOrderByWithRelationInput | RepairOrderByWithRelationInput[]
+    cursor?: RepairWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+    distinct?: RepairScalarFieldEnum | RepairScalarFieldEnum[]
   }
 
 
@@ -3084,6 +3184,7 @@ export namespace Prisma {
     invoiceId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    taxDetails: string | null
   }
 
   export type QuoteMaxAggregateOutputType = {
@@ -3100,6 +3201,7 @@ export namespace Prisma {
     invoiceId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    taxDetails: string | null
   }
 
   export type QuoteCountAggregateOutputType = {
@@ -3116,6 +3218,7 @@ export namespace Prisma {
     invoiceId: number
     createdAt: number
     updatedAt: number
+    taxDetails: number
     _all: number
   }
 
@@ -3144,6 +3247,7 @@ export namespace Prisma {
     invoiceId?: true
     createdAt?: true
     updatedAt?: true
+    taxDetails?: true
   }
 
   export type QuoteMaxAggregateInputType = {
@@ -3160,6 +3264,7 @@ export namespace Prisma {
     invoiceId?: true
     createdAt?: true
     updatedAt?: true
+    taxDetails?: true
   }
 
   export type QuoteCountAggregateInputType = {
@@ -3176,6 +3281,7 @@ export namespace Prisma {
     invoiceId?: true
     createdAt?: true
     updatedAt?: true
+    taxDetails?: true
     _all?: true
   }
 
@@ -3279,6 +3385,7 @@ export namespace Prisma {
     invoiceId: string | null
     createdAt: Date
     updatedAt: Date
+    taxDetails: string | null
     _count: QuoteCountAggregateOutputType | null
     _avg: QuoteAvgAggregateOutputType | null
     _sum: QuoteSumAggregateOutputType | null
@@ -3314,9 +3421,10 @@ export namespace Prisma {
     invoiceId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    client?: boolean | ClientDefaultArgs<ExtArgs>
-    repair?: boolean | Quote$repairArgs<ExtArgs>
+    taxDetails?: boolean
     invoice?: boolean | Quote$invoiceArgs<ExtArgs>
+    repair?: boolean | Quote$repairArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quote"]>
 
   export type QuoteSelectScalar = {
@@ -3333,21 +3441,22 @@ export namespace Prisma {
     invoiceId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taxDetails?: boolean
   }
 
   export type QuoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    client?: boolean | ClientDefaultArgs<ExtArgs>
-    repair?: boolean | Quote$repairArgs<ExtArgs>
     invoice?: boolean | Quote$invoiceArgs<ExtArgs>
+    repair?: boolean | Quote$repairArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
   }
 
 
   export type $QuotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Quote"
     objects: {
-      client: Prisma.$ClientPayload<ExtArgs>
-      repair: Prisma.$RepairPayload<ExtArgs> | null
       invoice: Prisma.$InvoicePayload<ExtArgs> | null
+      repair: Prisma.$RepairPayload<ExtArgs> | null
+      client: Prisma.$ClientPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3363,6 +3472,7 @@ export namespace Prisma {
       invoiceId: string | null
       createdAt: Date
       updatedAt: Date
+      taxDetails: string | null
     }, ExtArgs["result"]["quote"]>
     composites: {}
   }
@@ -3712,11 +3822,11 @@ export namespace Prisma {
   export interface Prisma__QuoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
+    invoice<T extends Quote$invoiceArgs<ExtArgs> = {}>(args?: Subset<T, Quote$invoiceArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
     repair<T extends Quote$repairArgs<ExtArgs> = {}>(args?: Subset<T, Quote$repairArgs<ExtArgs>>): Prisma__RepairClient<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
-    invoice<T extends Quote$invoiceArgs<ExtArgs> = {}>(args?: Subset<T, Quote$invoiceArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3759,6 +3869,7 @@ export namespace Prisma {
     readonly invoiceId: FieldRef<"Quote", 'String'>
     readonly createdAt: FieldRef<"Quote", 'DateTime'>
     readonly updatedAt: FieldRef<"Quote", 'DateTime'>
+    readonly taxDetails: FieldRef<"Quote", 'String'>
   }
     
 
@@ -4059,22 +4170,6 @@ export namespace Prisma {
 
 
   /**
-   * Quote.repair
-   */
-  export type Quote$repairArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Repair
-     */
-    select?: RepairSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     */
-    include?: RepairInclude<ExtArgs> | null
-    where?: RepairWhereInput
-  }
-
-
-  /**
    * Quote.invoice
    */
   export type Quote$invoiceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4087,6 +4182,22 @@ export namespace Prisma {
      */
     include?: InvoiceInclude<ExtArgs> | null
     where?: InvoiceWhereInput
+  }
+
+
+  /**
+   * Quote.repair
+   */
+  export type Quote$repairArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Repair
+     */
+    select?: RepairSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: RepairInclude<ExtArgs> | null
+    where?: RepairWhereInput
   }
 
 
@@ -4140,6 +4251,7 @@ export namespace Prisma {
     paid: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    taxDetails: string | null
   }
 
   export type InvoiceMaxAggregateOutputType = {
@@ -4154,6 +4266,7 @@ export namespace Prisma {
     paid: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    taxDetails: string | null
   }
 
   export type InvoiceCountAggregateOutputType = {
@@ -4168,6 +4281,7 @@ export namespace Prisma {
     paid: number
     createdAt: number
     updatedAt: number
+    taxDetails: number
     _all: number
   }
 
@@ -4194,6 +4308,7 @@ export namespace Prisma {
     paid?: true
     createdAt?: true
     updatedAt?: true
+    taxDetails?: true
   }
 
   export type InvoiceMaxAggregateInputType = {
@@ -4208,6 +4323,7 @@ export namespace Prisma {
     paid?: true
     createdAt?: true
     updatedAt?: true
+    taxDetails?: true
   }
 
   export type InvoiceCountAggregateInputType = {
@@ -4222,6 +4338,7 @@ export namespace Prisma {
     paid?: true
     createdAt?: true
     updatedAt?: true
+    taxDetails?: true
     _all?: true
   }
 
@@ -4323,6 +4440,7 @@ export namespace Prisma {
     paid: boolean
     createdAt: Date
     updatedAt: Date
+    taxDetails: string | null
     _count: InvoiceCountAggregateOutputType | null
     _avg: InvoiceAvgAggregateOutputType | null
     _sum: InvoiceSumAggregateOutputType | null
@@ -4356,8 +4474,9 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    client?: boolean | ClientDefaultArgs<ExtArgs>
+    taxDetails?: boolean
     repair?: boolean | Invoice$repairArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
     quote?: boolean | Invoice$quoteArgs<ExtArgs>
   }, ExtArgs["result"]["invoice"]>
 
@@ -4373,11 +4492,12 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taxDetails?: boolean
   }
 
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Invoice$repairArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
     quote?: boolean | Invoice$quoteArgs<ExtArgs>
   }
 
@@ -4385,8 +4505,8 @@ export namespace Prisma {
   export type $InvoicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Invoice"
     objects: {
-      client: Prisma.$ClientPayload<ExtArgs>
       repair: Prisma.$RepairPayload<ExtArgs> | null
+      client: Prisma.$ClientPayload<ExtArgs>
       quote: Prisma.$QuotePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -4401,6 +4521,7 @@ export namespace Prisma {
       paid: boolean
       createdAt: Date
       updatedAt: Date
+      taxDetails: string | null
     }, ExtArgs["result"]["invoice"]>
     composites: {}
   }
@@ -4750,9 +4871,9 @@ export namespace Prisma {
   export interface Prisma__InvoiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
-
     repair<T extends Invoice$repairArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$repairArgs<ExtArgs>>): Prisma__RepairClient<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
+    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
     quote<T extends Invoice$quoteArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$quoteArgs<ExtArgs>>): Prisma__QuoteClient<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
@@ -4795,6 +4916,7 @@ export namespace Prisma {
     readonly paid: FieldRef<"Invoice", 'Boolean'>
     readonly createdAt: FieldRef<"Invoice", 'DateTime'>
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
+    readonly taxDetails: FieldRef<"Invoice", 'String'>
   }
     
 
@@ -6937,28 +7059,28 @@ export namespace Prisma {
   export type DeviceModelMinAggregateOutputType = {
     id: string | null
     name: string | null
-    modelReference: string | null
     brandId: string | null
     typeId: string | null
     createdAt: Date | null
+    modelReference: string | null
   }
 
   export type DeviceModelMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    modelReference: string | null
     brandId: string | null
     typeId: string | null
     createdAt: Date | null
+    modelReference: string | null
   }
 
   export type DeviceModelCountAggregateOutputType = {
     id: number
     name: number
-    modelReference: number
     brandId: number
     typeId: number
     createdAt: number
+    modelReference: number
     _all: number
   }
 
@@ -6966,28 +7088,28 @@ export namespace Prisma {
   export type DeviceModelMinAggregateInputType = {
     id?: true
     name?: true
-    modelReference?: true
     brandId?: true
     typeId?: true
     createdAt?: true
+    modelReference?: true
   }
 
   export type DeviceModelMaxAggregateInputType = {
     id?: true
     name?: true
-    modelReference?: true
     brandId?: true
     typeId?: true
     createdAt?: true
+    modelReference?: true
   }
 
   export type DeviceModelCountAggregateInputType = {
     id?: true
     name?: true
-    modelReference?: true
     brandId?: true
     typeId?: true
     createdAt?: true
+    modelReference?: true
     _all?: true
   }
 
@@ -7066,10 +7188,10 @@ export namespace Prisma {
   export type DeviceModelGroupByOutputType = {
     id: string
     name: string
-    modelReference: string | null
     brandId: string
     typeId: string
     createdAt: Date
+    modelReference: string | null
     _count: DeviceModelCountAggregateOutputType | null
     _min: DeviceModelMinAggregateOutputType | null
     _max: DeviceModelMaxAggregateOutputType | null
@@ -7092,31 +7214,31 @@ export namespace Prisma {
   export type DeviceModelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    modelReference?: boolean
     brandId?: boolean
     typeId?: boolean
     createdAt?: boolean
-    brand?: boolean | DeviceBrandDefaultArgs<ExtArgs>
+    modelReference?: boolean
     type?: boolean | DeviceTypeDefaultArgs<ExtArgs>
-    services?: boolean | DeviceModel$servicesArgs<ExtArgs>
+    brand?: boolean | DeviceBrandDefaultArgs<ExtArgs>
     parts?: boolean | DeviceModel$partsArgs<ExtArgs>
+    services?: boolean | DeviceModel$servicesArgs<ExtArgs>
     _count?: boolean | DeviceModelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["deviceModel"]>
 
   export type DeviceModelSelectScalar = {
     id?: boolean
     name?: boolean
-    modelReference?: boolean
     brandId?: boolean
     typeId?: boolean
     createdAt?: boolean
+    modelReference?: boolean
   }
 
   export type DeviceModelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    brand?: boolean | DeviceBrandDefaultArgs<ExtArgs>
     type?: boolean | DeviceTypeDefaultArgs<ExtArgs>
-    services?: boolean | DeviceModel$servicesArgs<ExtArgs>
+    brand?: boolean | DeviceBrandDefaultArgs<ExtArgs>
     parts?: boolean | DeviceModel$partsArgs<ExtArgs>
+    services?: boolean | DeviceModel$servicesArgs<ExtArgs>
     _count?: boolean | DeviceModelCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -7124,18 +7246,18 @@ export namespace Prisma {
   export type $DeviceModelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "DeviceModel"
     objects: {
-      brand: Prisma.$DeviceBrandPayload<ExtArgs>
       type: Prisma.$DeviceTypePayload<ExtArgs>
-      services: Prisma.$ServicePayload<ExtArgs>[]
+      brand: Prisma.$DeviceBrandPayload<ExtArgs>
       parts: Prisma.$PartPayload<ExtArgs>[]
+      services: Prisma.$ServicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      modelReference: string | null
       brandId: string
       typeId: string
       createdAt: Date
+      modelReference: string | null
     }, ExtArgs["result"]["deviceModel"]>
     composites: {}
   }
@@ -7485,13 +7607,13 @@ export namespace Prisma {
   export interface Prisma__DeviceModelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    brand<T extends DeviceBrandDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DeviceBrandDefaultArgs<ExtArgs>>): Prisma__DeviceBrandClient<$Result.GetResult<Prisma.$DeviceBrandPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
-
     type<T extends DeviceTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DeviceTypeDefaultArgs<ExtArgs>>): Prisma__DeviceTypeClient<$Result.GetResult<Prisma.$DeviceTypePayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
-    services<T extends DeviceModel$servicesArgs<ExtArgs> = {}>(args?: Subset<T, DeviceModel$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, 'findMany'> | Null>;
+    brand<T extends DeviceBrandDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DeviceBrandDefaultArgs<ExtArgs>>): Prisma__DeviceBrandClient<$Result.GetResult<Prisma.$DeviceBrandPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
     parts<T extends DeviceModel$partsArgs<ExtArgs> = {}>(args?: Subset<T, DeviceModel$partsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    services<T extends DeviceModel$servicesArgs<ExtArgs> = {}>(args?: Subset<T, DeviceModel$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7523,10 +7645,10 @@ export namespace Prisma {
   interface DeviceModelFieldRefs {
     readonly id: FieldRef<"DeviceModel", 'String'>
     readonly name: FieldRef<"DeviceModel", 'String'>
-    readonly modelReference: FieldRef<"DeviceModel", 'String'>
     readonly brandId: FieldRef<"DeviceModel", 'String'>
     readonly typeId: FieldRef<"DeviceModel", 'String'>
     readonly createdAt: FieldRef<"DeviceModel", 'DateTime'>
+    readonly modelReference: FieldRef<"DeviceModel", 'String'>
   }
     
 
@@ -7827,27 +7949,6 @@ export namespace Prisma {
 
 
   /**
-   * DeviceModel.services
-   */
-  export type DeviceModel$servicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Service
-     */
-    select?: ServiceSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     */
-    include?: ServiceInclude<ExtArgs> | null
-    where?: ServiceWhereInput
-    orderBy?: ServiceOrderByWithRelationInput | ServiceOrderByWithRelationInput[]
-    cursor?: ServiceWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ServiceScalarFieldEnum | ServiceScalarFieldEnum[]
-  }
-
-
-  /**
    * DeviceModel.parts
    */
   export type DeviceModel$partsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7865,6 +7966,27 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PartScalarFieldEnum | PartScalarFieldEnum[]
+  }
+
+
+  /**
+   * DeviceModel.services
+   */
+  export type DeviceModel$servicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Service
+     */
+    select?: ServiceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ServiceInclude<ExtArgs> | null
+    where?: ServiceWhereInput
+    orderBy?: ServiceOrderByWithRelationInput | ServiceOrderByWithRelationInput[]
+    cursor?: ServiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServiceScalarFieldEnum | ServiceScalarFieldEnum[]
   }
 
 
@@ -7915,13 +8037,13 @@ export namespace Prisma {
     costPrice: number | null
     stock: number | null
     minStock: number | null
-    quality: string | null
     supplier: string | null
     supplierRef: string | null
     location: string | null
     description: string | null
     modelId: string | null
     createdAt: Date | null
+    quality: string | null
   }
 
   export type PartMaxAggregateOutputType = {
@@ -7931,13 +8053,13 @@ export namespace Prisma {
     costPrice: number | null
     stock: number | null
     minStock: number | null
-    quality: string | null
     supplier: string | null
     supplierRef: string | null
     location: string | null
     description: string | null
     modelId: string | null
     createdAt: Date | null
+    quality: string | null
   }
 
   export type PartCountAggregateOutputType = {
@@ -7947,13 +8069,13 @@ export namespace Prisma {
     costPrice: number
     stock: number
     minStock: number
-    quality: number
     supplier: number
     supplierRef: number
     location: number
     description: number
     modelId: number
     createdAt: number
+    quality: number
     _all: number
   }
 
@@ -7977,13 +8099,13 @@ export namespace Prisma {
     costPrice?: true
     stock?: true
     minStock?: true
-    quality?: true
     supplier?: true
     supplierRef?: true
     location?: true
     description?: true
     modelId?: true
     createdAt?: true
+    quality?: true
   }
 
   export type PartMaxAggregateInputType = {
@@ -7993,13 +8115,13 @@ export namespace Prisma {
     costPrice?: true
     stock?: true
     minStock?: true
-    quality?: true
     supplier?: true
     supplierRef?: true
     location?: true
     description?: true
     modelId?: true
     createdAt?: true
+    quality?: true
   }
 
   export type PartCountAggregateInputType = {
@@ -8009,13 +8131,13 @@ export namespace Prisma {
     costPrice?: true
     stock?: true
     minStock?: true
-    quality?: true
     supplier?: true
     supplierRef?: true
     location?: true
     description?: true
     modelId?: true
     createdAt?: true
+    quality?: true
     _all?: true
   }
 
@@ -8112,13 +8234,13 @@ export namespace Prisma {
     costPrice: number
     stock: number
     minStock: number
-    quality: string | null
     supplier: string | null
     supplierRef: string | null
     location: string | null
     description: string | null
     modelId: string | null
     createdAt: Date
+    quality: string | null
     _count: PartCountAggregateOutputType | null
     _avg: PartAvgAggregateOutputType | null
     _sum: PartSumAggregateOutputType | null
@@ -8147,13 +8269,13 @@ export namespace Prisma {
     costPrice?: boolean
     stock?: boolean
     minStock?: boolean
-    quality?: boolean
     supplier?: boolean
     supplierRef?: boolean
     location?: boolean
     description?: boolean
     modelId?: boolean
     createdAt?: boolean
+    quality?: boolean
     model?: boolean | Part$modelArgs<ExtArgs>
     services?: boolean | Part$servicesArgs<ExtArgs>
     _count?: boolean | PartCountOutputTypeDefaultArgs<ExtArgs>
@@ -8166,13 +8288,13 @@ export namespace Prisma {
     costPrice?: boolean
     stock?: boolean
     minStock?: boolean
-    quality?: boolean
     supplier?: boolean
     supplierRef?: boolean
     location?: boolean
     description?: boolean
     modelId?: boolean
     createdAt?: boolean
+    quality?: boolean
   }
 
   export type PartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8195,13 +8317,13 @@ export namespace Prisma {
       costPrice: number
       stock: number
       minStock: number
-      quality: string | null
       supplier: string | null
       supplierRef: string | null
       location: string | null
       description: string | null
       modelId: string | null
       createdAt: Date
+      quality: string | null
     }, ExtArgs["result"]["part"]>
     composites: {}
   }
@@ -8589,13 +8711,13 @@ export namespace Prisma {
     readonly costPrice: FieldRef<"Part", 'Float'>
     readonly stock: FieldRef<"Part", 'Int'>
     readonly minStock: FieldRef<"Part", 'Int'>
-    readonly quality: FieldRef<"Part", 'String'>
     readonly supplier: FieldRef<"Part", 'String'>
     readonly supplierRef: FieldRef<"Part", 'String'>
     readonly location: FieldRef<"Part", 'String'>
     readonly description: FieldRef<"Part", 'String'>
     readonly modelId: FieldRef<"Part", 'String'>
     readonly createdAt: FieldRef<"Part", 'DateTime'>
+    readonly quality: FieldRef<"Part", 'String'>
   }
     
 
@@ -9186,9 +9308,9 @@ export namespace Prisma {
     modelId?: boolean
     description?: boolean
     createdAt?: boolean
-    part?: boolean | Service$partArgs<ExtArgs>
-    model?: boolean | Service$modelArgs<ExtArgs>
     repairs?: boolean | Service$repairsArgs<ExtArgs>
+    model?: boolean | Service$modelArgs<ExtArgs>
+    part?: boolean | Service$partArgs<ExtArgs>
     _count?: boolean | ServiceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["service"]>
 
@@ -9205,9 +9327,9 @@ export namespace Prisma {
   }
 
   export type ServiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    part?: boolean | Service$partArgs<ExtArgs>
-    model?: boolean | Service$modelArgs<ExtArgs>
     repairs?: boolean | Service$repairsArgs<ExtArgs>
+    model?: boolean | Service$modelArgs<ExtArgs>
+    part?: boolean | Service$partArgs<ExtArgs>
     _count?: boolean | ServiceCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -9215,9 +9337,9 @@ export namespace Prisma {
   export type $ServicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Service"
     objects: {
-      part: Prisma.$PartPayload<ExtArgs> | null
-      model: Prisma.$DeviceModelPayload<ExtArgs> | null
       repairs: Prisma.$RepairServicePayload<ExtArgs>[]
+      model: Prisma.$DeviceModelPayload<ExtArgs> | null
+      part: Prisma.$PartPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9578,11 +9700,11 @@ export namespace Prisma {
   export interface Prisma__ServiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    part<T extends Service$partArgs<ExtArgs> = {}>(args?: Subset<T, Service$partArgs<ExtArgs>>): Prisma__PartClient<$Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+    repairs<T extends Service$repairsArgs<ExtArgs> = {}>(args?: Subset<T, Service$repairsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairServicePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     model<T extends Service$modelArgs<ExtArgs> = {}>(args?: Subset<T, Service$modelArgs<ExtArgs>>): Prisma__DeviceModelClient<$Result.GetResult<Prisma.$DeviceModelPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
-    repairs<T extends Service$repairsArgs<ExtArgs> = {}>(args?: Subset<T, Service$repairsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairServicePayload<ExtArgs>, T, 'findMany'> | Null>;
+    part<T extends Service$partArgs<ExtArgs> = {}>(args?: Subset<T, Service$partArgs<ExtArgs>>): Prisma__PartClient<$Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9921,18 +10043,23 @@ export namespace Prisma {
 
 
   /**
-   * Service.part
+   * Service.repairs
    */
-  export type Service$partArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Service$repairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Part
+     * Select specific fields to fetch from the RepairService
      */
-    select?: PartSelect<ExtArgs> | null
+    select?: RepairServiceSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: PartInclude<ExtArgs> | null
-    where?: PartWhereInput
+    include?: RepairServiceInclude<ExtArgs> | null
+    where?: RepairServiceWhereInput
+    orderBy?: RepairServiceOrderByWithRelationInput | RepairServiceOrderByWithRelationInput[]
+    cursor?: RepairServiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RepairServiceScalarFieldEnum | RepairServiceScalarFieldEnum[]
   }
 
 
@@ -9953,23 +10080,18 @@ export namespace Prisma {
 
 
   /**
-   * Service.repairs
+   * Service.part
    */
-  export type Service$repairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Service$partArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RepairService
+     * Select specific fields to fetch from the Part
      */
-    select?: RepairServiceSelect<ExtArgs> | null
+    select?: PartSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: RepairServiceInclude<ExtArgs> | null
-    where?: RepairServiceWhereInput
-    orderBy?: RepairServiceOrderByWithRelationInput | RepairServiceOrderByWithRelationInput[]
-    cursor?: RepairServiceWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RepairServiceScalarFieldEnum | RepairServiceScalarFieldEnum[]
+    include?: PartInclude<ExtArgs> | null
+    where?: PartWhereInput
   }
 
 
@@ -10169,11 +10291,11 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    client?: boolean | ClientDefaultArgs<ExtArgs>
-    services?: boolean | Repair$servicesArgs<ExtArgs>
-    logs?: boolean | Repair$logsArgs<ExtArgs>
-    quotes?: boolean | Repair$quotesArgs<ExtArgs>
     invoices?: boolean | Repair$invoicesArgs<ExtArgs>
+    quotes?: boolean | Repair$quotesArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    logs?: boolean | Repair$logsArgs<ExtArgs>
+    services?: boolean | Repair$servicesArgs<ExtArgs>
     _count?: boolean | RepairCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repair"]>
 
@@ -10188,11 +10310,11 @@ export namespace Prisma {
   }
 
   export type RepairInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    client?: boolean | ClientDefaultArgs<ExtArgs>
-    services?: boolean | Repair$servicesArgs<ExtArgs>
-    logs?: boolean | Repair$logsArgs<ExtArgs>
-    quotes?: boolean | Repair$quotesArgs<ExtArgs>
     invoices?: boolean | Repair$invoicesArgs<ExtArgs>
+    quotes?: boolean | Repair$quotesArgs<ExtArgs>
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    logs?: boolean | Repair$logsArgs<ExtArgs>
+    services?: boolean | Repair$servicesArgs<ExtArgs>
     _count?: boolean | RepairCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -10200,11 +10322,11 @@ export namespace Prisma {
   export type $RepairPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Repair"
     objects: {
-      client: Prisma.$ClientPayload<ExtArgs>
-      services: Prisma.$RepairServicePayload<ExtArgs>[]
-      logs: Prisma.$RepairLogPayload<ExtArgs>[]
-      quotes: Prisma.$QuotePayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      quotes: Prisma.$QuotePayload<ExtArgs>[]
+      client: Prisma.$ClientPayload<ExtArgs>
+      logs: Prisma.$RepairLogPayload<ExtArgs>[]
+      services: Prisma.$RepairServicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10563,15 +10685,15 @@ export namespace Prisma {
   export interface Prisma__RepairClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
-
-    services<T extends Repair$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairServicePayload<ExtArgs>, T, 'findMany'> | Null>;
-
-    logs<T extends Repair$logsArgs<ExtArgs> = {}>(args?: Subset<T, Repair$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairLogPayload<ExtArgs>, T, 'findMany'> | Null>;
+    invoices<T extends Repair$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     quotes<T extends Repair$quotesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$quotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, 'findMany'> | Null>;
 
-    invoices<T extends Repair$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findMany'> | Null>;
+    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
+
+    logs<T extends Repair$logsArgs<ExtArgs> = {}>(args?: Subset<T, Repair$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairLogPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    services<T extends Repair$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairServicePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10908,44 +11030,23 @@ export namespace Prisma {
 
 
   /**
-   * Repair.services
+   * Repair.invoices
    */
-  export type Repair$servicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Repair$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the RepairService
+     * Select specific fields to fetch from the Invoice
      */
-    select?: RepairServiceSelect<ExtArgs> | null
+    select?: InvoiceSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: RepairServiceInclude<ExtArgs> | null
-    where?: RepairServiceWhereInput
-    orderBy?: RepairServiceOrderByWithRelationInput | RepairServiceOrderByWithRelationInput[]
-    cursor?: RepairServiceWhereUniqueInput
+    include?: InvoiceInclude<ExtArgs> | null
+    where?: InvoiceWhereInput
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    cursor?: InvoiceWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: RepairServiceScalarFieldEnum | RepairServiceScalarFieldEnum[]
-  }
-
-
-  /**
-   * Repair.logs
-   */
-  export type Repair$logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RepairLog
-     */
-    select?: RepairLogSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     */
-    include?: RepairLogInclude<ExtArgs> | null
-    where?: RepairLogWhereInput
-    orderBy?: RepairLogOrderByWithRelationInput | RepairLogOrderByWithRelationInput[]
-    cursor?: RepairLogWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RepairLogScalarFieldEnum | RepairLogScalarFieldEnum[]
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
   }
 
 
@@ -10971,23 +11072,44 @@ export namespace Prisma {
 
 
   /**
-   * Repair.invoices
+   * Repair.logs
    */
-  export type Repair$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Repair$logsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Invoice
+     * Select specific fields to fetch from the RepairLog
      */
-    select?: InvoiceSelect<ExtArgs> | null
+    select?: RepairLogSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
      */
-    include?: InvoiceInclude<ExtArgs> | null
-    where?: InvoiceWhereInput
-    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
-    cursor?: InvoiceWhereUniqueInput
+    include?: RepairLogInclude<ExtArgs> | null
+    where?: RepairLogWhereInput
+    orderBy?: RepairLogOrderByWithRelationInput | RepairLogOrderByWithRelationInput[]
+    cursor?: RepairLogWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+    distinct?: RepairLogScalarFieldEnum | RepairLogScalarFieldEnum[]
+  }
+
+
+  /**
+   * Repair.services
+   */
+  export type Repair$servicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RepairService
+     */
+    select?: RepairServiceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: RepairServiceInclude<ExtArgs> | null
+    where?: RepairServiceWhereInput
+    orderBy?: RepairServiceOrderByWithRelationInput | RepairServiceOrderByWithRelationInput[]
+    cursor?: RepairServiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RepairServiceScalarFieldEnum | RepairServiceScalarFieldEnum[]
   }
 
 
@@ -11209,8 +11331,8 @@ export namespace Prisma {
     serviceId?: boolean
     quantity?: boolean
     priceAtTime?: boolean
-    repair?: boolean | RepairDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
+    repair?: boolean | RepairDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repairService"]>
 
   export type RepairServiceSelectScalar = {
@@ -11222,16 +11344,16 @@ export namespace Prisma {
   }
 
   export type RepairServiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    repair?: boolean | RepairDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
+    repair?: boolean | RepairDefaultArgs<ExtArgs>
   }
 
 
   export type $RepairServicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RepairService"
     objects: {
-      repair: Prisma.$RepairPayload<ExtArgs>
       service: Prisma.$ServicePayload<ExtArgs>
+      repair: Prisma.$RepairPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11588,9 +11710,9 @@ export namespace Prisma {
   export interface Prisma__RepairServiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    repair<T extends RepairDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RepairDefaultArgs<ExtArgs>>): Prisma__RepairClient<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
-
     service<T extends ServiceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServiceDefaultArgs<ExtArgs>>): Prisma__ServiceClient<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
+
+    repair<T extends RepairDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RepairDefaultArgs<ExtArgs>>): Prisma__RepairClient<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -13818,6 +13940,969 @@ export namespace Prisma {
 
 
   /**
+   * Model WorkshopSettings
+   */
+
+  export type AggregateWorkshopSettings = {
+    _count: WorkshopSettingsCountAggregateOutputType | null
+    _min: WorkshopSettingsMinAggregateOutputType | null
+    _max: WorkshopSettingsMaxAggregateOutputType | null
+  }
+
+  export type WorkshopSettingsMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    address: string | null
+    zipCode: string | null
+    city: string | null
+    countryCode: string | null
+    phone: string | null
+    email: string | null
+    siret: string | null
+    vatNumber: string | null
+    legalForm: string | null
+    capital: string | null
+    rcs: string | null
+    iban: string | null
+    bic: string | null
+    updatedAt: Date | null
+  }
+
+  export type WorkshopSettingsMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    address: string | null
+    zipCode: string | null
+    city: string | null
+    countryCode: string | null
+    phone: string | null
+    email: string | null
+    siret: string | null
+    vatNumber: string | null
+    legalForm: string | null
+    capital: string | null
+    rcs: string | null
+    iban: string | null
+    bic: string | null
+    updatedAt: Date | null
+  }
+
+  export type WorkshopSettingsCountAggregateOutputType = {
+    id: number
+    name: number
+    address: number
+    zipCode: number
+    city: number
+    countryCode: number
+    phone: number
+    email: number
+    siret: number
+    vatNumber: number
+    legalForm: number
+    capital: number
+    rcs: number
+    iban: number
+    bic: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkshopSettingsMinAggregateInputType = {
+    id?: true
+    name?: true
+    address?: true
+    zipCode?: true
+    city?: true
+    countryCode?: true
+    phone?: true
+    email?: true
+    siret?: true
+    vatNumber?: true
+    legalForm?: true
+    capital?: true
+    rcs?: true
+    iban?: true
+    bic?: true
+    updatedAt?: true
+  }
+
+  export type WorkshopSettingsMaxAggregateInputType = {
+    id?: true
+    name?: true
+    address?: true
+    zipCode?: true
+    city?: true
+    countryCode?: true
+    phone?: true
+    email?: true
+    siret?: true
+    vatNumber?: true
+    legalForm?: true
+    capital?: true
+    rcs?: true
+    iban?: true
+    bic?: true
+    updatedAt?: true
+  }
+
+  export type WorkshopSettingsCountAggregateInputType = {
+    id?: true
+    name?: true
+    address?: true
+    zipCode?: true
+    city?: true
+    countryCode?: true
+    phone?: true
+    email?: true
+    siret?: true
+    vatNumber?: true
+    legalForm?: true
+    capital?: true
+    rcs?: true
+    iban?: true
+    bic?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkshopSettingsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkshopSettings to aggregate.
+     */
+    where?: WorkshopSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkshopSettings to fetch.
+     */
+    orderBy?: WorkshopSettingsOrderByWithRelationInput | WorkshopSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkshopSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkshopSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkshopSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkshopSettings
+    **/
+    _count?: true | WorkshopSettingsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkshopSettingsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkshopSettingsMaxAggregateInputType
+  }
+
+  export type GetWorkshopSettingsAggregateType<T extends WorkshopSettingsAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkshopSettings]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkshopSettings[P]>
+      : GetScalarType<T[P], AggregateWorkshopSettings[P]>
+  }
+
+
+
+
+  export type WorkshopSettingsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkshopSettingsWhereInput
+    orderBy?: WorkshopSettingsOrderByWithAggregationInput | WorkshopSettingsOrderByWithAggregationInput[]
+    by: WorkshopSettingsScalarFieldEnum[] | WorkshopSettingsScalarFieldEnum
+    having?: WorkshopSettingsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkshopSettingsCountAggregateInputType | true
+    _min?: WorkshopSettingsMinAggregateInputType
+    _max?: WorkshopSettingsMaxAggregateInputType
+  }
+
+  export type WorkshopSettingsGroupByOutputType = {
+    id: string
+    name: string
+    address: string
+    zipCode: string
+    city: string
+    countryCode: string
+    phone: string
+    email: string
+    siret: string
+    vatNumber: string
+    legalForm: string
+    capital: string
+    rcs: string
+    iban: string | null
+    bic: string | null
+    updatedAt: Date
+    _count: WorkshopSettingsCountAggregateOutputType | null
+    _min: WorkshopSettingsMinAggregateOutputType | null
+    _max: WorkshopSettingsMaxAggregateOutputType | null
+  }
+
+  type GetWorkshopSettingsGroupByPayload<T extends WorkshopSettingsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkshopSettingsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkshopSettingsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkshopSettingsGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkshopSettingsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkshopSettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    address?: boolean
+    zipCode?: boolean
+    city?: boolean
+    countryCode?: boolean
+    phone?: boolean
+    email?: boolean
+    siret?: boolean
+    vatNumber?: boolean
+    legalForm?: boolean
+    capital?: boolean
+    rcs?: boolean
+    iban?: boolean
+    bic?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workshopSettings"]>
+
+  export type WorkshopSettingsSelectScalar = {
+    id?: boolean
+    name?: boolean
+    address?: boolean
+    zipCode?: boolean
+    city?: boolean
+    countryCode?: boolean
+    phone?: boolean
+    email?: boolean
+    siret?: boolean
+    vatNumber?: boolean
+    legalForm?: boolean
+    capital?: boolean
+    rcs?: boolean
+    iban?: boolean
+    bic?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $WorkshopSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkshopSettings"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      address: string
+      zipCode: string
+      city: string
+      countryCode: string
+      phone: string
+      email: string
+      siret: string
+      vatNumber: string
+      legalForm: string
+      capital: string
+      rcs: string
+      iban: string | null
+      bic: string | null
+      updatedAt: Date
+    }, ExtArgs["result"]["workshopSettings"]>
+    composites: {}
+  }
+
+
+  type WorkshopSettingsGetPayload<S extends boolean | null | undefined | WorkshopSettingsDefaultArgs> = $Result.GetResult<Prisma.$WorkshopSettingsPayload, S>
+
+  type WorkshopSettingsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<WorkshopSettingsFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: WorkshopSettingsCountAggregateInputType | true
+    }
+
+  export interface WorkshopSettingsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkshopSettings'], meta: { name: 'WorkshopSettings' } }
+    /**
+     * Find zero or one WorkshopSettings that matches the filter.
+     * @param {WorkshopSettingsFindUniqueArgs} args - Arguments to find a WorkshopSettings
+     * @example
+     * // Get one WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends WorkshopSettingsFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkshopSettingsFindUniqueArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one WorkshopSettings that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {WorkshopSettingsFindUniqueOrThrowArgs} args - Arguments to find a WorkshopSettings
+     * @example
+     * // Get one WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends WorkshopSettingsFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkshopSettingsFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first WorkshopSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsFindFirstArgs} args - Arguments to find a WorkshopSettings
+     * @example
+     * // Get one WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends WorkshopSettingsFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkshopSettingsFindFirstArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first WorkshopSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsFindFirstOrThrowArgs} args - Arguments to find a WorkshopSettings
+     * @example
+     * // Get one WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends WorkshopSettingsFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkshopSettingsFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more WorkshopSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.findMany()
+     * 
+     * // Get first 10 WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workshopSettingsWithIdOnly = await prisma.workshopSettings.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends WorkshopSettingsFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkshopSettingsFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a WorkshopSettings.
+     * @param {WorkshopSettingsCreateArgs} args - Arguments to create a WorkshopSettings.
+     * @example
+     * // Create one WorkshopSettings
+     * const WorkshopSettings = await prisma.workshopSettings.create({
+     *   data: {
+     *     // ... data to create a WorkshopSettings
+     *   }
+     * })
+     * 
+    **/
+    create<T extends WorkshopSettingsCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkshopSettingsCreateArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Delete a WorkshopSettings.
+     * @param {WorkshopSettingsDeleteArgs} args - Arguments to delete one WorkshopSettings.
+     * @example
+     * // Delete one WorkshopSettings
+     * const WorkshopSettings = await prisma.workshopSettings.delete({
+     *   where: {
+     *     // ... filter to delete one WorkshopSettings
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends WorkshopSettingsDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkshopSettingsDeleteArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one WorkshopSettings.
+     * @param {WorkshopSettingsUpdateArgs} args - Arguments to update one WorkshopSettings.
+     * @example
+     * // Update one WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends WorkshopSettingsUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkshopSettingsUpdateArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more WorkshopSettings.
+     * @param {WorkshopSettingsDeleteManyArgs} args - Arguments to filter WorkshopSettings to delete.
+     * @example
+     * // Delete a few WorkshopSettings
+     * const { count } = await prisma.workshopSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends WorkshopSettingsDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, WorkshopSettingsDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkshopSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends WorkshopSettingsUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkshopSettingsUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one WorkshopSettings.
+     * @param {WorkshopSettingsUpsertArgs} args - Arguments to update or create a WorkshopSettings.
+     * @example
+     * // Update or create a WorkshopSettings
+     * const workshopSettings = await prisma.workshopSettings.upsert({
+     *   create: {
+     *     // ... data to create a WorkshopSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkshopSettings we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends WorkshopSettingsUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, WorkshopSettingsUpsertArgs<ExtArgs>>
+    ): Prisma__WorkshopSettingsClient<$Result.GetResult<Prisma.$WorkshopSettingsPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of WorkshopSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsCountArgs} args - Arguments to filter WorkshopSettings to count.
+     * @example
+     * // Count the number of WorkshopSettings
+     * const count = await prisma.workshopSettings.count({
+     *   where: {
+     *     // ... the filter for the WorkshopSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkshopSettingsCountArgs>(
+      args?: Subset<T, WorkshopSettingsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkshopSettingsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkshopSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkshopSettingsAggregateArgs>(args: Subset<T, WorkshopSettingsAggregateArgs>): Prisma.PrismaPromise<GetWorkshopSettingsAggregateType<T>>
+
+    /**
+     * Group by WorkshopSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkshopSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkshopSettingsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkshopSettingsGroupByArgs['orderBy'] }
+        : { orderBy?: WorkshopSettingsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkshopSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkshopSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkshopSettings model
+   */
+  readonly fields: WorkshopSettingsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkshopSettings.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkshopSettingsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the WorkshopSettings model
+   */ 
+  interface WorkshopSettingsFieldRefs {
+    readonly id: FieldRef<"WorkshopSettings", 'String'>
+    readonly name: FieldRef<"WorkshopSettings", 'String'>
+    readonly address: FieldRef<"WorkshopSettings", 'String'>
+    readonly zipCode: FieldRef<"WorkshopSettings", 'String'>
+    readonly city: FieldRef<"WorkshopSettings", 'String'>
+    readonly countryCode: FieldRef<"WorkshopSettings", 'String'>
+    readonly phone: FieldRef<"WorkshopSettings", 'String'>
+    readonly email: FieldRef<"WorkshopSettings", 'String'>
+    readonly siret: FieldRef<"WorkshopSettings", 'String'>
+    readonly vatNumber: FieldRef<"WorkshopSettings", 'String'>
+    readonly legalForm: FieldRef<"WorkshopSettings", 'String'>
+    readonly capital: FieldRef<"WorkshopSettings", 'String'>
+    readonly rcs: FieldRef<"WorkshopSettings", 'String'>
+    readonly iban: FieldRef<"WorkshopSettings", 'String'>
+    readonly bic: FieldRef<"WorkshopSettings", 'String'>
+    readonly updatedAt: FieldRef<"WorkshopSettings", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+
+  /**
+   * WorkshopSettings findUnique
+   */
+  export type WorkshopSettingsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * Filter, which WorkshopSettings to fetch.
+     */
+    where: WorkshopSettingsWhereUniqueInput
+  }
+
+
+  /**
+   * WorkshopSettings findUniqueOrThrow
+   */
+  export type WorkshopSettingsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * Filter, which WorkshopSettings to fetch.
+     */
+    where: WorkshopSettingsWhereUniqueInput
+  }
+
+
+  /**
+   * WorkshopSettings findFirst
+   */
+  export type WorkshopSettingsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * Filter, which WorkshopSettings to fetch.
+     */
+    where?: WorkshopSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkshopSettings to fetch.
+     */
+    orderBy?: WorkshopSettingsOrderByWithRelationInput | WorkshopSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkshopSettings.
+     */
+    cursor?: WorkshopSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkshopSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkshopSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkshopSettings.
+     */
+    distinct?: WorkshopSettingsScalarFieldEnum | WorkshopSettingsScalarFieldEnum[]
+  }
+
+
+  /**
+   * WorkshopSettings findFirstOrThrow
+   */
+  export type WorkshopSettingsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * Filter, which WorkshopSettings to fetch.
+     */
+    where?: WorkshopSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkshopSettings to fetch.
+     */
+    orderBy?: WorkshopSettingsOrderByWithRelationInput | WorkshopSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkshopSettings.
+     */
+    cursor?: WorkshopSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkshopSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkshopSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkshopSettings.
+     */
+    distinct?: WorkshopSettingsScalarFieldEnum | WorkshopSettingsScalarFieldEnum[]
+  }
+
+
+  /**
+   * WorkshopSettings findMany
+   */
+  export type WorkshopSettingsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * Filter, which WorkshopSettings to fetch.
+     */
+    where?: WorkshopSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkshopSettings to fetch.
+     */
+    orderBy?: WorkshopSettingsOrderByWithRelationInput | WorkshopSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkshopSettings.
+     */
+    cursor?: WorkshopSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkshopSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkshopSettings.
+     */
+    skip?: number
+    distinct?: WorkshopSettingsScalarFieldEnum | WorkshopSettingsScalarFieldEnum[]
+  }
+
+
+  /**
+   * WorkshopSettings create
+   */
+  export type WorkshopSettingsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * The data needed to create a WorkshopSettings.
+     */
+    data: XOR<WorkshopSettingsCreateInput, WorkshopSettingsUncheckedCreateInput>
+  }
+
+
+  /**
+   * WorkshopSettings update
+   */
+  export type WorkshopSettingsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * The data needed to update a WorkshopSettings.
+     */
+    data: XOR<WorkshopSettingsUpdateInput, WorkshopSettingsUncheckedUpdateInput>
+    /**
+     * Choose, which WorkshopSettings to update.
+     */
+    where: WorkshopSettingsWhereUniqueInput
+  }
+
+
+  /**
+   * WorkshopSettings updateMany
+   */
+  export type WorkshopSettingsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkshopSettings.
+     */
+    data: XOR<WorkshopSettingsUpdateManyMutationInput, WorkshopSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkshopSettings to update
+     */
+    where?: WorkshopSettingsWhereInput
+  }
+
+
+  /**
+   * WorkshopSettings upsert
+   */
+  export type WorkshopSettingsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * The filter to search for the WorkshopSettings to update in case it exists.
+     */
+    where: WorkshopSettingsWhereUniqueInput
+    /**
+     * In case the WorkshopSettings found by the `where` argument doesn't exist, create a new WorkshopSettings with this data.
+     */
+    create: XOR<WorkshopSettingsCreateInput, WorkshopSettingsUncheckedCreateInput>
+    /**
+     * In case the WorkshopSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkshopSettingsUpdateInput, WorkshopSettingsUncheckedUpdateInput>
+  }
+
+
+  /**
+   * WorkshopSettings delete
+   */
+  export type WorkshopSettingsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+    /**
+     * Filter which WorkshopSettings to delete.
+     */
+    where: WorkshopSettingsWhereUniqueInput
+  }
+
+
+  /**
+   * WorkshopSettings deleteMany
+   */
+  export type WorkshopSettingsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkshopSettings to delete
+     */
+    where?: WorkshopSettingsWhereInput
+  }
+
+
+  /**
+   * WorkshopSettings without action
+   */
+  export type WorkshopSettingsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkshopSettings
+     */
+    select?: WorkshopSettingsSelect<ExtArgs> | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -13839,7 +14924,9 @@ export namespace Prisma {
     address: 'address',
     zipCode: 'zipCode',
     city: 'city',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    siret: 'siret',
+    vatNumber: 'vatNumber'
   };
 
   export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
@@ -13858,7 +14945,8 @@ export namespace Prisma {
     validUntil: 'validUntil',
     invoiceId: 'invoiceId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    taxDetails: 'taxDetails'
   };
 
   export type QuoteScalarFieldEnum = (typeof QuoteScalarFieldEnum)[keyof typeof QuoteScalarFieldEnum]
@@ -13875,7 +14963,8 @@ export namespace Prisma {
     notes: 'notes',
     paid: 'paid',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    taxDetails: 'taxDetails'
   };
 
   export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
@@ -13902,10 +14991,10 @@ export namespace Prisma {
   export const DeviceModelScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    modelReference: 'modelReference',
     brandId: 'brandId',
     typeId: 'typeId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    modelReference: 'modelReference'
   };
 
   export type DeviceModelScalarFieldEnum = (typeof DeviceModelScalarFieldEnum)[keyof typeof DeviceModelScalarFieldEnum]
@@ -13918,13 +15007,13 @@ export namespace Prisma {
     costPrice: 'costPrice',
     stock: 'stock',
     minStock: 'minStock',
-    quality: 'quality',
     supplier: 'supplier',
     supplierRef: 'supplierRef',
     location: 'location',
     description: 'description',
     modelId: 'modelId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    quality: 'quality'
   };
 
   export type PartScalarFieldEnum = (typeof PartScalarFieldEnum)[keyof typeof PartScalarFieldEnum]
@@ -13998,6 +15087,28 @@ export namespace Prisma {
   };
 
   export type ShopProductScalarFieldEnum = (typeof ShopProductScalarFieldEnum)[keyof typeof ShopProductScalarFieldEnum]
+
+
+  export const WorkshopSettingsScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    address: 'address',
+    zipCode: 'zipCode',
+    city: 'city',
+    countryCode: 'countryCode',
+    phone: 'phone',
+    email: 'email',
+    siret: 'siret',
+    vatNumber: 'vatNumber',
+    legalForm: 'legalForm',
+    capital: 'capital',
+    rcs: 'rcs',
+    iban: 'iban',
+    bic: 'bic',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkshopSettingsScalarFieldEnum = (typeof WorkshopSettingsScalarFieldEnum)[keyof typeof WorkshopSettingsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -14074,9 +15185,11 @@ export namespace Prisma {
     zipCode?: StringNullableFilter<"Client"> | string | null
     city?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
-    repairs?: RepairListRelationFilter
-    quotes?: QuoteListRelationFilter
+    siret?: StringNullableFilter<"Client"> | string | null
+    vatNumber?: StringNullableFilter<"Client"> | string | null
     invoices?: InvoiceListRelationFilter
+    quotes?: QuoteListRelationFilter
+    repairs?: RepairListRelationFilter
   }
 
   export type ClientOrderByWithRelationInput = {
@@ -14091,9 +15204,11 @@ export namespace Prisma {
     zipCode?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    repairs?: RepairOrderByRelationAggregateInput
-    quotes?: QuoteOrderByRelationAggregateInput
+    siret?: SortOrderInput | SortOrder
+    vatNumber?: SortOrderInput | SortOrder
     invoices?: InvoiceOrderByRelationAggregateInput
+    quotes?: QuoteOrderByRelationAggregateInput
+    repairs?: RepairOrderByRelationAggregateInput
   }
 
   export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -14111,9 +15226,11 @@ export namespace Prisma {
     zipCode?: StringNullableFilter<"Client"> | string | null
     city?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
-    repairs?: RepairListRelationFilter
-    quotes?: QuoteListRelationFilter
+    siret?: StringNullableFilter<"Client"> | string | null
+    vatNumber?: StringNullableFilter<"Client"> | string | null
     invoices?: InvoiceListRelationFilter
+    quotes?: QuoteListRelationFilter
+    repairs?: RepairListRelationFilter
   }, "id">
 
   export type ClientOrderByWithAggregationInput = {
@@ -14128,6 +15245,8 @@ export namespace Prisma {
     zipCode?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    siret?: SortOrderInput | SortOrder
+    vatNumber?: SortOrderInput | SortOrder
     _count?: ClientCountOrderByAggregateInput
     _max?: ClientMaxOrderByAggregateInput
     _min?: ClientMinOrderByAggregateInput
@@ -14148,6 +15267,8 @@ export namespace Prisma {
     zipCode?: StringNullableWithAggregatesFilter<"Client"> | string | null
     city?: StringNullableWithAggregatesFilter<"Client"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
+    siret?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    vatNumber?: StringNullableWithAggregatesFilter<"Client"> | string | null
   }
 
   export type QuoteWhereInput = {
@@ -14167,9 +15288,10 @@ export namespace Prisma {
     invoiceId?: StringNullableFilter<"Quote"> | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
-    client?: XOR<ClientRelationFilter, ClientWhereInput>
-    repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+    taxDetails?: StringNullableFilter<"Quote"> | string | null
     invoice?: XOR<InvoiceNullableRelationFilter, InvoiceWhereInput> | null
+    repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+    client?: XOR<ClientRelationFilter, ClientWhereInput>
   }
 
   export type QuoteOrderByWithRelationInput = {
@@ -14186,9 +15308,10 @@ export namespace Prisma {
     invoiceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    client?: ClientOrderByWithRelationInput
-    repair?: RepairOrderByWithRelationInput
+    taxDetails?: SortOrderInput | SortOrder
     invoice?: InvoiceOrderByWithRelationInput
+    repair?: RepairOrderByWithRelationInput
+    client?: ClientOrderByWithRelationInput
   }
 
   export type QuoteWhereUniqueInput = Prisma.AtLeast<{
@@ -14208,9 +15331,10 @@ export namespace Prisma {
     validUntil?: DateTimeNullableFilter<"Quote"> | Date | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
-    client?: XOR<ClientRelationFilter, ClientWhereInput>
-    repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+    taxDetails?: StringNullableFilter<"Quote"> | string | null
     invoice?: XOR<InvoiceNullableRelationFilter, InvoiceWhereInput> | null
+    repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+    client?: XOR<ClientRelationFilter, ClientWhereInput>
   }, "id" | "number" | "invoiceId">
 
   export type QuoteOrderByWithAggregationInput = {
@@ -14227,6 +15351,7 @@ export namespace Prisma {
     invoiceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrderInput | SortOrder
     _count?: QuoteCountOrderByAggregateInput
     _avg?: QuoteAvgOrderByAggregateInput
     _max?: QuoteMaxOrderByAggregateInput
@@ -14251,6 +15376,7 @@ export namespace Prisma {
     invoiceId?: StringNullableWithAggregatesFilter<"Quote"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
+    taxDetails?: StringNullableWithAggregatesFilter<"Quote"> | string | null
   }
 
   export type InvoiceWhereInput = {
@@ -14268,8 +15394,9 @@ export namespace Prisma {
     paid?: BoolFilter<"Invoice"> | boolean
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
-    client?: XOR<ClientRelationFilter, ClientWhereInput>
+    taxDetails?: StringNullableFilter<"Invoice"> | string | null
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+    client?: XOR<ClientRelationFilter, ClientWhereInput>
     quote?: XOR<QuoteNullableRelationFilter, QuoteWhereInput> | null
   }
 
@@ -14285,8 +15412,9 @@ export namespace Prisma {
     paid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    client?: ClientOrderByWithRelationInput
+    taxDetails?: SortOrderInput | SortOrder
     repair?: RepairOrderByWithRelationInput
+    client?: ClientOrderByWithRelationInput
     quote?: QuoteOrderByWithRelationInput
   }
 
@@ -14305,8 +15433,9 @@ export namespace Prisma {
     paid?: BoolFilter<"Invoice"> | boolean
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
-    client?: XOR<ClientRelationFilter, ClientWhereInput>
+    taxDetails?: StringNullableFilter<"Invoice"> | string | null
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+    client?: XOR<ClientRelationFilter, ClientWhereInput>
     quote?: XOR<QuoteNullableRelationFilter, QuoteWhereInput> | null
   }, "id" | "number">
 
@@ -14322,6 +15451,7 @@ export namespace Prisma {
     paid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrderInput | SortOrder
     _count?: InvoiceCountOrderByAggregateInput
     _avg?: InvoiceAvgOrderByAggregateInput
     _max?: InvoiceMaxOrderByAggregateInput
@@ -14344,6 +15474,7 @@ export namespace Prisma {
     paid?: BoolWithAggregatesFilter<"Invoice"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
+    taxDetails?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
   }
 
   export type DeviceTypeWhereInput = {
@@ -14442,27 +15573,27 @@ export namespace Prisma {
     NOT?: DeviceModelWhereInput | DeviceModelWhereInput[]
     id?: StringFilter<"DeviceModel"> | string
     name?: StringFilter<"DeviceModel"> | string
-    modelReference?: StringNullableFilter<"DeviceModel"> | string | null
     brandId?: StringFilter<"DeviceModel"> | string
     typeId?: StringFilter<"DeviceModel"> | string
     createdAt?: DateTimeFilter<"DeviceModel"> | Date | string
-    brand?: XOR<DeviceBrandRelationFilter, DeviceBrandWhereInput>
+    modelReference?: StringNullableFilter<"DeviceModel"> | string | null
     type?: XOR<DeviceTypeRelationFilter, DeviceTypeWhereInput>
-    services?: ServiceListRelationFilter
+    brand?: XOR<DeviceBrandRelationFilter, DeviceBrandWhereInput>
     parts?: PartListRelationFilter
+    services?: ServiceListRelationFilter
   }
 
   export type DeviceModelOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    modelReference?: SortOrderInput | SortOrder
     brandId?: SortOrder
     typeId?: SortOrder
     createdAt?: SortOrder
-    brand?: DeviceBrandOrderByWithRelationInput
+    modelReference?: SortOrderInput | SortOrder
     type?: DeviceTypeOrderByWithRelationInput
-    services?: ServiceOrderByRelationAggregateInput
+    brand?: DeviceBrandOrderByWithRelationInput
     parts?: PartOrderByRelationAggregateInput
+    services?: ServiceOrderByRelationAggregateInput
   }
 
   export type DeviceModelWhereUniqueInput = Prisma.AtLeast<{
@@ -14472,23 +15603,23 @@ export namespace Prisma {
     OR?: DeviceModelWhereInput[]
     NOT?: DeviceModelWhereInput | DeviceModelWhereInput[]
     name?: StringFilter<"DeviceModel"> | string
-    modelReference?: StringNullableFilter<"DeviceModel"> | string | null
     brandId?: StringFilter<"DeviceModel"> | string
     typeId?: StringFilter<"DeviceModel"> | string
     createdAt?: DateTimeFilter<"DeviceModel"> | Date | string
-    brand?: XOR<DeviceBrandRelationFilter, DeviceBrandWhereInput>
+    modelReference?: StringNullableFilter<"DeviceModel"> | string | null
     type?: XOR<DeviceTypeRelationFilter, DeviceTypeWhereInput>
-    services?: ServiceListRelationFilter
+    brand?: XOR<DeviceBrandRelationFilter, DeviceBrandWhereInput>
     parts?: PartListRelationFilter
+    services?: ServiceListRelationFilter
   }, "id" | "name_brandId">
 
   export type DeviceModelOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    modelReference?: SortOrderInput | SortOrder
     brandId?: SortOrder
     typeId?: SortOrder
     createdAt?: SortOrder
+    modelReference?: SortOrderInput | SortOrder
     _count?: DeviceModelCountOrderByAggregateInput
     _max?: DeviceModelMaxOrderByAggregateInput
     _min?: DeviceModelMinOrderByAggregateInput
@@ -14500,10 +15631,10 @@ export namespace Prisma {
     NOT?: DeviceModelScalarWhereWithAggregatesInput | DeviceModelScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"DeviceModel"> | string
     name?: StringWithAggregatesFilter<"DeviceModel"> | string
-    modelReference?: StringNullableWithAggregatesFilter<"DeviceModel"> | string | null
     brandId?: StringWithAggregatesFilter<"DeviceModel"> | string
     typeId?: StringWithAggregatesFilter<"DeviceModel"> | string
     createdAt?: DateTimeWithAggregatesFilter<"DeviceModel"> | Date | string
+    modelReference?: StringNullableWithAggregatesFilter<"DeviceModel"> | string | null
   }
 
   export type PartWhereInput = {
@@ -14516,13 +15647,13 @@ export namespace Prisma {
     costPrice?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
-    quality?: StringNullableFilter<"Part"> | string | null
     supplier?: StringNullableFilter<"Part"> | string | null
     supplierRef?: StringNullableFilter<"Part"> | string | null
     location?: StringNullableFilter<"Part"> | string | null
     description?: StringNullableFilter<"Part"> | string | null
     modelId?: StringNullableFilter<"Part"> | string | null
     createdAt?: DateTimeFilter<"Part"> | Date | string
+    quality?: StringNullableFilter<"Part"> | string | null
     model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
     services?: ServiceListRelationFilter
   }
@@ -14534,13 +15665,13 @@ export namespace Prisma {
     costPrice?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
-    quality?: SortOrderInput | SortOrder
     supplier?: SortOrderInput | SortOrder
     supplierRef?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     modelId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    quality?: SortOrderInput | SortOrder
     model?: DeviceModelOrderByWithRelationInput
     services?: ServiceOrderByRelationAggregateInput
   }
@@ -14555,13 +15686,13 @@ export namespace Prisma {
     costPrice?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
-    quality?: StringNullableFilter<"Part"> | string | null
     supplier?: StringNullableFilter<"Part"> | string | null
     supplierRef?: StringNullableFilter<"Part"> | string | null
     location?: StringNullableFilter<"Part"> | string | null
     description?: StringNullableFilter<"Part"> | string | null
     modelId?: StringNullableFilter<"Part"> | string | null
     createdAt?: DateTimeFilter<"Part"> | Date | string
+    quality?: StringNullableFilter<"Part"> | string | null
     model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
     services?: ServiceListRelationFilter
   }, "id" | "sku">
@@ -14573,13 +15704,13 @@ export namespace Prisma {
     costPrice?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
-    quality?: SortOrderInput | SortOrder
     supplier?: SortOrderInput | SortOrder
     supplierRef?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     modelId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    quality?: SortOrderInput | SortOrder
     _count?: PartCountOrderByAggregateInput
     _avg?: PartAvgOrderByAggregateInput
     _max?: PartMaxOrderByAggregateInput
@@ -14597,13 +15728,13 @@ export namespace Prisma {
     costPrice?: FloatWithAggregatesFilter<"Part"> | number
     stock?: IntWithAggregatesFilter<"Part"> | number
     minStock?: IntWithAggregatesFilter<"Part"> | number
-    quality?: StringNullableWithAggregatesFilter<"Part"> | string | null
     supplier?: StringNullableWithAggregatesFilter<"Part"> | string | null
     supplierRef?: StringNullableWithAggregatesFilter<"Part"> | string | null
     location?: StringNullableWithAggregatesFilter<"Part"> | string | null
     description?: StringNullableWithAggregatesFilter<"Part"> | string | null
     modelId?: StringNullableWithAggregatesFilter<"Part"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Part"> | Date | string
+    quality?: StringNullableWithAggregatesFilter<"Part"> | string | null
   }
 
   export type ServiceWhereInput = {
@@ -14619,9 +15750,9 @@ export namespace Prisma {
     modelId?: StringNullableFilter<"Service"> | string | null
     description?: StringNullableFilter<"Service"> | string | null
     createdAt?: DateTimeFilter<"Service"> | Date | string
-    part?: XOR<PartNullableRelationFilter, PartWhereInput> | null
-    model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
     repairs?: RepairServiceListRelationFilter
+    model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
+    part?: XOR<PartNullableRelationFilter, PartWhereInput> | null
   }
 
   export type ServiceOrderByWithRelationInput = {
@@ -14634,9 +15765,9 @@ export namespace Prisma {
     modelId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    part?: PartOrderByWithRelationInput
-    model?: DeviceModelOrderByWithRelationInput
     repairs?: RepairServiceOrderByRelationAggregateInput
+    model?: DeviceModelOrderByWithRelationInput
+    part?: PartOrderByWithRelationInput
   }
 
   export type ServiceWhereUniqueInput = Prisma.AtLeast<{
@@ -14652,9 +15783,9 @@ export namespace Prisma {
     modelId?: StringNullableFilter<"Service"> | string | null
     description?: StringNullableFilter<"Service"> | string | null
     createdAt?: DateTimeFilter<"Service"> | Date | string
-    part?: XOR<PartNullableRelationFilter, PartWhereInput> | null
-    model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
     repairs?: RepairServiceListRelationFilter
+    model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
+    part?: XOR<PartNullableRelationFilter, PartWhereInput> | null
   }, "id">
 
   export type ServiceOrderByWithAggregationInput = {
@@ -14700,11 +15831,11 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
     updatedAt?: DateTimeFilter<"Repair"> | Date | string
-    client?: XOR<ClientRelationFilter, ClientWhereInput>
-    services?: RepairServiceListRelationFilter
-    logs?: RepairLogListRelationFilter
-    quotes?: QuoteListRelationFilter
     invoices?: InvoiceListRelationFilter
+    quotes?: QuoteListRelationFilter
+    client?: XOR<ClientRelationFilter, ClientWhereInput>
+    logs?: RepairLogListRelationFilter
+    services?: RepairServiceListRelationFilter
   }
 
   export type RepairOrderByWithRelationInput = {
@@ -14715,11 +15846,11 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    client?: ClientOrderByWithRelationInput
-    services?: RepairServiceOrderByRelationAggregateInput
-    logs?: RepairLogOrderByRelationAggregateInput
-    quotes?: QuoteOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
+    quotes?: QuoteOrderByRelationAggregateInput
+    client?: ClientOrderByWithRelationInput
+    logs?: RepairLogOrderByRelationAggregateInput
+    services?: RepairServiceOrderByRelationAggregateInput
   }
 
   export type RepairWhereUniqueInput = Prisma.AtLeast<{
@@ -14733,11 +15864,11 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
     updatedAt?: DateTimeFilter<"Repair"> | Date | string
-    client?: XOR<ClientRelationFilter, ClientWhereInput>
-    services?: RepairServiceListRelationFilter
-    logs?: RepairLogListRelationFilter
-    quotes?: QuoteListRelationFilter
     invoices?: InvoiceListRelationFilter
+    quotes?: QuoteListRelationFilter
+    client?: XOR<ClientRelationFilter, ClientWhereInput>
+    logs?: RepairLogListRelationFilter
+    services?: RepairServiceListRelationFilter
   }, "id">
 
   export type RepairOrderByWithAggregationInput = {
@@ -14775,8 +15906,8 @@ export namespace Prisma {
     serviceId?: StringFilter<"RepairService"> | string
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
-    repair?: XOR<RepairRelationFilter, RepairWhereInput>
     service?: XOR<ServiceRelationFilter, ServiceWhereInput>
+    repair?: XOR<RepairRelationFilter, RepairWhereInput>
   }
 
   export type RepairServiceOrderByWithRelationInput = {
@@ -14785,8 +15916,8 @@ export namespace Prisma {
     serviceId?: SortOrder
     quantity?: SortOrder
     priceAtTime?: SortOrder
-    repair?: RepairOrderByWithRelationInput
     service?: ServiceOrderByWithRelationInput
+    repair?: RepairOrderByWithRelationInput
   }
 
   export type RepairServiceWhereUniqueInput = Prisma.AtLeast<{
@@ -14798,8 +15929,8 @@ export namespace Prisma {
     serviceId?: StringFilter<"RepairService"> | string
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
-    repair?: XOR<RepairRelationFilter, RepairWhereInput>
     service?: XOR<ServiceRelationFilter, ServiceWhereInput>
+    repair?: XOR<RepairRelationFilter, RepairWhereInput>
   }, "id">
 
   export type RepairServiceOrderByWithAggregationInput = {
@@ -14980,6 +16111,113 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ShopProduct"> | Date | string
   }
 
+  export type WorkshopSettingsWhereInput = {
+    AND?: WorkshopSettingsWhereInput | WorkshopSettingsWhereInput[]
+    OR?: WorkshopSettingsWhereInput[]
+    NOT?: WorkshopSettingsWhereInput | WorkshopSettingsWhereInput[]
+    id?: StringFilter<"WorkshopSettings"> | string
+    name?: StringFilter<"WorkshopSettings"> | string
+    address?: StringFilter<"WorkshopSettings"> | string
+    zipCode?: StringFilter<"WorkshopSettings"> | string
+    city?: StringFilter<"WorkshopSettings"> | string
+    countryCode?: StringFilter<"WorkshopSettings"> | string
+    phone?: StringFilter<"WorkshopSettings"> | string
+    email?: StringFilter<"WorkshopSettings"> | string
+    siret?: StringFilter<"WorkshopSettings"> | string
+    vatNumber?: StringFilter<"WorkshopSettings"> | string
+    legalForm?: StringFilter<"WorkshopSettings"> | string
+    capital?: StringFilter<"WorkshopSettings"> | string
+    rcs?: StringFilter<"WorkshopSettings"> | string
+    iban?: StringNullableFilter<"WorkshopSettings"> | string | null
+    bic?: StringNullableFilter<"WorkshopSettings"> | string | null
+    updatedAt?: DateTimeFilter<"WorkshopSettings"> | Date | string
+  }
+
+  export type WorkshopSettingsOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
+    countryCode?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
+    legalForm?: SortOrder
+    capital?: SortOrder
+    rcs?: SortOrder
+    iban?: SortOrderInput | SortOrder
+    bic?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkshopSettingsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkshopSettingsWhereInput | WorkshopSettingsWhereInput[]
+    OR?: WorkshopSettingsWhereInput[]
+    NOT?: WorkshopSettingsWhereInput | WorkshopSettingsWhereInput[]
+    name?: StringFilter<"WorkshopSettings"> | string
+    address?: StringFilter<"WorkshopSettings"> | string
+    zipCode?: StringFilter<"WorkshopSettings"> | string
+    city?: StringFilter<"WorkshopSettings"> | string
+    countryCode?: StringFilter<"WorkshopSettings"> | string
+    phone?: StringFilter<"WorkshopSettings"> | string
+    email?: StringFilter<"WorkshopSettings"> | string
+    siret?: StringFilter<"WorkshopSettings"> | string
+    vatNumber?: StringFilter<"WorkshopSettings"> | string
+    legalForm?: StringFilter<"WorkshopSettings"> | string
+    capital?: StringFilter<"WorkshopSettings"> | string
+    rcs?: StringFilter<"WorkshopSettings"> | string
+    iban?: StringNullableFilter<"WorkshopSettings"> | string | null
+    bic?: StringNullableFilter<"WorkshopSettings"> | string | null
+    updatedAt?: DateTimeFilter<"WorkshopSettings"> | Date | string
+  }, "id">
+
+  export type WorkshopSettingsOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
+    countryCode?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
+    legalForm?: SortOrder
+    capital?: SortOrder
+    rcs?: SortOrder
+    iban?: SortOrderInput | SortOrder
+    bic?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkshopSettingsCountOrderByAggregateInput
+    _max?: WorkshopSettingsMaxOrderByAggregateInput
+    _min?: WorkshopSettingsMinOrderByAggregateInput
+  }
+
+  export type WorkshopSettingsScalarWhereWithAggregatesInput = {
+    AND?: WorkshopSettingsScalarWhereWithAggregatesInput | WorkshopSettingsScalarWhereWithAggregatesInput[]
+    OR?: WorkshopSettingsScalarWhereWithAggregatesInput[]
+    NOT?: WorkshopSettingsScalarWhereWithAggregatesInput | WorkshopSettingsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    name?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    address?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    zipCode?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    city?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    countryCode?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    phone?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    email?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    siret?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    vatNumber?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    legalForm?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    capital?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    rcs?: StringWithAggregatesFilter<"WorkshopSettings"> | string
+    iban?: StringNullableWithAggregatesFilter<"WorkshopSettings"> | string | null
+    bic?: StringNullableWithAggregatesFilter<"WorkshopSettings"> | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkshopSettings"> | Date | string
+  }
+
   export type ClientCreateInput = {
     id?: string
     name: string
@@ -14992,9 +16230,11 @@ export namespace Prisma {
     zipCode?: string | null
     city?: string | null
     createdAt?: Date | string
-    repairs?: RepairCreateNestedManyWithoutClientInput
-    quotes?: QuoteCreateNestedManyWithoutClientInput
+    siret?: string | null
+    vatNumber?: string | null
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    quotes?: QuoteCreateNestedManyWithoutClientInput
+    repairs?: RepairCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateInput = {
@@ -15009,9 +16249,11 @@ export namespace Prisma {
     zipCode?: string | null
     city?: string | null
     createdAt?: Date | string
-    repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
-    quotes?: QuoteUncheckedCreateNestedManyWithoutClientInput
+    siret?: string | null
+    vatNumber?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutClientInput
+    repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientUpdateInput = {
@@ -15026,9 +16268,11 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repairs?: RepairUpdateManyWithoutClientNestedInput
-    quotes?: QuoteUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    quotes?: QuoteUpdateManyWithoutClientNestedInput
+    repairs?: RepairUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateInput = {
@@ -15043,9 +16287,11 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
-    quotes?: QuoteUncheckedUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutClientNestedInput
+    repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUpdateManyMutationInput = {
@@ -15060,6 +16306,8 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClientUncheckedUpdateManyInput = {
@@ -15074,6 +16322,8 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteCreateInput = {
@@ -15087,9 +16337,10 @@ export namespace Prisma {
     validUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutQuotesInput
-    repair?: RepairCreateNestedOneWithoutQuotesInput
+    taxDetails?: string | null
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    repair?: RepairCreateNestedOneWithoutQuotesInput
+    client: ClientCreateNestedOneWithoutQuotesInput
   }
 
   export type QuoteUncheckedCreateInput = {
@@ -15106,6 +16357,7 @@ export namespace Prisma {
     invoiceId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    taxDetails?: string | null
   }
 
   export type QuoteUpdateInput = {
@@ -15119,9 +16371,10 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
-    repair?: RepairUpdateOneWithoutQuotesNestedInput
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    repair?: RepairUpdateOneWithoutQuotesNestedInput
+    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
   }
 
   export type QuoteUncheckedUpdateInput = {
@@ -15138,6 +16391,7 @@ export namespace Prisma {
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUpdateManyMutationInput = {
@@ -15151,6 +16405,7 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUncheckedUpdateManyInput = {
@@ -15167,6 +16422,7 @@ export namespace Prisma {
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InvoiceCreateInput = {
@@ -15179,8 +16435,9 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutInvoicesInput
+    taxDetails?: string | null
     repair?: RepairCreateNestedOneWithoutInvoicesInput
+    client: ClientCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
   }
 
@@ -15196,6 +16453,7 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    taxDetails?: string | null
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -15209,8 +16467,9 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
+    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -15226,6 +16485,7 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -15239,6 +16499,7 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InvoiceUncheckedUpdateManyInput = {
@@ -15253,6 +16514,7 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeviceTypeCreateInput = {
@@ -15338,61 +16600,61 @@ export namespace Prisma {
   export type DeviceModelCreateInput = {
     id?: string
     name: string
-    modelReference?: string | null
     createdAt?: Date | string
-    brand: DeviceBrandCreateNestedOneWithoutModelsInput
+    modelReference?: string | null
     type: DeviceTypeCreateNestedOneWithoutModelsInput
-    services?: ServiceCreateNestedManyWithoutModelInput
+    brand: DeviceBrandCreateNestedOneWithoutModelsInput
     parts?: PartCreateNestedManyWithoutModelInput
+    services?: ServiceCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelUncheckedCreateInput = {
     id?: string
     name: string
-    modelReference?: string | null
     brandId: string
     typeId: string
     createdAt?: Date | string
-    services?: ServiceUncheckedCreateNestedManyWithoutModelInput
+    modelReference?: string | null
     parts?: PartUncheckedCreateNestedManyWithoutModelInput
+    services?: ServiceUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     type?: DeviceTypeUpdateOneRequiredWithoutModelsNestedInput
-    services?: ServiceUpdateManyWithoutModelNestedInput
+    brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
     parts?: PartUpdateManyWithoutModelNestedInput
+    services?: ServiceUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: StringFieldUpdateOperationsInput | string
     typeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     parts?: PartUncheckedUpdateManyWithoutModelNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeviceModelUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: StringFieldUpdateOperationsInput | string
     typeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PartCreateInput = {
@@ -15402,12 +16664,12 @@ export namespace Prisma {
     costPrice: number
     stock?: number
     minStock?: number
-    quality?: string | null
     supplier?: string | null
     supplierRef?: string | null
     location?: string | null
     description?: string | null
     createdAt?: Date | string
+    quality?: string | null
     model?: DeviceModelCreateNestedOneWithoutPartsInput
     services?: ServiceCreateNestedManyWithoutPartInput
   }
@@ -15419,13 +16681,13 @@ export namespace Prisma {
     costPrice: number
     stock?: number
     minStock?: number
-    quality?: string | null
     supplier?: string | null
     supplierRef?: string | null
     location?: string | null
     description?: string | null
     modelId?: string | null
     createdAt?: Date | string
+    quality?: string | null
     services?: ServiceUncheckedCreateNestedManyWithoutPartInput
   }
 
@@ -15436,12 +16698,12 @@ export namespace Prisma {
     costPrice?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
     model?: DeviceModelUpdateOneWithoutPartsNestedInput
     services?: ServiceUpdateManyWithoutPartNestedInput
   }
@@ -15453,13 +16715,13 @@ export namespace Prisma {
     costPrice?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
     services?: ServiceUncheckedUpdateManyWithoutPartNestedInput
   }
 
@@ -15470,12 +16732,12 @@ export namespace Prisma {
     costPrice?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PartUncheckedUpdateManyInput = {
@@ -15485,13 +16747,13 @@ export namespace Prisma {
     costPrice?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ServiceCreateInput = {
@@ -15502,9 +16764,9 @@ export namespace Prisma {
     duration?: number
     description?: string | null
     createdAt?: Date | string
-    part?: PartCreateNestedOneWithoutServicesInput
-    model?: DeviceModelCreateNestedOneWithoutServicesInput
     repairs?: RepairServiceCreateNestedManyWithoutServiceInput
+    model?: DeviceModelCreateNestedOneWithoutServicesInput
+    part?: PartCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateInput = {
@@ -15528,9 +16790,9 @@ export namespace Prisma {
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    part?: PartUpdateOneWithoutServicesNestedInput
-    model?: DeviceModelUpdateOneWithoutServicesNestedInput
     repairs?: RepairServiceUpdateManyWithoutServiceNestedInput
+    model?: DeviceModelUpdateOneWithoutServicesNestedInput
+    part?: PartUpdateOneWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateInput = {
@@ -15575,11 +16837,11 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutRepairsInput
-    services?: RepairServiceCreateNestedManyWithoutRepairInput
-    logs?: RepairLogCreateNestedManyWithoutRepairInput
-    quotes?: QuoteCreateNestedManyWithoutRepairInput
     invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
   }
 
   export type RepairUncheckedCreateInput = {
@@ -15590,10 +16852,10 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
-    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
-    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairUpdateInput = {
@@ -15603,11 +16865,11 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
-    services?: RepairServiceUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUpdateManyWithoutRepairNestedInput
     invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUncheckedUpdateInput = {
@@ -15618,10 +16880,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUpdateManyMutationInput = {
@@ -15647,8 +16909,8 @@ export namespace Prisma {
     id?: string
     quantity?: number
     priceAtTime: number
-    repair: RepairCreateNestedOneWithoutServicesInput
     service: ServiceCreateNestedOneWithoutRepairsInput
+    repair: RepairCreateNestedOneWithoutServicesInput
   }
 
   export type RepairServiceUncheckedCreateInput = {
@@ -15663,8 +16925,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
-    repair?: RepairUpdateOneRequiredWithoutServicesNestedInput
     service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
+    repair?: RepairUpdateOneRequiredWithoutServicesNestedInput
   }
 
   export type RepairServiceUncheckedUpdateInput = {
@@ -15838,6 +17100,120 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkshopSettingsCreateInput = {
+    id?: string
+    name?: string
+    address?: string
+    zipCode?: string
+    city?: string
+    countryCode?: string
+    phone?: string
+    email?: string
+    siret?: string
+    vatNumber?: string
+    legalForm?: string
+    capital?: string
+    rcs?: string
+    iban?: string | null
+    bic?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type WorkshopSettingsUncheckedCreateInput = {
+    id?: string
+    name?: string
+    address?: string
+    zipCode?: string
+    city?: string
+    countryCode?: string
+    phone?: string
+    email?: string
+    siret?: string
+    vatNumber?: string
+    legalForm?: string
+    capital?: string
+    rcs?: string
+    iban?: string | null
+    bic?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type WorkshopSettingsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    countryCode?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    siret?: StringFieldUpdateOperationsInput | string
+    vatNumber?: StringFieldUpdateOperationsInput | string
+    legalForm?: StringFieldUpdateOperationsInput | string
+    capital?: StringFieldUpdateOperationsInput | string
+    rcs?: StringFieldUpdateOperationsInput | string
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    bic?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkshopSettingsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    countryCode?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    siret?: StringFieldUpdateOperationsInput | string
+    vatNumber?: StringFieldUpdateOperationsInput | string
+    legalForm?: StringFieldUpdateOperationsInput | string
+    capital?: StringFieldUpdateOperationsInput | string
+    rcs?: StringFieldUpdateOperationsInput | string
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    bic?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkshopSettingsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    countryCode?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    siret?: StringFieldUpdateOperationsInput | string
+    vatNumber?: StringFieldUpdateOperationsInput | string
+    legalForm?: StringFieldUpdateOperationsInput | string
+    capital?: StringFieldUpdateOperationsInput | string
+    rcs?: StringFieldUpdateOperationsInput | string
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    bic?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkshopSettingsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    countryCode?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    siret?: StringFieldUpdateOperationsInput | string
+    vatNumber?: StringFieldUpdateOperationsInput | string
+    legalForm?: StringFieldUpdateOperationsInput | string
+    capital?: StringFieldUpdateOperationsInput | string
+    rcs?: StringFieldUpdateOperationsInput | string
+    iban?: NullableStringFieldUpdateOperationsInput | string | null
+    bic?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -15877,10 +17253,10 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type RepairListRelationFilter = {
-    every?: RepairWhereInput
-    some?: RepairWhereInput
-    none?: RepairWhereInput
+  export type InvoiceListRelationFilter = {
+    every?: InvoiceWhereInput
+    some?: InvoiceWhereInput
+    none?: InvoiceWhereInput
   }
 
   export type QuoteListRelationFilter = {
@@ -15889,10 +17265,10 @@ export namespace Prisma {
     none?: QuoteWhereInput
   }
 
-  export type InvoiceListRelationFilter = {
-    every?: InvoiceWhereInput
-    some?: InvoiceWhereInput
-    none?: InvoiceWhereInput
+  export type RepairListRelationFilter = {
+    every?: RepairWhereInput
+    some?: RepairWhereInput
+    none?: RepairWhereInput
   }
 
   export type SortOrderInput = {
@@ -15900,7 +17276,7 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type RepairOrderByRelationAggregateInput = {
+  export type InvoiceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15908,7 +17284,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type InvoiceOrderByRelationAggregateInput = {
+  export type RepairOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15924,6 +17300,8 @@ export namespace Prisma {
     zipCode?: SortOrder
     city?: SortOrder
     createdAt?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
   }
 
   export type ClientMaxOrderByAggregateInput = {
@@ -15938,6 +17316,8 @@ export namespace Prisma {
     zipCode?: SortOrder
     city?: SortOrder
     createdAt?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
   }
 
   export type ClientMinOrderByAggregateInput = {
@@ -15952,6 +17332,8 @@ export namespace Prisma {
     zipCode?: SortOrder
     city?: SortOrder
     createdAt?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16024,9 +17406,9 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type ClientRelationFilter = {
-    is?: ClientWhereInput
-    isNot?: ClientWhereInput
+  export type InvoiceNullableRelationFilter = {
+    is?: InvoiceWhereInput | null
+    isNot?: InvoiceWhereInput | null
   }
 
   export type RepairNullableRelationFilter = {
@@ -16034,9 +17416,9 @@ export namespace Prisma {
     isNot?: RepairWhereInput | null
   }
 
-  export type InvoiceNullableRelationFilter = {
-    is?: InvoiceWhereInput | null
-    isNot?: InvoiceWhereInput | null
+  export type ClientRelationFilter = {
+    is?: ClientWhereInput
+    isNot?: ClientWhereInput
   }
 
   export type QuoteCountOrderByAggregateInput = {
@@ -16053,6 +17435,7 @@ export namespace Prisma {
     invoiceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrder
   }
 
   export type QuoteAvgOrderByAggregateInput = {
@@ -16074,6 +17457,7 @@ export namespace Prisma {
     invoiceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrder
   }
 
   export type QuoteMinOrderByAggregateInput = {
@@ -16090,6 +17474,7 @@ export namespace Prisma {
     invoiceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrder
   }
 
   export type QuoteSumOrderByAggregateInput = {
@@ -16149,6 +17534,7 @@ export namespace Prisma {
     paid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrder
   }
 
   export type InvoiceAvgOrderByAggregateInput = {
@@ -16168,6 +17554,7 @@ export namespace Prisma {
     paid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrder
   }
 
   export type InvoiceMinOrderByAggregateInput = {
@@ -16182,6 +17569,7 @@ export namespace Prisma {
     paid?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taxDetails?: SortOrder
   }
 
   export type InvoiceSumOrderByAggregateInput = {
@@ -16243,20 +17631,14 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type DeviceBrandRelationFilter = {
-    is?: DeviceBrandWhereInput
-    isNot?: DeviceBrandWhereInput
-  }
-
   export type DeviceTypeRelationFilter = {
     is?: DeviceTypeWhereInput
     isNot?: DeviceTypeWhereInput
   }
 
-  export type ServiceListRelationFilter = {
-    every?: ServiceWhereInput
-    some?: ServiceWhereInput
-    none?: ServiceWhereInput
+  export type DeviceBrandRelationFilter = {
+    is?: DeviceBrandWhereInput
+    isNot?: DeviceBrandWhereInput
   }
 
   export type PartListRelationFilter = {
@@ -16265,11 +17647,17 @@ export namespace Prisma {
     none?: PartWhereInput
   }
 
-  export type ServiceOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type ServiceListRelationFilter = {
+    every?: ServiceWhereInput
+    some?: ServiceWhereInput
+    none?: ServiceWhereInput
   }
 
   export type PartOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ServiceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16281,28 +17669,28 @@ export namespace Prisma {
   export type DeviceModelCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    modelReference?: SortOrder
     brandId?: SortOrder
     typeId?: SortOrder
     createdAt?: SortOrder
+    modelReference?: SortOrder
   }
 
   export type DeviceModelMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    modelReference?: SortOrder
     brandId?: SortOrder
     typeId?: SortOrder
     createdAt?: SortOrder
+    modelReference?: SortOrder
   }
 
   export type DeviceModelMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    modelReference?: SortOrder
     brandId?: SortOrder
     typeId?: SortOrder
     createdAt?: SortOrder
+    modelReference?: SortOrder
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -16328,13 +17716,13 @@ export namespace Prisma {
     costPrice?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
-    quality?: SortOrder
     supplier?: SortOrder
     supplierRef?: SortOrder
     location?: SortOrder
     description?: SortOrder
     modelId?: SortOrder
     createdAt?: SortOrder
+    quality?: SortOrder
   }
 
   export type PartAvgOrderByAggregateInput = {
@@ -16350,13 +17738,13 @@ export namespace Prisma {
     costPrice?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
-    quality?: SortOrder
     supplier?: SortOrder
     supplierRef?: SortOrder
     location?: SortOrder
     description?: SortOrder
     modelId?: SortOrder
     createdAt?: SortOrder
+    quality?: SortOrder
   }
 
   export type PartMinOrderByAggregateInput = {
@@ -16366,13 +17754,13 @@ export namespace Prisma {
     costPrice?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
-    quality?: SortOrder
     supplier?: SortOrder
     supplierRef?: SortOrder
     location?: SortOrder
     description?: SortOrder
     modelId?: SortOrder
     createdAt?: SortOrder
+    quality?: SortOrder
   }
 
   export type PartSumOrderByAggregateInput = {
@@ -16397,15 +17785,15 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type PartNullableRelationFilter = {
-    is?: PartWhereInput | null
-    isNot?: PartWhereInput | null
-  }
-
   export type RepairServiceListRelationFilter = {
     every?: RepairServiceWhereInput
     some?: RepairServiceWhereInput
     none?: RepairServiceWhereInput
+  }
+
+  export type PartNullableRelationFilter = {
+    is?: PartWhereInput | null
+    isNot?: PartWhereInput | null
   }
 
   export type RepairServiceOrderByRelationAggregateInput = {
@@ -16500,14 +17888,14 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type RepairRelationFilter = {
-    is?: RepairWhereInput
-    isNot?: RepairWhereInput
-  }
-
   export type ServiceRelationFilter = {
     is?: ServiceWhereInput
     isNot?: ServiceWhereInput
+  }
+
+  export type RepairRelationFilter = {
+    is?: RepairWhereInput
+    isNot?: RepairWhereInput
   }
 
   export type RepairServiceCountOrderByAggregateInput = {
@@ -16633,16 +18021,61 @@ export namespace Prisma {
     minStock?: SortOrder
   }
 
-  export type RepairCreateNestedManyWithoutClientInput = {
-    create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
-    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+  export type WorkshopSettingsCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
+    countryCode?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
+    legalForm?: SortOrder
+    capital?: SortOrder
+    rcs?: SortOrder
+    iban?: SortOrder
+    bic?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type QuoteCreateNestedManyWithoutClientInput = {
-    create?: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput> | QuoteCreateWithoutClientInput[] | QuoteUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: QuoteCreateOrConnectWithoutClientInput | QuoteCreateOrConnectWithoutClientInput[]
-    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+  export type WorkshopSettingsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
+    countryCode?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
+    legalForm?: SortOrder
+    capital?: SortOrder
+    rcs?: SortOrder
+    iban?: SortOrder
+    bic?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkshopSettingsMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    address?: SortOrder
+    zipCode?: SortOrder
+    city?: SortOrder
+    countryCode?: SortOrder
+    phone?: SortOrder
+    email?: SortOrder
+    siret?: SortOrder
+    vatNumber?: SortOrder
+    legalForm?: SortOrder
+    capital?: SortOrder
+    rcs?: SortOrder
+    iban?: SortOrder
+    bic?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type InvoiceCreateNestedManyWithoutClientInput = {
@@ -16651,10 +18084,22 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
-  export type RepairUncheckedCreateNestedManyWithoutClientInput = {
+  export type QuoteCreateNestedManyWithoutClientInput = {
+    create?: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput> | QuoteCreateWithoutClientInput[] | QuoteUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutClientInput | QuoteCreateOrConnectWithoutClientInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+  }
+
+  export type RepairCreateNestedManyWithoutClientInput = {
     create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
     connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
     connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+  }
+
+  export type InvoiceUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<InvoiceCreateWithoutClientInput, InvoiceUncheckedCreateWithoutClientInput> | InvoiceCreateWithoutClientInput[] | InvoiceUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutClientInput | InvoiceCreateOrConnectWithoutClientInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
   export type QuoteUncheckedCreateNestedManyWithoutClientInput = {
@@ -16663,10 +18108,10 @@ export namespace Prisma {
     connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
   }
 
-  export type InvoiceUncheckedCreateNestedManyWithoutClientInput = {
-    create?: XOR<InvoiceCreateWithoutClientInput, InvoiceUncheckedCreateWithoutClientInput> | InvoiceCreateWithoutClientInput[] | InvoiceUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: InvoiceCreateOrConnectWithoutClientInput | InvoiceCreateOrConnectWithoutClientInput[]
-    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  export type RepairUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -16679,32 +18124,6 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type RepairUpdateManyWithoutClientNestedInput = {
-    create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
-    upsert?: RepairUpsertWithWhereUniqueWithoutClientInput | RepairUpsertWithWhereUniqueWithoutClientInput[]
-    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    update?: RepairUpdateWithWhereUniqueWithoutClientInput | RepairUpdateWithWhereUniqueWithoutClientInput[]
-    updateMany?: RepairUpdateManyWithWhereWithoutClientInput | RepairUpdateManyWithWhereWithoutClientInput[]
-    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
-  }
-
-  export type QuoteUpdateManyWithoutClientNestedInput = {
-    create?: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput> | QuoteCreateWithoutClientInput[] | QuoteUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: QuoteCreateOrConnectWithoutClientInput | QuoteCreateOrConnectWithoutClientInput[]
-    upsert?: QuoteUpsertWithWhereUniqueWithoutClientInput | QuoteUpsertWithWhereUniqueWithoutClientInput[]
-    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    update?: QuoteUpdateWithWhereUniqueWithoutClientInput | QuoteUpdateWithWhereUniqueWithoutClientInput[]
-    updateMany?: QuoteUpdateManyWithWhereWithoutClientInput | QuoteUpdateManyWithWhereWithoutClientInput[]
-    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
   }
 
   export type InvoiceUpdateManyWithoutClientNestedInput = {
@@ -16720,20 +18139,7 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
-  export type RepairUncheckedUpdateManyWithoutClientNestedInput = {
-    create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
-    upsert?: RepairUpsertWithWhereUniqueWithoutClientInput | RepairUpsertWithWhereUniqueWithoutClientInput[]
-    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
-    update?: RepairUpdateWithWhereUniqueWithoutClientInput | RepairUpdateWithWhereUniqueWithoutClientInput[]
-    updateMany?: RepairUpdateManyWithWhereWithoutClientInput | RepairUpdateManyWithWhereWithoutClientInput[]
-    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
-  }
-
-  export type QuoteUncheckedUpdateManyWithoutClientNestedInput = {
+  export type QuoteUpdateManyWithoutClientNestedInput = {
     create?: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput> | QuoteCreateWithoutClientInput[] | QuoteUncheckedCreateWithoutClientInput[]
     connectOrCreate?: QuoteCreateOrConnectWithoutClientInput | QuoteCreateOrConnectWithoutClientInput[]
     upsert?: QuoteUpsertWithWhereUniqueWithoutClientInput | QuoteUpsertWithWhereUniqueWithoutClientInput[]
@@ -16744,6 +18150,19 @@ export namespace Prisma {
     update?: QuoteUpdateWithWhereUniqueWithoutClientInput | QuoteUpdateWithWhereUniqueWithoutClientInput[]
     updateMany?: QuoteUpdateManyWithWhereWithoutClientInput | QuoteUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  }
+
+  export type RepairUpdateManyWithoutClientNestedInput = {
+    create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
+    upsert?: RepairUpsertWithWhereUniqueWithoutClientInput | RepairUpsertWithWhereUniqueWithoutClientInput[]
+    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    update?: RepairUpdateWithWhereUniqueWithoutClientInput | RepairUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: RepairUpdateManyWithWhereWithoutClientInput | RepairUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
   }
 
   export type InvoiceUncheckedUpdateManyWithoutClientNestedInput = {
@@ -16759,10 +18178,36 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
-  export type ClientCreateNestedOneWithoutQuotesInput = {
-    create?: XOR<ClientCreateWithoutQuotesInput, ClientUncheckedCreateWithoutQuotesInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutQuotesInput
-    connect?: ClientWhereUniqueInput
+  export type QuoteUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput> | QuoteCreateWithoutClientInput[] | QuoteUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutClientInput | QuoteCreateOrConnectWithoutClientInput[]
+    upsert?: QuoteUpsertWithWhereUniqueWithoutClientInput | QuoteUpsertWithWhereUniqueWithoutClientInput[]
+    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    update?: QuoteUpdateWithWhereUniqueWithoutClientInput | QuoteUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: QuoteUpdateManyWithWhereWithoutClientInput | QuoteUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  }
+
+  export type RepairUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput> | RepairCreateWithoutClientInput[] | RepairUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutClientInput | RepairCreateOrConnectWithoutClientInput[]
+    upsert?: RepairUpsertWithWhereUniqueWithoutClientInput | RepairUpsertWithWhereUniqueWithoutClientInput[]
+    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    update?: RepairUpdateWithWhereUniqueWithoutClientInput | RepairUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: RepairUpdateManyWithWhereWithoutClientInput | RepairUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
+  }
+
+  export type InvoiceCreateNestedOneWithoutQuoteInput = {
+    create?: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutQuoteInput
+    connect?: InvoiceWhereUniqueInput
   }
 
   export type RepairCreateNestedOneWithoutQuotesInput = {
@@ -16771,10 +18216,10 @@ export namespace Prisma {
     connect?: RepairWhereUniqueInput
   }
 
-  export type InvoiceCreateNestedOneWithoutQuoteInput = {
-    create?: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
-    connectOrCreate?: InvoiceCreateOrConnectWithoutQuoteInput
-    connect?: InvoiceWhereUniqueInput
+  export type ClientCreateNestedOneWithoutQuotesInput = {
+    create?: XOR<ClientCreateWithoutQuotesInput, ClientUncheckedCreateWithoutQuotesInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutQuotesInput
+    connect?: ClientWhereUniqueInput
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -16789,12 +18234,14 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type ClientUpdateOneRequiredWithoutQuotesNestedInput = {
-    create?: XOR<ClientCreateWithoutQuotesInput, ClientUncheckedCreateWithoutQuotesInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutQuotesInput
-    upsert?: ClientUpsertWithoutQuotesInput
-    connect?: ClientWhereUniqueInput
-    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutQuotesInput, ClientUpdateWithoutQuotesInput>, ClientUncheckedUpdateWithoutQuotesInput>
+  export type InvoiceUpdateOneWithoutQuoteNestedInput = {
+    create?: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutQuoteInput
+    upsert?: InvoiceUpsertWithoutQuoteInput
+    disconnect?: InvoiceWhereInput | boolean
+    delete?: InvoiceWhereInput | boolean
+    connect?: InvoiceWhereUniqueInput
+    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutQuoteInput, InvoiceUpdateWithoutQuoteInput>, InvoiceUncheckedUpdateWithoutQuoteInput>
   }
 
   export type RepairUpdateOneWithoutQuotesNestedInput = {
@@ -16807,26 +18254,24 @@ export namespace Prisma {
     update?: XOR<XOR<RepairUpdateToOneWithWhereWithoutQuotesInput, RepairUpdateWithoutQuotesInput>, RepairUncheckedUpdateWithoutQuotesInput>
   }
 
-  export type InvoiceUpdateOneWithoutQuoteNestedInput = {
-    create?: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
-    connectOrCreate?: InvoiceCreateOrConnectWithoutQuoteInput
-    upsert?: InvoiceUpsertWithoutQuoteInput
-    disconnect?: InvoiceWhereInput | boolean
-    delete?: InvoiceWhereInput | boolean
-    connect?: InvoiceWhereUniqueInput
-    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutQuoteInput, InvoiceUpdateWithoutQuoteInput>, InvoiceUncheckedUpdateWithoutQuoteInput>
-  }
-
-  export type ClientCreateNestedOneWithoutInvoicesInput = {
-    create?: XOR<ClientCreateWithoutInvoicesInput, ClientUncheckedCreateWithoutInvoicesInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutInvoicesInput
+  export type ClientUpdateOneRequiredWithoutQuotesNestedInput = {
+    create?: XOR<ClientCreateWithoutQuotesInput, ClientUncheckedCreateWithoutQuotesInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutQuotesInput
+    upsert?: ClientUpsertWithoutQuotesInput
     connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutQuotesInput, ClientUpdateWithoutQuotesInput>, ClientUncheckedUpdateWithoutQuotesInput>
   }
 
   export type RepairCreateNestedOneWithoutInvoicesInput = {
     create?: XOR<RepairCreateWithoutInvoicesInput, RepairUncheckedCreateWithoutInvoicesInput>
     connectOrCreate?: RepairCreateOrConnectWithoutInvoicesInput
     connect?: RepairWhereUniqueInput
+  }
+
+  export type ClientCreateNestedOneWithoutInvoicesInput = {
+    create?: XOR<ClientCreateWithoutInvoicesInput, ClientUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutInvoicesInput
+    connect?: ClientWhereUniqueInput
   }
 
   export type QuoteCreateNestedOneWithoutInvoiceInput = {
@@ -16845,14 +18290,6 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type ClientUpdateOneRequiredWithoutInvoicesNestedInput = {
-    create?: XOR<ClientCreateWithoutInvoicesInput, ClientUncheckedCreateWithoutInvoicesInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutInvoicesInput
-    upsert?: ClientUpsertWithoutInvoicesInput
-    connect?: ClientWhereUniqueInput
-    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutInvoicesInput, ClientUpdateWithoutInvoicesInput>, ClientUncheckedUpdateWithoutInvoicesInput>
-  }
-
   export type RepairUpdateOneWithoutInvoicesNestedInput = {
     create?: XOR<RepairCreateWithoutInvoicesInput, RepairUncheckedCreateWithoutInvoicesInput>
     connectOrCreate?: RepairCreateOrConnectWithoutInvoicesInput
@@ -16861,6 +18298,14 @@ export namespace Prisma {
     delete?: RepairWhereInput | boolean
     connect?: RepairWhereUniqueInput
     update?: XOR<XOR<RepairUpdateToOneWithWhereWithoutInvoicesInput, RepairUpdateWithoutInvoicesInput>, RepairUncheckedUpdateWithoutInvoicesInput>
+  }
+
+  export type ClientUpdateOneRequiredWithoutInvoicesNestedInput = {
+    create?: XOR<ClientCreateWithoutInvoicesInput, ClientUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutInvoicesInput
+    upsert?: ClientUpsertWithoutInvoicesInput
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutInvoicesInput, ClientUpdateWithoutInvoicesInput>, ClientUncheckedUpdateWithoutInvoicesInput>
   }
 
   export type QuoteUpdateOneWithoutInvoiceNestedInput = {
@@ -16959,22 +18404,16 @@ export namespace Prisma {
     deleteMany?: DeviceModelScalarWhereInput | DeviceModelScalarWhereInput[]
   }
 
-  export type DeviceBrandCreateNestedOneWithoutModelsInput = {
-    create?: XOR<DeviceBrandCreateWithoutModelsInput, DeviceBrandUncheckedCreateWithoutModelsInput>
-    connectOrCreate?: DeviceBrandCreateOrConnectWithoutModelsInput
-    connect?: DeviceBrandWhereUniqueInput
-  }
-
   export type DeviceTypeCreateNestedOneWithoutModelsInput = {
     create?: XOR<DeviceTypeCreateWithoutModelsInput, DeviceTypeUncheckedCreateWithoutModelsInput>
     connectOrCreate?: DeviceTypeCreateOrConnectWithoutModelsInput
     connect?: DeviceTypeWhereUniqueInput
   }
 
-  export type ServiceCreateNestedManyWithoutModelInput = {
-    create?: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput> | ServiceCreateWithoutModelInput[] | ServiceUncheckedCreateWithoutModelInput[]
-    connectOrCreate?: ServiceCreateOrConnectWithoutModelInput | ServiceCreateOrConnectWithoutModelInput[]
-    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+  export type DeviceBrandCreateNestedOneWithoutModelsInput = {
+    create?: XOR<DeviceBrandCreateWithoutModelsInput, DeviceBrandUncheckedCreateWithoutModelsInput>
+    connectOrCreate?: DeviceBrandCreateOrConnectWithoutModelsInput
+    connect?: DeviceBrandWhereUniqueInput
   }
 
   export type PartCreateNestedManyWithoutModelInput = {
@@ -16983,7 +18422,7 @@ export namespace Prisma {
     connect?: PartWhereUniqueInput | PartWhereUniqueInput[]
   }
 
-  export type ServiceUncheckedCreateNestedManyWithoutModelInput = {
+  export type ServiceCreateNestedManyWithoutModelInput = {
     create?: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput> | ServiceCreateWithoutModelInput[] | ServiceUncheckedCreateWithoutModelInput[]
     connectOrCreate?: ServiceCreateOrConnectWithoutModelInput | ServiceCreateOrConnectWithoutModelInput[]
     connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
@@ -16995,12 +18434,10 @@ export namespace Prisma {
     connect?: PartWhereUniqueInput | PartWhereUniqueInput[]
   }
 
-  export type DeviceBrandUpdateOneRequiredWithoutModelsNestedInput = {
-    create?: XOR<DeviceBrandCreateWithoutModelsInput, DeviceBrandUncheckedCreateWithoutModelsInput>
-    connectOrCreate?: DeviceBrandCreateOrConnectWithoutModelsInput
-    upsert?: DeviceBrandUpsertWithoutModelsInput
-    connect?: DeviceBrandWhereUniqueInput
-    update?: XOR<XOR<DeviceBrandUpdateToOneWithWhereWithoutModelsInput, DeviceBrandUpdateWithoutModelsInput>, DeviceBrandUncheckedUpdateWithoutModelsInput>
+  export type ServiceUncheckedCreateNestedManyWithoutModelInput = {
+    create?: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput> | ServiceCreateWithoutModelInput[] | ServiceUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ServiceCreateOrConnectWithoutModelInput | ServiceCreateOrConnectWithoutModelInput[]
+    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
   }
 
   export type DeviceTypeUpdateOneRequiredWithoutModelsNestedInput = {
@@ -17011,17 +18448,12 @@ export namespace Prisma {
     update?: XOR<XOR<DeviceTypeUpdateToOneWithWhereWithoutModelsInput, DeviceTypeUpdateWithoutModelsInput>, DeviceTypeUncheckedUpdateWithoutModelsInput>
   }
 
-  export type ServiceUpdateManyWithoutModelNestedInput = {
-    create?: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput> | ServiceCreateWithoutModelInput[] | ServiceUncheckedCreateWithoutModelInput[]
-    connectOrCreate?: ServiceCreateOrConnectWithoutModelInput | ServiceCreateOrConnectWithoutModelInput[]
-    upsert?: ServiceUpsertWithWhereUniqueWithoutModelInput | ServiceUpsertWithWhereUniqueWithoutModelInput[]
-    set?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
-    disconnect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
-    delete?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
-    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
-    update?: ServiceUpdateWithWhereUniqueWithoutModelInput | ServiceUpdateWithWhereUniqueWithoutModelInput[]
-    updateMany?: ServiceUpdateManyWithWhereWithoutModelInput | ServiceUpdateManyWithWhereWithoutModelInput[]
-    deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
+  export type DeviceBrandUpdateOneRequiredWithoutModelsNestedInput = {
+    create?: XOR<DeviceBrandCreateWithoutModelsInput, DeviceBrandUncheckedCreateWithoutModelsInput>
+    connectOrCreate?: DeviceBrandCreateOrConnectWithoutModelsInput
+    upsert?: DeviceBrandUpsertWithoutModelsInput
+    connect?: DeviceBrandWhereUniqueInput
+    update?: XOR<XOR<DeviceBrandUpdateToOneWithWhereWithoutModelsInput, DeviceBrandUpdateWithoutModelsInput>, DeviceBrandUncheckedUpdateWithoutModelsInput>
   }
 
   export type PartUpdateManyWithoutModelNestedInput = {
@@ -17037,7 +18469,7 @@ export namespace Prisma {
     deleteMany?: PartScalarWhereInput | PartScalarWhereInput[]
   }
 
-  export type ServiceUncheckedUpdateManyWithoutModelNestedInput = {
+  export type ServiceUpdateManyWithoutModelNestedInput = {
     create?: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput> | ServiceCreateWithoutModelInput[] | ServiceUncheckedCreateWithoutModelInput[]
     connectOrCreate?: ServiceCreateOrConnectWithoutModelInput | ServiceCreateOrConnectWithoutModelInput[]
     upsert?: ServiceUpsertWithWhereUniqueWithoutModelInput | ServiceUpsertWithWhereUniqueWithoutModelInput[]
@@ -17061,6 +18493,19 @@ export namespace Prisma {
     update?: PartUpdateWithWhereUniqueWithoutModelInput | PartUpdateWithWhereUniqueWithoutModelInput[]
     updateMany?: PartUpdateManyWithWhereWithoutModelInput | PartUpdateManyWithWhereWithoutModelInput[]
     deleteMany?: PartScalarWhereInput | PartScalarWhereInput[]
+  }
+
+  export type ServiceUncheckedUpdateManyWithoutModelNestedInput = {
+    create?: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput> | ServiceCreateWithoutModelInput[] | ServiceUncheckedCreateWithoutModelInput[]
+    connectOrCreate?: ServiceCreateOrConnectWithoutModelInput | ServiceCreateOrConnectWithoutModelInput[]
+    upsert?: ServiceUpsertWithWhereUniqueWithoutModelInput | ServiceUpsertWithWhereUniqueWithoutModelInput[]
+    set?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    disconnect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    delete?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    update?: ServiceUpdateWithWhereUniqueWithoutModelInput | ServiceUpdateWithWhereUniqueWithoutModelInput[]
+    updateMany?: ServiceUpdateManyWithWhereWithoutModelInput | ServiceUpdateManyWithWhereWithoutModelInput[]
+    deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
   }
 
   export type DeviceModelCreateNestedOneWithoutPartsInput = {
@@ -17125,10 +18570,10 @@ export namespace Prisma {
     deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
   }
 
-  export type PartCreateNestedOneWithoutServicesInput = {
-    create?: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
-    connectOrCreate?: PartCreateOrConnectWithoutServicesInput
-    connect?: PartWhereUniqueInput
+  export type RepairServiceCreateNestedManyWithoutServiceInput = {
+    create?: XOR<RepairServiceCreateWithoutServiceInput, RepairServiceUncheckedCreateWithoutServiceInput> | RepairServiceCreateWithoutServiceInput[] | RepairServiceUncheckedCreateWithoutServiceInput[]
+    connectOrCreate?: RepairServiceCreateOrConnectWithoutServiceInput | RepairServiceCreateOrConnectWithoutServiceInput[]
+    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
   }
 
   export type DeviceModelCreateNestedOneWithoutServicesInput = {
@@ -17137,36 +18582,16 @@ export namespace Prisma {
     connect?: DeviceModelWhereUniqueInput
   }
 
-  export type RepairServiceCreateNestedManyWithoutServiceInput = {
-    create?: XOR<RepairServiceCreateWithoutServiceInput, RepairServiceUncheckedCreateWithoutServiceInput> | RepairServiceCreateWithoutServiceInput[] | RepairServiceUncheckedCreateWithoutServiceInput[]
-    connectOrCreate?: RepairServiceCreateOrConnectWithoutServiceInput | RepairServiceCreateOrConnectWithoutServiceInput[]
-    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+  export type PartCreateNestedOneWithoutServicesInput = {
+    create?: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
+    connectOrCreate?: PartCreateOrConnectWithoutServicesInput
+    connect?: PartWhereUniqueInput
   }
 
   export type RepairServiceUncheckedCreateNestedManyWithoutServiceInput = {
     create?: XOR<RepairServiceCreateWithoutServiceInput, RepairServiceUncheckedCreateWithoutServiceInput> | RepairServiceCreateWithoutServiceInput[] | RepairServiceUncheckedCreateWithoutServiceInput[]
     connectOrCreate?: RepairServiceCreateOrConnectWithoutServiceInput | RepairServiceCreateOrConnectWithoutServiceInput[]
     connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-  }
-
-  export type PartUpdateOneWithoutServicesNestedInput = {
-    create?: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
-    connectOrCreate?: PartCreateOrConnectWithoutServicesInput
-    upsert?: PartUpsertWithoutServicesInput
-    disconnect?: PartWhereInput | boolean
-    delete?: PartWhereInput | boolean
-    connect?: PartWhereUniqueInput
-    update?: XOR<XOR<PartUpdateToOneWithWhereWithoutServicesInput, PartUpdateWithoutServicesInput>, PartUncheckedUpdateWithoutServicesInput>
-  }
-
-  export type DeviceModelUpdateOneWithoutServicesNestedInput = {
-    create?: XOR<DeviceModelCreateWithoutServicesInput, DeviceModelUncheckedCreateWithoutServicesInput>
-    connectOrCreate?: DeviceModelCreateOrConnectWithoutServicesInput
-    upsert?: DeviceModelUpsertWithoutServicesInput
-    disconnect?: DeviceModelWhereInput | boolean
-    delete?: DeviceModelWhereInput | boolean
-    connect?: DeviceModelWhereUniqueInput
-    update?: XOR<XOR<DeviceModelUpdateToOneWithWhereWithoutServicesInput, DeviceModelUpdateWithoutServicesInput>, DeviceModelUncheckedUpdateWithoutServicesInput>
   }
 
   export type RepairServiceUpdateManyWithoutServiceNestedInput = {
@@ -17182,6 +18607,26 @@ export namespace Prisma {
     deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
   }
 
+  export type DeviceModelUpdateOneWithoutServicesNestedInput = {
+    create?: XOR<DeviceModelCreateWithoutServicesInput, DeviceModelUncheckedCreateWithoutServicesInput>
+    connectOrCreate?: DeviceModelCreateOrConnectWithoutServicesInput
+    upsert?: DeviceModelUpsertWithoutServicesInput
+    disconnect?: DeviceModelWhereInput | boolean
+    delete?: DeviceModelWhereInput | boolean
+    connect?: DeviceModelWhereUniqueInput
+    update?: XOR<XOR<DeviceModelUpdateToOneWithWhereWithoutServicesInput, DeviceModelUpdateWithoutServicesInput>, DeviceModelUncheckedUpdateWithoutServicesInput>
+  }
+
+  export type PartUpdateOneWithoutServicesNestedInput = {
+    create?: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
+    connectOrCreate?: PartCreateOrConnectWithoutServicesInput
+    upsert?: PartUpsertWithoutServicesInput
+    disconnect?: PartWhereInput | boolean
+    delete?: PartWhereInput | boolean
+    connect?: PartWhereUniqueInput
+    update?: XOR<XOR<PartUpdateToOneWithWhereWithoutServicesInput, PartUpdateWithoutServicesInput>, PartUncheckedUpdateWithoutServicesInput>
+  }
+
   export type RepairServiceUncheckedUpdateManyWithoutServiceNestedInput = {
     create?: XOR<RepairServiceCreateWithoutServiceInput, RepairServiceUncheckedCreateWithoutServiceInput> | RepairServiceCreateWithoutServiceInput[] | RepairServiceUncheckedCreateWithoutServiceInput[]
     connectOrCreate?: RepairServiceCreateOrConnectWithoutServiceInput | RepairServiceCreateOrConnectWithoutServiceInput[]
@@ -17195,22 +18640,10 @@ export namespace Prisma {
     deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
   }
 
-  export type ClientCreateNestedOneWithoutRepairsInput = {
-    create?: XOR<ClientCreateWithoutRepairsInput, ClientUncheckedCreateWithoutRepairsInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutRepairsInput
-    connect?: ClientWhereUniqueInput
-  }
-
-  export type RepairServiceCreateNestedManyWithoutRepairInput = {
-    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
-    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-  }
-
-  export type RepairLogCreateNestedManyWithoutRepairInput = {
-    create?: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput> | RepairLogCreateWithoutRepairInput[] | RepairLogUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: RepairLogCreateOrConnectWithoutRepairInput | RepairLogCreateOrConnectWithoutRepairInput[]
-    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+  export type InvoiceCreateNestedManyWithoutRepairInput = {
+    create?: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput> | InvoiceCreateWithoutRepairInput[] | InvoiceUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutRepairInput | InvoiceCreateOrConnectWithoutRepairInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
   export type QuoteCreateNestedManyWithoutRepairInput = {
@@ -17219,28 +18652,22 @@ export namespace Prisma {
     connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
   }
 
-  export type InvoiceCreateNestedManyWithoutRepairInput = {
-    create?: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput> | InvoiceCreateWithoutRepairInput[] | InvoiceUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: InvoiceCreateOrConnectWithoutRepairInput | InvoiceCreateOrConnectWithoutRepairInput[]
-    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  export type ClientCreateNestedOneWithoutRepairsInput = {
+    create?: XOR<ClientCreateWithoutRepairsInput, ClientUncheckedCreateWithoutRepairsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutRepairsInput
+    connect?: ClientWhereUniqueInput
   }
 
-  export type RepairServiceUncheckedCreateNestedManyWithoutRepairInput = {
-    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
-    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-  }
-
-  export type RepairLogUncheckedCreateNestedManyWithoutRepairInput = {
+  export type RepairLogCreateNestedManyWithoutRepairInput = {
     create?: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput> | RepairLogCreateWithoutRepairInput[] | RepairLogUncheckedCreateWithoutRepairInput[]
     connectOrCreate?: RepairLogCreateOrConnectWithoutRepairInput | RepairLogCreateOrConnectWithoutRepairInput[]
     connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
   }
 
-  export type QuoteUncheckedCreateNestedManyWithoutRepairInput = {
-    create?: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput> | QuoteCreateWithoutRepairInput[] | QuoteUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: QuoteCreateOrConnectWithoutRepairInput | QuoteCreateOrConnectWithoutRepairInput[]
-    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+  export type RepairServiceCreateNestedManyWithoutRepairInput = {
+    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
+    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
   }
 
   export type InvoiceUncheckedCreateNestedManyWithoutRepairInput = {
@@ -17249,51 +18676,22 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
-  export type ClientUpdateOneRequiredWithoutRepairsNestedInput = {
-    create?: XOR<ClientCreateWithoutRepairsInput, ClientUncheckedCreateWithoutRepairsInput>
-    connectOrCreate?: ClientCreateOrConnectWithoutRepairsInput
-    upsert?: ClientUpsertWithoutRepairsInput
-    connect?: ClientWhereUniqueInput
-    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutRepairsInput, ClientUpdateWithoutRepairsInput>, ClientUncheckedUpdateWithoutRepairsInput>
-  }
-
-  export type RepairServiceUpdateManyWithoutRepairNestedInput = {
-    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
-    upsert?: RepairServiceUpsertWithWhereUniqueWithoutRepairInput | RepairServiceUpsertWithWhereUniqueWithoutRepairInput[]
-    set?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    disconnect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    delete?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    update?: RepairServiceUpdateWithWhereUniqueWithoutRepairInput | RepairServiceUpdateWithWhereUniqueWithoutRepairInput[]
-    updateMany?: RepairServiceUpdateManyWithWhereWithoutRepairInput | RepairServiceUpdateManyWithWhereWithoutRepairInput[]
-    deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
-  }
-
-  export type RepairLogUpdateManyWithoutRepairNestedInput = {
-    create?: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput> | RepairLogCreateWithoutRepairInput[] | RepairLogUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: RepairLogCreateOrConnectWithoutRepairInput | RepairLogCreateOrConnectWithoutRepairInput[]
-    upsert?: RepairLogUpsertWithWhereUniqueWithoutRepairInput | RepairLogUpsertWithWhereUniqueWithoutRepairInput[]
-    set?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
-    disconnect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
-    delete?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
-    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
-    update?: RepairLogUpdateWithWhereUniqueWithoutRepairInput | RepairLogUpdateWithWhereUniqueWithoutRepairInput[]
-    updateMany?: RepairLogUpdateManyWithWhereWithoutRepairInput | RepairLogUpdateManyWithWhereWithoutRepairInput[]
-    deleteMany?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
-  }
-
-  export type QuoteUpdateManyWithoutRepairNestedInput = {
+  export type QuoteUncheckedCreateNestedManyWithoutRepairInput = {
     create?: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput> | QuoteCreateWithoutRepairInput[] | QuoteUncheckedCreateWithoutRepairInput[]
     connectOrCreate?: QuoteCreateOrConnectWithoutRepairInput | QuoteCreateOrConnectWithoutRepairInput[]
-    upsert?: QuoteUpsertWithWhereUniqueWithoutRepairInput | QuoteUpsertWithWhereUniqueWithoutRepairInput[]
-    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
     connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    update?: QuoteUpdateWithWhereUniqueWithoutRepairInput | QuoteUpdateWithWhereUniqueWithoutRepairInput[]
-    updateMany?: QuoteUpdateManyWithWhereWithoutRepairInput | QuoteUpdateManyWithWhereWithoutRepairInput[]
-    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  }
+
+  export type RepairLogUncheckedCreateNestedManyWithoutRepairInput = {
+    create?: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput> | RepairLogCreateWithoutRepairInput[] | RepairLogUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: RepairLogCreateOrConnectWithoutRepairInput | RepairLogCreateOrConnectWithoutRepairInput[]
+    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+  }
+
+  export type RepairServiceUncheckedCreateNestedManyWithoutRepairInput = {
+    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
+    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
   }
 
   export type InvoiceUpdateManyWithoutRepairNestedInput = {
@@ -17309,20 +18707,28 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
-  export type RepairServiceUncheckedUpdateManyWithoutRepairNestedInput = {
-    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
-    upsert?: RepairServiceUpsertWithWhereUniqueWithoutRepairInput | RepairServiceUpsertWithWhereUniqueWithoutRepairInput[]
-    set?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    disconnect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    delete?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
-    update?: RepairServiceUpdateWithWhereUniqueWithoutRepairInput | RepairServiceUpdateWithWhereUniqueWithoutRepairInput[]
-    updateMany?: RepairServiceUpdateManyWithWhereWithoutRepairInput | RepairServiceUpdateManyWithWhereWithoutRepairInput[]
-    deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
+  export type QuoteUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput> | QuoteCreateWithoutRepairInput[] | QuoteUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutRepairInput | QuoteCreateOrConnectWithoutRepairInput[]
+    upsert?: QuoteUpsertWithWhereUniqueWithoutRepairInput | QuoteUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    update?: QuoteUpdateWithWhereUniqueWithoutRepairInput | QuoteUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: QuoteUpdateManyWithWhereWithoutRepairInput | QuoteUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
   }
 
-  export type RepairLogUncheckedUpdateManyWithoutRepairNestedInput = {
+  export type ClientUpdateOneRequiredWithoutRepairsNestedInput = {
+    create?: XOR<ClientCreateWithoutRepairsInput, ClientUncheckedCreateWithoutRepairsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutRepairsInput
+    upsert?: ClientUpsertWithoutRepairsInput
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutRepairsInput, ClientUpdateWithoutRepairsInput>, ClientUncheckedUpdateWithoutRepairsInput>
+  }
+
+  export type RepairLogUpdateManyWithoutRepairNestedInput = {
     create?: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput> | RepairLogCreateWithoutRepairInput[] | RepairLogUncheckedCreateWithoutRepairInput[]
     connectOrCreate?: RepairLogCreateOrConnectWithoutRepairInput | RepairLogCreateOrConnectWithoutRepairInput[]
     upsert?: RepairLogUpsertWithWhereUniqueWithoutRepairInput | RepairLogUpsertWithWhereUniqueWithoutRepairInput[]
@@ -17335,17 +18741,17 @@ export namespace Prisma {
     deleteMany?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
   }
 
-  export type QuoteUncheckedUpdateManyWithoutRepairNestedInput = {
-    create?: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput> | QuoteCreateWithoutRepairInput[] | QuoteUncheckedCreateWithoutRepairInput[]
-    connectOrCreate?: QuoteCreateOrConnectWithoutRepairInput | QuoteCreateOrConnectWithoutRepairInput[]
-    upsert?: QuoteUpsertWithWhereUniqueWithoutRepairInput | QuoteUpsertWithWhereUniqueWithoutRepairInput[]
-    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
-    update?: QuoteUpdateWithWhereUniqueWithoutRepairInput | QuoteUpdateWithWhereUniqueWithoutRepairInput[]
-    updateMany?: QuoteUpdateManyWithWhereWithoutRepairInput | QuoteUpdateManyWithWhereWithoutRepairInput[]
-    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  export type RepairServiceUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
+    upsert?: RepairServiceUpsertWithWhereUniqueWithoutRepairInput | RepairServiceUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    disconnect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    delete?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    update?: RepairServiceUpdateWithWhereUniqueWithoutRepairInput | RepairServiceUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: RepairServiceUpdateManyWithWhereWithoutRepairInput | RepairServiceUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
   }
 
   export type InvoiceUncheckedUpdateManyWithoutRepairNestedInput = {
@@ -17361,10 +18767,43 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
-  export type RepairCreateNestedOneWithoutServicesInput = {
-    create?: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
-    connectOrCreate?: RepairCreateOrConnectWithoutServicesInput
-    connect?: RepairWhereUniqueInput
+  export type QuoteUncheckedUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput> | QuoteCreateWithoutRepairInput[] | QuoteUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutRepairInput | QuoteCreateOrConnectWithoutRepairInput[]
+    upsert?: QuoteUpsertWithWhereUniqueWithoutRepairInput | QuoteUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    update?: QuoteUpdateWithWhereUniqueWithoutRepairInput | QuoteUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: QuoteUpdateManyWithWhereWithoutRepairInput | QuoteUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  }
+
+  export type RepairLogUncheckedUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput> | RepairLogCreateWithoutRepairInput[] | RepairLogUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: RepairLogCreateOrConnectWithoutRepairInput | RepairLogCreateOrConnectWithoutRepairInput[]
+    upsert?: RepairLogUpsertWithWhereUniqueWithoutRepairInput | RepairLogUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    disconnect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    delete?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    update?: RepairLogUpdateWithWhereUniqueWithoutRepairInput | RepairLogUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: RepairLogUpdateManyWithWhereWithoutRepairInput | RepairLogUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
+  }
+
+  export type RepairServiceUncheckedUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
+    upsert?: RepairServiceUpsertWithWhereUniqueWithoutRepairInput | RepairServiceUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    disconnect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    delete?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+    update?: RepairServiceUpdateWithWhereUniqueWithoutRepairInput | RepairServiceUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: RepairServiceUpdateManyWithWhereWithoutRepairInput | RepairServiceUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
   }
 
   export type ServiceCreateNestedOneWithoutRepairsInput = {
@@ -17373,12 +18812,10 @@ export namespace Prisma {
     connect?: ServiceWhereUniqueInput
   }
 
-  export type RepairUpdateOneRequiredWithoutServicesNestedInput = {
+  export type RepairCreateNestedOneWithoutServicesInput = {
     create?: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
     connectOrCreate?: RepairCreateOrConnectWithoutServicesInput
-    upsert?: RepairUpsertWithoutServicesInput
     connect?: RepairWhereUniqueInput
-    update?: XOR<XOR<RepairUpdateToOneWithWhereWithoutServicesInput, RepairUpdateWithoutServicesInput>, RepairUncheckedUpdateWithoutServicesInput>
   }
 
   export type ServiceUpdateOneRequiredWithoutRepairsNestedInput = {
@@ -17387,6 +18824,14 @@ export namespace Prisma {
     upsert?: ServiceUpsertWithoutRepairsInput
     connect?: ServiceWhereUniqueInput
     update?: XOR<XOR<ServiceUpdateToOneWithWhereWithoutRepairsInput, ServiceUpdateWithoutRepairsInput>, ServiceUncheckedUpdateWithoutRepairsInput>
+  }
+
+  export type RepairUpdateOneRequiredWithoutServicesNestedInput = {
+    create?: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
+    connectOrCreate?: RepairCreateOrConnectWithoutServicesInput
+    upsert?: RepairUpsertWithoutServicesInput
+    connect?: RepairWhereUniqueInput
+    update?: XOR<XOR<RepairUpdateToOneWithWhereWithoutServicesInput, RepairUpdateWithoutServicesInput>, RepairUncheckedUpdateWithoutServicesInput>
   }
 
   export type RepairCreateNestedOneWithoutLogsInput = {
@@ -17593,72 +19038,6 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type RepairCreateWithoutClientInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    services?: RepairServiceCreateNestedManyWithoutRepairInput
-    logs?: RepairLogCreateNestedManyWithoutRepairInput
-    quotes?: QuoteCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairUncheckedCreateWithoutClientInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
-    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
-    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairCreateOrConnectWithoutClientInput = {
-    where: RepairWhereUniqueInput
-    create: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput>
-  }
-
-  export type QuoteCreateWithoutClientInput = {
-    id?: string
-    number: string
-    status?: string
-    items: string
-    totalHT: number
-    totalTTC: number
-    notes?: string | null
-    validUntil?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    repair?: RepairCreateNestedOneWithoutQuotesInput
-    invoice?: InvoiceCreateNestedOneWithoutQuoteInput
-  }
-
-  export type QuoteUncheckedCreateWithoutClientInput = {
-    id?: string
-    number: string
-    status?: string
-    repairId?: string | null
-    items: string
-    totalHT: number
-    totalTTC: number
-    notes?: string | null
-    validUntil?: Date | string | null
-    invoiceId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type QuoteCreateOrConnectWithoutClientInput = {
-    where: QuoteWhereUniqueInput
-    create: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput>
-  }
-
   export type InvoiceCreateWithoutClientInput = {
     id?: string
     number: string
@@ -17669,6 +19048,7 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    taxDetails?: string | null
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
   }
@@ -17684,6 +19064,7 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    taxDetails?: string | null
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -17692,33 +19073,106 @@ export namespace Prisma {
     create: XOR<InvoiceCreateWithoutClientInput, InvoiceUncheckedCreateWithoutClientInput>
   }
 
-  export type RepairUpsertWithWhereUniqueWithoutClientInput = {
+  export type QuoteCreateWithoutClientInput = {
+    id?: string
+    number: string
+    status?: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    validUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    repair?: RepairCreateNestedOneWithoutQuotesInput
+  }
+
+  export type QuoteUncheckedCreateWithoutClientInput = {
+    id?: string
+    number: string
+    status?: string
+    repairId?: string | null
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    validUntil?: Date | string | null
+    invoiceId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+  }
+
+  export type QuoteCreateOrConnectWithoutClientInput = {
+    where: QuoteWhereUniqueInput
+    create: XOR<QuoteCreateWithoutClientInput, QuoteUncheckedCreateWithoutClientInput>
+  }
+
+  export type RepairCreateWithoutClientInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairUncheckedCreateWithoutClientInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairCreateOrConnectWithoutClientInput = {
     where: RepairWhereUniqueInput
-    update: XOR<RepairUpdateWithoutClientInput, RepairUncheckedUpdateWithoutClientInput>
     create: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput>
   }
 
-  export type RepairUpdateWithWhereUniqueWithoutClientInput = {
-    where: RepairWhereUniqueInput
-    data: XOR<RepairUpdateWithoutClientInput, RepairUncheckedUpdateWithoutClientInput>
+  export type InvoiceUpsertWithWhereUniqueWithoutClientInput = {
+    where: InvoiceWhereUniqueInput
+    update: XOR<InvoiceUpdateWithoutClientInput, InvoiceUncheckedUpdateWithoutClientInput>
+    create: XOR<InvoiceCreateWithoutClientInput, InvoiceUncheckedCreateWithoutClientInput>
   }
 
-  export type RepairUpdateManyWithWhereWithoutClientInput = {
-    where: RepairScalarWhereInput
-    data: XOR<RepairUpdateManyMutationInput, RepairUncheckedUpdateManyWithoutClientInput>
+  export type InvoiceUpdateWithWhereUniqueWithoutClientInput = {
+    where: InvoiceWhereUniqueInput
+    data: XOR<InvoiceUpdateWithoutClientInput, InvoiceUncheckedUpdateWithoutClientInput>
   }
 
-  export type RepairScalarWhereInput = {
-    AND?: RepairScalarWhereInput | RepairScalarWhereInput[]
-    OR?: RepairScalarWhereInput[]
-    NOT?: RepairScalarWhereInput | RepairScalarWhereInput[]
-    id?: StringFilter<"Repair"> | string
-    status?: StringFilter<"Repair"> | string
-    partStatus?: StringFilter<"Repair"> | string
-    clientId?: StringFilter<"Repair"> | string
-    notes?: StringNullableFilter<"Repair"> | string | null
-    createdAt?: DateTimeFilter<"Repair"> | Date | string
-    updatedAt?: DateTimeFilter<"Repair"> | Date | string
+  export type InvoiceUpdateManyWithWhereWithoutClientInput = {
+    where: InvoiceScalarWhereInput
+    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type InvoiceScalarWhereInput = {
+    AND?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+    OR?: InvoiceScalarWhereInput[]
+    NOT?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+    id?: StringFilter<"Invoice"> | string
+    number?: StringFilter<"Invoice"> | string
+    clientId?: StringFilter<"Invoice"> | string
+    repairId?: StringNullableFilter<"Invoice"> | string | null
+    items?: StringFilter<"Invoice"> | string
+    totalHT?: FloatFilter<"Invoice"> | number
+    totalTTC?: FloatFilter<"Invoice"> | number
+    notes?: StringNullableFilter<"Invoice"> | string | null
+    paid?: BoolFilter<"Invoice"> | boolean
+    createdAt?: DateTimeFilter<"Invoice"> | Date | string
+    updatedAt?: DateTimeFilter<"Invoice"> | Date | string
+    taxDetails?: StringNullableFilter<"Invoice"> | string | null
   }
 
   export type QuoteUpsertWithWhereUniqueWithoutClientInput = {
@@ -17754,107 +19208,36 @@ export namespace Prisma {
     invoiceId?: StringNullableFilter<"Quote"> | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
+    taxDetails?: StringNullableFilter<"Quote"> | string | null
   }
 
-  export type InvoiceUpsertWithWhereUniqueWithoutClientInput = {
-    where: InvoiceWhereUniqueInput
-    update: XOR<InvoiceUpdateWithoutClientInput, InvoiceUncheckedUpdateWithoutClientInput>
-    create: XOR<InvoiceCreateWithoutClientInput, InvoiceUncheckedCreateWithoutClientInput>
-  }
-
-  export type InvoiceUpdateWithWhereUniqueWithoutClientInput = {
-    where: InvoiceWhereUniqueInput
-    data: XOR<InvoiceUpdateWithoutClientInput, InvoiceUncheckedUpdateWithoutClientInput>
-  }
-
-  export type InvoiceUpdateManyWithWhereWithoutClientInput = {
-    where: InvoiceScalarWhereInput
-    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutClientInput>
-  }
-
-  export type InvoiceScalarWhereInput = {
-    AND?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
-    OR?: InvoiceScalarWhereInput[]
-    NOT?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
-    id?: StringFilter<"Invoice"> | string
-    number?: StringFilter<"Invoice"> | string
-    clientId?: StringFilter<"Invoice"> | string
-    repairId?: StringNullableFilter<"Invoice"> | string | null
-    items?: StringFilter<"Invoice"> | string
-    totalHT?: FloatFilter<"Invoice"> | number
-    totalTTC?: FloatFilter<"Invoice"> | number
-    notes?: StringNullableFilter<"Invoice"> | string | null
-    paid?: BoolFilter<"Invoice"> | boolean
-    createdAt?: DateTimeFilter<"Invoice"> | Date | string
-    updatedAt?: DateTimeFilter<"Invoice"> | Date | string
-  }
-
-  export type ClientCreateWithoutQuotesInput = {
-    id?: string
-    name: string
-    firstName?: string | null
-    lastName?: string | null
-    clientType?: string
-    email?: string | null
-    phone: string
-    address?: string | null
-    zipCode?: string | null
-    city?: string | null
-    createdAt?: Date | string
-    repairs?: RepairCreateNestedManyWithoutClientInput
-    invoices?: InvoiceCreateNestedManyWithoutClientInput
-  }
-
-  export type ClientUncheckedCreateWithoutQuotesInput = {
-    id?: string
-    name: string
-    firstName?: string | null
-    lastName?: string | null
-    clientType?: string
-    email?: string | null
-    phone: string
-    address?: string | null
-    zipCode?: string | null
-    city?: string | null
-    createdAt?: Date | string
-    repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
-    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
-  }
-
-  export type ClientCreateOrConnectWithoutQuotesInput = {
-    where: ClientWhereUniqueInput
-    create: XOR<ClientCreateWithoutQuotesInput, ClientUncheckedCreateWithoutQuotesInput>
-  }
-
-  export type RepairCreateWithoutQuotesInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutRepairsInput
-    services?: RepairServiceCreateNestedManyWithoutRepairInput
-    logs?: RepairLogCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairUncheckedCreateWithoutQuotesInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    clientId: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
-    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairCreateOrConnectWithoutQuotesInput = {
+  export type RepairUpsertWithWhereUniqueWithoutClientInput = {
     where: RepairWhereUniqueInput
-    create: XOR<RepairCreateWithoutQuotesInput, RepairUncheckedCreateWithoutQuotesInput>
+    update: XOR<RepairUpdateWithoutClientInput, RepairUncheckedUpdateWithoutClientInput>
+    create: XOR<RepairCreateWithoutClientInput, RepairUncheckedCreateWithoutClientInput>
+  }
+
+  export type RepairUpdateWithWhereUniqueWithoutClientInput = {
+    where: RepairWhereUniqueInput
+    data: XOR<RepairUpdateWithoutClientInput, RepairUncheckedUpdateWithoutClientInput>
+  }
+
+  export type RepairUpdateManyWithWhereWithoutClientInput = {
+    where: RepairScalarWhereInput
+    data: XOR<RepairUpdateManyMutationInput, RepairUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type RepairScalarWhereInput = {
+    AND?: RepairScalarWhereInput | RepairScalarWhereInput[]
+    OR?: RepairScalarWhereInput[]
+    NOT?: RepairScalarWhereInput | RepairScalarWhereInput[]
+    id?: StringFilter<"Repair"> | string
+    status?: StringFilter<"Repair"> | string
+    partStatus?: StringFilter<"Repair"> | string
+    clientId?: StringFilter<"Repair"> | string
+    notes?: StringNullableFilter<"Repair"> | string | null
+    createdAt?: DateTimeFilter<"Repair"> | Date | string
+    updatedAt?: DateTimeFilter<"Repair"> | Date | string
   }
 
   export type InvoiceCreateWithoutQuoteInput = {
@@ -17867,8 +19250,9 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutInvoicesInput
+    taxDetails?: string | null
     repair?: RepairCreateNestedOneWithoutInvoicesInput
+    client: ClientCreateNestedOneWithoutInvoicesInput
   }
 
   export type InvoiceUncheckedCreateWithoutQuoteInput = {
@@ -17883,11 +19267,162 @@ export namespace Prisma {
     paid?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    taxDetails?: string | null
   }
 
   export type InvoiceCreateOrConnectWithoutQuoteInput = {
     where: InvoiceWhereUniqueInput
     create: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
+  }
+
+  export type RepairCreateWithoutQuotesInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairUncheckedCreateWithoutQuotesInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    clientId: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairCreateOrConnectWithoutQuotesInput = {
+    where: RepairWhereUniqueInput
+    create: XOR<RepairCreateWithoutQuotesInput, RepairUncheckedCreateWithoutQuotesInput>
+  }
+
+  export type ClientCreateWithoutQuotesInput = {
+    id?: string
+    name: string
+    firstName?: string | null
+    lastName?: string | null
+    clientType?: string
+    email?: string | null
+    phone: string
+    address?: string | null
+    zipCode?: string | null
+    city?: string | null
+    createdAt?: Date | string
+    siret?: string | null
+    vatNumber?: string | null
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
+    repairs?: RepairCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUncheckedCreateWithoutQuotesInput = {
+    id?: string
+    name: string
+    firstName?: string | null
+    lastName?: string | null
+    clientType?: string
+    email?: string | null
+    phone: string
+    address?: string | null
+    zipCode?: string | null
+    city?: string | null
+    createdAt?: Date | string
+    siret?: string | null
+    vatNumber?: string | null
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientCreateOrConnectWithoutQuotesInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutQuotesInput, ClientUncheckedCreateWithoutQuotesInput>
+  }
+
+  export type InvoiceUpsertWithoutQuoteInput = {
+    update: XOR<InvoiceUpdateWithoutQuoteInput, InvoiceUncheckedUpdateWithoutQuoteInput>
+    create: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
+    where?: InvoiceWhereInput
+  }
+
+  export type InvoiceUpdateToOneWithWhereWithoutQuoteInput = {
+    where?: InvoiceWhereInput
+    data: XOR<InvoiceUpdateWithoutQuoteInput, InvoiceUncheckedUpdateWithoutQuoteInput>
+  }
+
+  export type InvoiceUpdateWithoutQuoteInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    repair?: RepairUpdateOneWithoutInvoicesNestedInput
+    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateWithoutQuoteInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RepairUpsertWithoutQuotesInput = {
+    update: XOR<RepairUpdateWithoutQuotesInput, RepairUncheckedUpdateWithoutQuotesInput>
+    create: XOR<RepairCreateWithoutQuotesInput, RepairUncheckedCreateWithoutQuotesInput>
+    where?: RepairWhereInput
+  }
+
+  export type RepairUpdateToOneWithWhereWithoutQuotesInput = {
+    where?: RepairWhereInput
+    data: XOR<RepairUpdateWithoutQuotesInput, RepairUncheckedUpdateWithoutQuotesInput>
+  }
+
+  export type RepairUpdateWithoutQuotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutQuotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type ClientUpsertWithoutQuotesInput = {
@@ -17913,8 +19448,10 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repairs?: RepairUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    repairs?: RepairUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutQuotesInput = {
@@ -17929,84 +19466,41 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
   }
 
-  export type RepairUpsertWithoutQuotesInput = {
-    update: XOR<RepairUpdateWithoutQuotesInput, RepairUncheckedUpdateWithoutQuotesInput>
-    create: XOR<RepairCreateWithoutQuotesInput, RepairUncheckedCreateWithoutQuotesInput>
-    where?: RepairWhereInput
+  export type RepairCreateWithoutInvoicesInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
   }
 
-  export type RepairUpdateToOneWithWhereWithoutQuotesInput = {
-    where?: RepairWhereInput
-    data: XOR<RepairUpdateWithoutQuotesInput, RepairUncheckedUpdateWithoutQuotesInput>
+  export type RepairUncheckedCreateWithoutInvoicesInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    clientId: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
   }
 
-  export type RepairUpdateWithoutQuotesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
-    services?: RepairServiceUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
-  }
-
-  export type RepairUncheckedUpdateWithoutQuotesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
-  }
-
-  export type InvoiceUpsertWithoutQuoteInput = {
-    update: XOR<InvoiceUpdateWithoutQuoteInput, InvoiceUncheckedUpdateWithoutQuoteInput>
-    create: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
-    where?: InvoiceWhereInput
-  }
-
-  export type InvoiceUpdateToOneWithWhereWithoutQuoteInput = {
-    where?: InvoiceWhereInput
-    data: XOR<InvoiceUpdateWithoutQuoteInput, InvoiceUncheckedUpdateWithoutQuoteInput>
-  }
-
-  export type InvoiceUpdateWithoutQuoteInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    paid?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
-    repair?: RepairUpdateOneWithoutInvoicesNestedInput
-  }
-
-  export type InvoiceUncheckedUpdateWithoutQuoteInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    repairId?: NullableStringFieldUpdateOperationsInput | string | null
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    paid?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type RepairCreateOrConnectWithoutInvoicesInput = {
+    where: RepairWhereUniqueInput
+    create: XOR<RepairCreateWithoutInvoicesInput, RepairUncheckedCreateWithoutInvoicesInput>
   }
 
   export type ClientCreateWithoutInvoicesInput = {
@@ -18021,8 +19515,10 @@ export namespace Prisma {
     zipCode?: string | null
     city?: string | null
     createdAt?: Date | string
-    repairs?: RepairCreateNestedManyWithoutClientInput
+    siret?: string | null
+    vatNumber?: string | null
     quotes?: QuoteCreateNestedManyWithoutClientInput
+    repairs?: RepairCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutInvoicesInput = {
@@ -18037,44 +19533,15 @@ export namespace Prisma {
     zipCode?: string | null
     city?: string | null
     createdAt?: Date | string
-    repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
+    siret?: string | null
+    vatNumber?: string | null
     quotes?: QuoteUncheckedCreateNestedManyWithoutClientInput
+    repairs?: RepairUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutInvoicesInput = {
     where: ClientWhereUniqueInput
     create: XOR<ClientCreateWithoutInvoicesInput, ClientUncheckedCreateWithoutInvoicesInput>
-  }
-
-  export type RepairCreateWithoutInvoicesInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutRepairsInput
-    services?: RepairServiceCreateNestedManyWithoutRepairInput
-    logs?: RepairLogCreateNestedManyWithoutRepairInput
-    quotes?: QuoteCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairUncheckedCreateWithoutInvoicesInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    clientId: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
-    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
-    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairCreateOrConnectWithoutInvoicesInput = {
-    where: RepairWhereUniqueInput
-    create: XOR<RepairCreateWithoutInvoicesInput, RepairUncheckedCreateWithoutInvoicesInput>
   }
 
   export type QuoteCreateWithoutInvoiceInput = {
@@ -18088,8 +19555,9 @@ export namespace Prisma {
     validUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutQuotesInput
+    taxDetails?: string | null
     repair?: RepairCreateNestedOneWithoutQuotesInput
+    client: ClientCreateNestedOneWithoutQuotesInput
   }
 
   export type QuoteUncheckedCreateWithoutInvoiceInput = {
@@ -18105,11 +19573,49 @@ export namespace Prisma {
     validUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    taxDetails?: string | null
   }
 
   export type QuoteCreateOrConnectWithoutInvoiceInput = {
     where: QuoteWhereUniqueInput
     create: XOR<QuoteCreateWithoutInvoiceInput, QuoteUncheckedCreateWithoutInvoiceInput>
+  }
+
+  export type RepairUpsertWithoutInvoicesInput = {
+    update: XOR<RepairUpdateWithoutInvoicesInput, RepairUncheckedUpdateWithoutInvoicesInput>
+    create: XOR<RepairCreateWithoutInvoicesInput, RepairUncheckedCreateWithoutInvoicesInput>
+    where?: RepairWhereInput
+  }
+
+  export type RepairUpdateToOneWithWhereWithoutInvoicesInput = {
+    where?: RepairWhereInput
+    data: XOR<RepairUpdateWithoutInvoicesInput, RepairUncheckedUpdateWithoutInvoicesInput>
+  }
+
+  export type RepairUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type ClientUpsertWithoutInvoicesInput = {
@@ -18135,8 +19641,10 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repairs?: RepairUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     quotes?: QuoteUpdateManyWithoutClientNestedInput
+    repairs?: RepairUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutInvoicesInput = {
@@ -18151,45 +19659,10 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     quotes?: QuoteUncheckedUpdateManyWithoutClientNestedInput
-  }
-
-  export type RepairUpsertWithoutInvoicesInput = {
-    update: XOR<RepairUpdateWithoutInvoicesInput, RepairUncheckedUpdateWithoutInvoicesInput>
-    create: XOR<RepairCreateWithoutInvoicesInput, RepairUncheckedCreateWithoutInvoicesInput>
-    where?: RepairWhereInput
-  }
-
-  export type RepairUpdateToOneWithWhereWithoutInvoicesInput = {
-    where?: RepairWhereInput
-    data: XOR<RepairUpdateWithoutInvoicesInput, RepairUncheckedUpdateWithoutInvoicesInput>
-  }
-
-  export type RepairUpdateWithoutInvoicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
-    services?: RepairServiceUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUpdateManyWithoutRepairNestedInput
-  }
-
-  export type RepairUncheckedUpdateWithoutInvoicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    repairs?: RepairUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type QuoteUpsertWithoutInvoiceInput = {
@@ -18214,8 +19687,9 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneWithoutQuotesNestedInput
+    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
   }
 
   export type QuoteUncheckedUpdateWithoutInvoiceInput = {
@@ -18231,26 +19705,27 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeviceModelCreateWithoutTypeInput = {
     id?: string
     name: string
-    modelReference?: string | null
     createdAt?: Date | string
+    modelReference?: string | null
     brand: DeviceBrandCreateNestedOneWithoutModelsInput
-    services?: ServiceCreateNestedManyWithoutModelInput
     parts?: PartCreateNestedManyWithoutModelInput
+    services?: ServiceCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelUncheckedCreateWithoutTypeInput = {
     id?: string
     name: string
-    modelReference?: string | null
     brandId: string
     createdAt?: Date | string
-    services?: ServiceUncheckedCreateNestedManyWithoutModelInput
+    modelReference?: string | null
     parts?: PartUncheckedCreateNestedManyWithoutModelInput
+    services?: ServiceUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelCreateOrConnectWithoutTypeInput = {
@@ -18280,30 +19755,30 @@ export namespace Prisma {
     NOT?: DeviceModelScalarWhereInput | DeviceModelScalarWhereInput[]
     id?: StringFilter<"DeviceModel"> | string
     name?: StringFilter<"DeviceModel"> | string
-    modelReference?: StringNullableFilter<"DeviceModel"> | string | null
     brandId?: StringFilter<"DeviceModel"> | string
     typeId?: StringFilter<"DeviceModel"> | string
     createdAt?: DateTimeFilter<"DeviceModel"> | Date | string
+    modelReference?: StringNullableFilter<"DeviceModel"> | string | null
   }
 
   export type DeviceModelCreateWithoutBrandInput = {
     id?: string
     name: string
-    modelReference?: string | null
     createdAt?: Date | string
+    modelReference?: string | null
     type: DeviceTypeCreateNestedOneWithoutModelsInput
-    services?: ServiceCreateNestedManyWithoutModelInput
     parts?: PartCreateNestedManyWithoutModelInput
+    services?: ServiceCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelUncheckedCreateWithoutBrandInput = {
     id?: string
     name: string
-    modelReference?: string | null
     typeId: string
     createdAt?: Date | string
-    services?: ServiceUncheckedCreateNestedManyWithoutModelInput
+    modelReference?: string | null
     parts?: PartUncheckedCreateNestedManyWithoutModelInput
+    services?: ServiceUncheckedCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelCreateOrConnectWithoutBrandInput = {
@@ -18327,23 +19802,6 @@ export namespace Prisma {
     data: XOR<DeviceModelUpdateManyMutationInput, DeviceModelUncheckedUpdateManyWithoutBrandInput>
   }
 
-  export type DeviceBrandCreateWithoutModelsInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string
-  }
-
-  export type DeviceBrandUncheckedCreateWithoutModelsInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string
-  }
-
-  export type DeviceBrandCreateOrConnectWithoutModelsInput = {
-    where: DeviceBrandWhereUniqueInput
-    create: XOR<DeviceBrandCreateWithoutModelsInput, DeviceBrandUncheckedCreateWithoutModelsInput>
-  }
-
   export type DeviceTypeCreateWithoutModelsInput = {
     id?: string
     name: string
@@ -18361,6 +19819,60 @@ export namespace Prisma {
     create: XOR<DeviceTypeCreateWithoutModelsInput, DeviceTypeUncheckedCreateWithoutModelsInput>
   }
 
+  export type DeviceBrandCreateWithoutModelsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+  }
+
+  export type DeviceBrandUncheckedCreateWithoutModelsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+  }
+
+  export type DeviceBrandCreateOrConnectWithoutModelsInput = {
+    where: DeviceBrandWhereUniqueInput
+    create: XOR<DeviceBrandCreateWithoutModelsInput, DeviceBrandUncheckedCreateWithoutModelsInput>
+  }
+
+  export type PartCreateWithoutModelInput = {
+    id?: string
+    name: string
+    sku: string
+    costPrice: number
+    stock?: number
+    minStock?: number
+    supplier?: string | null
+    supplierRef?: string | null
+    location?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    quality?: string | null
+    services?: ServiceCreateNestedManyWithoutPartInput
+  }
+
+  export type PartUncheckedCreateWithoutModelInput = {
+    id?: string
+    name: string
+    sku: string
+    costPrice: number
+    stock?: number
+    minStock?: number
+    supplier?: string | null
+    supplierRef?: string | null
+    location?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    quality?: string | null
+    services?: ServiceUncheckedCreateNestedManyWithoutPartInput
+  }
+
+  export type PartCreateOrConnectWithoutModelInput = {
+    where: PartWhereUniqueInput
+    create: XOR<PartCreateWithoutModelInput, PartUncheckedCreateWithoutModelInput>
+  }
+
   export type ServiceCreateWithoutModelInput = {
     id?: string
     name: string
@@ -18369,8 +19881,8 @@ export namespace Prisma {
     duration?: number
     description?: string | null
     createdAt?: Date | string
-    part?: PartCreateNestedOneWithoutServicesInput
     repairs?: RepairServiceCreateNestedManyWithoutServiceInput
+    part?: PartCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateWithoutModelInput = {
@@ -18390,41 +19902,27 @@ export namespace Prisma {
     create: XOR<ServiceCreateWithoutModelInput, ServiceUncheckedCreateWithoutModelInput>
   }
 
-  export type PartCreateWithoutModelInput = {
-    id?: string
-    name: string
-    sku: string
-    costPrice: number
-    stock?: number
-    minStock?: number
-    quality?: string | null
-    supplier?: string | null
-    supplierRef?: string | null
-    location?: string | null
-    description?: string | null
-    createdAt?: Date | string
-    services?: ServiceCreateNestedManyWithoutPartInput
+  export type DeviceTypeUpsertWithoutModelsInput = {
+    update: XOR<DeviceTypeUpdateWithoutModelsInput, DeviceTypeUncheckedUpdateWithoutModelsInput>
+    create: XOR<DeviceTypeCreateWithoutModelsInput, DeviceTypeUncheckedCreateWithoutModelsInput>
+    where?: DeviceTypeWhereInput
   }
 
-  export type PartUncheckedCreateWithoutModelInput = {
-    id?: string
-    name: string
-    sku: string
-    costPrice: number
-    stock?: number
-    minStock?: number
-    quality?: string | null
-    supplier?: string | null
-    supplierRef?: string | null
-    location?: string | null
-    description?: string | null
-    createdAt?: Date | string
-    services?: ServiceUncheckedCreateNestedManyWithoutPartInput
+  export type DeviceTypeUpdateToOneWithWhereWithoutModelsInput = {
+    where?: DeviceTypeWhereInput
+    data: XOR<DeviceTypeUpdateWithoutModelsInput, DeviceTypeUncheckedUpdateWithoutModelsInput>
   }
 
-  export type PartCreateOrConnectWithoutModelInput = {
-    where: PartWhereUniqueInput
-    create: XOR<PartCreateWithoutModelInput, PartUncheckedCreateWithoutModelInput>
+  export type DeviceTypeUpdateWithoutModelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeviceTypeUncheckedUpdateWithoutModelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeviceBrandUpsertWithoutModelsInput = {
@@ -18450,27 +19948,39 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type DeviceTypeUpsertWithoutModelsInput = {
-    update: XOR<DeviceTypeUpdateWithoutModelsInput, DeviceTypeUncheckedUpdateWithoutModelsInput>
-    create: XOR<DeviceTypeCreateWithoutModelsInput, DeviceTypeUncheckedCreateWithoutModelsInput>
-    where?: DeviceTypeWhereInput
+  export type PartUpsertWithWhereUniqueWithoutModelInput = {
+    where: PartWhereUniqueInput
+    update: XOR<PartUpdateWithoutModelInput, PartUncheckedUpdateWithoutModelInput>
+    create: XOR<PartCreateWithoutModelInput, PartUncheckedCreateWithoutModelInput>
   }
 
-  export type DeviceTypeUpdateToOneWithWhereWithoutModelsInput = {
-    where?: DeviceTypeWhereInput
-    data: XOR<DeviceTypeUpdateWithoutModelsInput, DeviceTypeUncheckedUpdateWithoutModelsInput>
+  export type PartUpdateWithWhereUniqueWithoutModelInput = {
+    where: PartWhereUniqueInput
+    data: XOR<PartUpdateWithoutModelInput, PartUncheckedUpdateWithoutModelInput>
   }
 
-  export type DeviceTypeUpdateWithoutModelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type PartUpdateManyWithWhereWithoutModelInput = {
+    where: PartScalarWhereInput
+    data: XOR<PartUpdateManyMutationInput, PartUncheckedUpdateManyWithoutModelInput>
   }
 
-  export type DeviceTypeUncheckedUpdateWithoutModelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type PartScalarWhereInput = {
+    AND?: PartScalarWhereInput | PartScalarWhereInput[]
+    OR?: PartScalarWhereInput[]
+    NOT?: PartScalarWhereInput | PartScalarWhereInput[]
+    id?: StringFilter<"Part"> | string
+    name?: StringFilter<"Part"> | string
+    sku?: StringFilter<"Part"> | string
+    costPrice?: FloatFilter<"Part"> | number
+    stock?: IntFilter<"Part"> | number
+    minStock?: IntFilter<"Part"> | number
+    supplier?: StringNullableFilter<"Part"> | string | null
+    supplierRef?: StringNullableFilter<"Part"> | string | null
+    location?: StringNullableFilter<"Part"> | string | null
+    description?: StringNullableFilter<"Part"> | string | null
+    modelId?: StringNullableFilter<"Part"> | string | null
+    createdAt?: DateTimeFilter<"Part"> | Date | string
+    quality?: StringNullableFilter<"Part"> | string | null
   }
 
   export type ServiceUpsertWithWhereUniqueWithoutModelInput = {
@@ -18504,58 +20014,23 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Service"> | Date | string
   }
 
-  export type PartUpsertWithWhereUniqueWithoutModelInput = {
-    where: PartWhereUniqueInput
-    update: XOR<PartUpdateWithoutModelInput, PartUncheckedUpdateWithoutModelInput>
-    create: XOR<PartCreateWithoutModelInput, PartUncheckedCreateWithoutModelInput>
-  }
-
-  export type PartUpdateWithWhereUniqueWithoutModelInput = {
-    where: PartWhereUniqueInput
-    data: XOR<PartUpdateWithoutModelInput, PartUncheckedUpdateWithoutModelInput>
-  }
-
-  export type PartUpdateManyWithWhereWithoutModelInput = {
-    where: PartScalarWhereInput
-    data: XOR<PartUpdateManyMutationInput, PartUncheckedUpdateManyWithoutModelInput>
-  }
-
-  export type PartScalarWhereInput = {
-    AND?: PartScalarWhereInput | PartScalarWhereInput[]
-    OR?: PartScalarWhereInput[]
-    NOT?: PartScalarWhereInput | PartScalarWhereInput[]
-    id?: StringFilter<"Part"> | string
-    name?: StringFilter<"Part"> | string
-    sku?: StringFilter<"Part"> | string
-    costPrice?: FloatFilter<"Part"> | number
-    stock?: IntFilter<"Part"> | number
-    minStock?: IntFilter<"Part"> | number
-    quality?: StringNullableFilter<"Part"> | string | null
-    supplier?: StringNullableFilter<"Part"> | string | null
-    supplierRef?: StringNullableFilter<"Part"> | string | null
-    location?: StringNullableFilter<"Part"> | string | null
-    description?: StringNullableFilter<"Part"> | string | null
-    modelId?: StringNullableFilter<"Part"> | string | null
-    createdAt?: DateTimeFilter<"Part"> | Date | string
-  }
-
   export type DeviceModelCreateWithoutPartsInput = {
     id?: string
     name: string
-    modelReference?: string | null
     createdAt?: Date | string
-    brand: DeviceBrandCreateNestedOneWithoutModelsInput
+    modelReference?: string | null
     type: DeviceTypeCreateNestedOneWithoutModelsInput
+    brand: DeviceBrandCreateNestedOneWithoutModelsInput
     services?: ServiceCreateNestedManyWithoutModelInput
   }
 
   export type DeviceModelUncheckedCreateWithoutPartsInput = {
     id?: string
     name: string
-    modelReference?: string | null
     brandId: string
     typeId: string
     createdAt?: Date | string
+    modelReference?: string | null
     services?: ServiceUncheckedCreateNestedManyWithoutModelInput
   }
 
@@ -18572,8 +20047,8 @@ export namespace Prisma {
     duration?: number
     description?: string | null
     createdAt?: Date | string
-    model?: DeviceModelCreateNestedOneWithoutServicesInput
     repairs?: RepairServiceCreateNestedManyWithoutServiceInput
+    model?: DeviceModelCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateWithoutPartInput = {
@@ -18607,20 +20082,20 @@ export namespace Prisma {
   export type DeviceModelUpdateWithoutPartsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     type?: DeviceTypeUpdateOneRequiredWithoutModelsNestedInput
+    brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
     services?: ServiceUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUncheckedUpdateWithoutPartsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: StringFieldUpdateOperationsInput | string
     typeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
   }
 
@@ -18638,68 +20113,6 @@ export namespace Prisma {
   export type ServiceUpdateManyWithWhereWithoutPartInput = {
     where: ServiceScalarWhereInput
     data: XOR<ServiceUpdateManyMutationInput, ServiceUncheckedUpdateManyWithoutPartInput>
-  }
-
-  export type PartCreateWithoutServicesInput = {
-    id?: string
-    name: string
-    sku: string
-    costPrice: number
-    stock?: number
-    minStock?: number
-    quality?: string | null
-    supplier?: string | null
-    supplierRef?: string | null
-    location?: string | null
-    description?: string | null
-    createdAt?: Date | string
-    model?: DeviceModelCreateNestedOneWithoutPartsInput
-  }
-
-  export type PartUncheckedCreateWithoutServicesInput = {
-    id?: string
-    name: string
-    sku: string
-    costPrice: number
-    stock?: number
-    minStock?: number
-    quality?: string | null
-    supplier?: string | null
-    supplierRef?: string | null
-    location?: string | null
-    description?: string | null
-    modelId?: string | null
-    createdAt?: Date | string
-  }
-
-  export type PartCreateOrConnectWithoutServicesInput = {
-    where: PartWhereUniqueInput
-    create: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
-  }
-
-  export type DeviceModelCreateWithoutServicesInput = {
-    id?: string
-    name: string
-    modelReference?: string | null
-    createdAt?: Date | string
-    brand: DeviceBrandCreateNestedOneWithoutModelsInput
-    type: DeviceTypeCreateNestedOneWithoutModelsInput
-    parts?: PartCreateNestedManyWithoutModelInput
-  }
-
-  export type DeviceModelUncheckedCreateWithoutServicesInput = {
-    id?: string
-    name: string
-    modelReference?: string | null
-    brandId: string
-    typeId: string
-    createdAt?: Date | string
-    parts?: PartUncheckedCreateNestedManyWithoutModelInput
-  }
-
-  export type DeviceModelCreateOrConnectWithoutServicesInput = {
-    where: DeviceModelWhereUniqueInput
-    create: XOR<DeviceModelCreateWithoutServicesInput, DeviceModelUncheckedCreateWithoutServicesInput>
   }
 
   export type RepairServiceCreateWithoutServiceInput = {
@@ -18721,78 +20134,66 @@ export namespace Prisma {
     create: XOR<RepairServiceCreateWithoutServiceInput, RepairServiceUncheckedCreateWithoutServiceInput>
   }
 
-  export type PartUpsertWithoutServicesInput = {
-    update: XOR<PartUpdateWithoutServicesInput, PartUncheckedUpdateWithoutServicesInput>
-    create: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
-    where?: PartWhereInput
+  export type DeviceModelCreateWithoutServicesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    modelReference?: string | null
+    type: DeviceTypeCreateNestedOneWithoutModelsInput
+    brand: DeviceBrandCreateNestedOneWithoutModelsInput
+    parts?: PartCreateNestedManyWithoutModelInput
   }
 
-  export type PartUpdateToOneWithWhereWithoutServicesInput = {
-    where?: PartWhereInput
-    data: XOR<PartUpdateWithoutServicesInput, PartUncheckedUpdateWithoutServicesInput>
+  export type DeviceModelUncheckedCreateWithoutServicesInput = {
+    id?: string
+    name: string
+    brandId: string
+    typeId: string
+    createdAt?: Date | string
+    modelReference?: string | null
+    parts?: PartUncheckedCreateNestedManyWithoutModelInput
   }
 
-  export type PartUpdateWithoutServicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sku?: StringFieldUpdateOperationsInput | string
-    costPrice?: FloatFieldUpdateOperationsInput | number
-    stock?: IntFieldUpdateOperationsInput | number
-    minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
-    supplier?: NullableStringFieldUpdateOperationsInput | string | null
-    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    model?: DeviceModelUpdateOneWithoutPartsNestedInput
-  }
-
-  export type PartUncheckedUpdateWithoutServicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sku?: StringFieldUpdateOperationsInput | string
-    costPrice?: FloatFieldUpdateOperationsInput | number
-    stock?: IntFieldUpdateOperationsInput | number
-    minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
-    supplier?: NullableStringFieldUpdateOperationsInput | string | null
-    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    modelId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DeviceModelUpsertWithoutServicesInput = {
-    update: XOR<DeviceModelUpdateWithoutServicesInput, DeviceModelUncheckedUpdateWithoutServicesInput>
+  export type DeviceModelCreateOrConnectWithoutServicesInput = {
+    where: DeviceModelWhereUniqueInput
     create: XOR<DeviceModelCreateWithoutServicesInput, DeviceModelUncheckedCreateWithoutServicesInput>
-    where?: DeviceModelWhereInput
   }
 
-  export type DeviceModelUpdateToOneWithWhereWithoutServicesInput = {
-    where?: DeviceModelWhereInput
-    data: XOR<DeviceModelUpdateWithoutServicesInput, DeviceModelUncheckedUpdateWithoutServicesInput>
+  export type PartCreateWithoutServicesInput = {
+    id?: string
+    name: string
+    sku: string
+    costPrice: number
+    stock?: number
+    minStock?: number
+    supplier?: string | null
+    supplierRef?: string | null
+    location?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    quality?: string | null
+    model?: DeviceModelCreateNestedOneWithoutPartsInput
   }
 
-  export type DeviceModelUpdateWithoutServicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
-    type?: DeviceTypeUpdateOneRequiredWithoutModelsNestedInput
-    parts?: PartUpdateManyWithoutModelNestedInput
+  export type PartUncheckedCreateWithoutServicesInput = {
+    id?: string
+    name: string
+    sku: string
+    costPrice: number
+    stock?: number
+    minStock?: number
+    supplier?: string | null
+    supplierRef?: string | null
+    location?: string | null
+    description?: string | null
+    modelId?: string | null
+    createdAt?: Date | string
+    quality?: string | null
   }
 
-  export type DeviceModelUncheckedUpdateWithoutServicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
-    brandId?: StringFieldUpdateOperationsInput | string
-    typeId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    parts?: PartUncheckedUpdateManyWithoutModelNestedInput
+  export type PartCreateOrConnectWithoutServicesInput = {
+    where: PartWhereUniqueInput
+    create: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
   }
 
   export type RepairServiceUpsertWithWhereUniqueWithoutServiceInput = {
@@ -18822,6 +20223,152 @@ export namespace Prisma {
     priceAtTime?: FloatFilter<"RepairService"> | number
   }
 
+  export type DeviceModelUpsertWithoutServicesInput = {
+    update: XOR<DeviceModelUpdateWithoutServicesInput, DeviceModelUncheckedUpdateWithoutServicesInput>
+    create: XOR<DeviceModelCreateWithoutServicesInput, DeviceModelUncheckedCreateWithoutServicesInput>
+    where?: DeviceModelWhereInput
+  }
+
+  export type DeviceModelUpdateToOneWithWhereWithoutServicesInput = {
+    where?: DeviceModelWhereInput
+    data: XOR<DeviceModelUpdateWithoutServicesInput, DeviceModelUncheckedUpdateWithoutServicesInput>
+  }
+
+  export type DeviceModelUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: DeviceTypeUpdateOneRequiredWithoutModelsNestedInput
+    brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
+    parts?: PartUpdateManyWithoutModelNestedInput
+  }
+
+  export type DeviceModelUncheckedUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
+    parts?: PartUncheckedUpdateManyWithoutModelNestedInput
+  }
+
+  export type PartUpsertWithoutServicesInput = {
+    update: XOR<PartUpdateWithoutServicesInput, PartUncheckedUpdateWithoutServicesInput>
+    create: XOR<PartCreateWithoutServicesInput, PartUncheckedCreateWithoutServicesInput>
+    where?: PartWhereInput
+  }
+
+  export type PartUpdateToOneWithWhereWithoutServicesInput = {
+    where?: PartWhereInput
+    data: XOR<PartUpdateWithoutServicesInput, PartUncheckedUpdateWithoutServicesInput>
+  }
+
+  export type PartUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: DeviceModelUpdateOneWithoutPartsNestedInput
+  }
+
+  export type PartUncheckedUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InvoiceCreateWithoutRepairInput = {
+    id?: string
+    number: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    paid?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    client: ClientCreateNestedOneWithoutInvoicesInput
+    quote?: QuoteCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateWithoutRepairInput = {
+    id?: string
+    number: string
+    clientId: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    paid?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceCreateOrConnectWithoutRepairInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput>
+  }
+
+  export type QuoteCreateWithoutRepairInput = {
+    id?: string
+    number: string
+    status?: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    validUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    client: ClientCreateNestedOneWithoutQuotesInput
+  }
+
+  export type QuoteUncheckedCreateWithoutRepairInput = {
+    id?: string
+    number: string
+    status?: string
+    clientId: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    validUntil?: Date | string | null
+    invoiceId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+  }
+
+  export type QuoteCreateOrConnectWithoutRepairInput = {
+    where: QuoteWhereUniqueInput
+    create: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput>
+  }
+
   export type ClientCreateWithoutRepairsInput = {
     id?: string
     name: string
@@ -18834,8 +20381,10 @@ export namespace Prisma {
     zipCode?: string | null
     city?: string | null
     createdAt?: Date | string
-    quotes?: QuoteCreateNestedManyWithoutClientInput
+    siret?: string | null
+    vatNumber?: string | null
     invoices?: InvoiceCreateNestedManyWithoutClientInput
+    quotes?: QuoteCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutRepairsInput = {
@@ -18850,32 +20399,15 @@ export namespace Prisma {
     zipCode?: string | null
     city?: string | null
     createdAt?: Date | string
-    quotes?: QuoteUncheckedCreateNestedManyWithoutClientInput
+    siret?: string | null
+    vatNumber?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutRepairsInput = {
     where: ClientWhereUniqueInput
     create: XOR<ClientCreateWithoutRepairsInput, ClientUncheckedCreateWithoutRepairsInput>
-  }
-
-  export type RepairServiceCreateWithoutRepairInput = {
-    id?: string
-    quantity?: number
-    priceAtTime: number
-    service: ServiceCreateNestedOneWithoutRepairsInput
-  }
-
-  export type RepairServiceUncheckedCreateWithoutRepairInput = {
-    id?: string
-    serviceId: string
-    quantity?: number
-    priceAtTime: number
-  }
-
-  export type RepairServiceCreateOrConnectWithoutRepairInput = {
-    where: RepairServiceWhereUniqueInput
-    create: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput>
   }
 
   export type RepairLogCreateWithoutRepairInput = {
@@ -18897,72 +20429,55 @@ export namespace Prisma {
     create: XOR<RepairLogCreateWithoutRepairInput, RepairLogUncheckedCreateWithoutRepairInput>
   }
 
-  export type QuoteCreateWithoutRepairInput = {
+  export type RepairServiceCreateWithoutRepairInput = {
     id?: string
-    number: string
-    status?: string
-    items: string
-    totalHT: number
-    totalTTC: number
-    notes?: string | null
-    validUntil?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutQuotesInput
-    invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    quantity?: number
+    priceAtTime: number
+    service: ServiceCreateNestedOneWithoutRepairsInput
   }
 
-  export type QuoteUncheckedCreateWithoutRepairInput = {
+  export type RepairServiceUncheckedCreateWithoutRepairInput = {
     id?: string
-    number: string
-    status?: string
-    clientId: string
-    items: string
-    totalHT: number
-    totalTTC: number
-    notes?: string | null
-    validUntil?: Date | string | null
-    invoiceId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    serviceId: string
+    quantity?: number
+    priceAtTime: number
   }
 
-  export type QuoteCreateOrConnectWithoutRepairInput = {
+  export type RepairServiceCreateOrConnectWithoutRepairInput = {
+    where: RepairServiceWhereUniqueInput
+    create: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput>
+  }
+
+  export type InvoiceUpsertWithWhereUniqueWithoutRepairInput = {
+    where: InvoiceWhereUniqueInput
+    update: XOR<InvoiceUpdateWithoutRepairInput, InvoiceUncheckedUpdateWithoutRepairInput>
+    create: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput>
+  }
+
+  export type InvoiceUpdateWithWhereUniqueWithoutRepairInput = {
+    where: InvoiceWhereUniqueInput
+    data: XOR<InvoiceUpdateWithoutRepairInput, InvoiceUncheckedUpdateWithoutRepairInput>
+  }
+
+  export type InvoiceUpdateManyWithWhereWithoutRepairInput = {
+    where: InvoiceScalarWhereInput
+    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutRepairInput>
+  }
+
+  export type QuoteUpsertWithWhereUniqueWithoutRepairInput = {
     where: QuoteWhereUniqueInput
+    update: XOR<QuoteUpdateWithoutRepairInput, QuoteUncheckedUpdateWithoutRepairInput>
     create: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput>
   }
 
-  export type InvoiceCreateWithoutRepairInput = {
-    id?: string
-    number: string
-    items: string
-    totalHT: number
-    totalTTC: number
-    notes?: string | null
-    paid?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutInvoicesInput
-    quote?: QuoteCreateNestedOneWithoutInvoiceInput
+  export type QuoteUpdateWithWhereUniqueWithoutRepairInput = {
+    where: QuoteWhereUniqueInput
+    data: XOR<QuoteUpdateWithoutRepairInput, QuoteUncheckedUpdateWithoutRepairInput>
   }
 
-  export type InvoiceUncheckedCreateWithoutRepairInput = {
-    id?: string
-    number: string
-    clientId: string
-    items: string
-    totalHT: number
-    totalTTC: number
-    notes?: string | null
-    paid?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
-  }
-
-  export type InvoiceCreateOrConnectWithoutRepairInput = {
-    where: InvoiceWhereUniqueInput
-    create: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput>
+  export type QuoteUpdateManyWithWhereWithoutRepairInput = {
+    where: QuoteScalarWhereInput
+    data: XOR<QuoteUpdateManyMutationInput, QuoteUncheckedUpdateManyWithoutRepairInput>
   }
 
   export type ClientUpsertWithoutRepairsInput = {
@@ -18988,8 +20503,10 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    quotes?: QuoteUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    quotes?: QuoteUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutRepairsInput = {
@@ -19004,24 +20521,10 @@ export namespace Prisma {
     zipCode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    quotes?: QuoteUncheckedUpdateManyWithoutClientNestedInput
+    siret?: NullableStringFieldUpdateOperationsInput | string | null
+    vatNumber?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
-  }
-
-  export type RepairServiceUpsertWithWhereUniqueWithoutRepairInput = {
-    where: RepairServiceWhereUniqueInput
-    update: XOR<RepairServiceUpdateWithoutRepairInput, RepairServiceUncheckedUpdateWithoutRepairInput>
-    create: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput>
-  }
-
-  export type RepairServiceUpdateWithWhereUniqueWithoutRepairInput = {
-    where: RepairServiceWhereUniqueInput
-    data: XOR<RepairServiceUpdateWithoutRepairInput, RepairServiceUncheckedUpdateWithoutRepairInput>
-  }
-
-  export type RepairServiceUpdateManyWithWhereWithoutRepairInput = {
-    where: RepairServiceScalarWhereInput
-    data: XOR<RepairServiceUpdateManyMutationInput, RepairServiceUncheckedUpdateManyWithoutRepairInput>
+    quotes?: QuoteUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type RepairLogUpsertWithWhereUniqueWithoutRepairInput = {
@@ -19051,67 +20554,20 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RepairLog"> | Date | string
   }
 
-  export type QuoteUpsertWithWhereUniqueWithoutRepairInput = {
-    where: QuoteWhereUniqueInput
-    update: XOR<QuoteUpdateWithoutRepairInput, QuoteUncheckedUpdateWithoutRepairInput>
-    create: XOR<QuoteCreateWithoutRepairInput, QuoteUncheckedCreateWithoutRepairInput>
+  export type RepairServiceUpsertWithWhereUniqueWithoutRepairInput = {
+    where: RepairServiceWhereUniqueInput
+    update: XOR<RepairServiceUpdateWithoutRepairInput, RepairServiceUncheckedUpdateWithoutRepairInput>
+    create: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput>
   }
 
-  export type QuoteUpdateWithWhereUniqueWithoutRepairInput = {
-    where: QuoteWhereUniqueInput
-    data: XOR<QuoteUpdateWithoutRepairInput, QuoteUncheckedUpdateWithoutRepairInput>
+  export type RepairServiceUpdateWithWhereUniqueWithoutRepairInput = {
+    where: RepairServiceWhereUniqueInput
+    data: XOR<RepairServiceUpdateWithoutRepairInput, RepairServiceUncheckedUpdateWithoutRepairInput>
   }
 
-  export type QuoteUpdateManyWithWhereWithoutRepairInput = {
-    where: QuoteScalarWhereInput
-    data: XOR<QuoteUpdateManyMutationInput, QuoteUncheckedUpdateManyWithoutRepairInput>
-  }
-
-  export type InvoiceUpsertWithWhereUniqueWithoutRepairInput = {
-    where: InvoiceWhereUniqueInput
-    update: XOR<InvoiceUpdateWithoutRepairInput, InvoiceUncheckedUpdateWithoutRepairInput>
-    create: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput>
-  }
-
-  export type InvoiceUpdateWithWhereUniqueWithoutRepairInput = {
-    where: InvoiceWhereUniqueInput
-    data: XOR<InvoiceUpdateWithoutRepairInput, InvoiceUncheckedUpdateWithoutRepairInput>
-  }
-
-  export type InvoiceUpdateManyWithWhereWithoutRepairInput = {
-    where: InvoiceScalarWhereInput
-    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutRepairInput>
-  }
-
-  export type RepairCreateWithoutServicesInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    client: ClientCreateNestedOneWithoutRepairsInput
-    logs?: RepairLogCreateNestedManyWithoutRepairInput
-    quotes?: QuoteCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairUncheckedCreateWithoutServicesInput = {
-    id?: string
-    status?: string
-    partStatus?: string
-    clientId: string
-    notes?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
-    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
-  }
-
-  export type RepairCreateOrConnectWithoutServicesInput = {
-    where: RepairWhereUniqueInput
-    create: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
+  export type RepairServiceUpdateManyWithWhereWithoutRepairInput = {
+    where: RepairServiceScalarWhereInput
+    data: XOR<RepairServiceUpdateManyMutationInput, RepairServiceUncheckedUpdateManyWithoutRepairInput>
   }
 
   export type ServiceCreateWithoutRepairsInput = {
@@ -19122,8 +20578,8 @@ export namespace Prisma {
     duration?: number
     description?: string | null
     createdAt?: Date | string
-    part?: PartCreateNestedOneWithoutServicesInput
     model?: DeviceModelCreateNestedOneWithoutServicesInput
+    part?: PartCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateWithoutRepairsInput = {
@@ -19143,41 +20599,35 @@ export namespace Prisma {
     create: XOR<ServiceCreateWithoutRepairsInput, ServiceUncheckedCreateWithoutRepairsInput>
   }
 
-  export type RepairUpsertWithoutServicesInput = {
-    update: XOR<RepairUpdateWithoutServicesInput, RepairUncheckedUpdateWithoutServicesInput>
+  export type RepairCreateWithoutServicesInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairUncheckedCreateWithoutServicesInput = {
+    id?: string
+    status?: string
+    partStatus?: string
+    clientId: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairCreateOrConnectWithoutServicesInput = {
+    where: RepairWhereUniqueInput
     create: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
-    where?: RepairWhereInput
-  }
-
-  export type RepairUpdateToOneWithWhereWithoutServicesInput = {
-    where?: RepairWhereInput
-    data: XOR<RepairUpdateWithoutServicesInput, RepairUncheckedUpdateWithoutServicesInput>
-  }
-
-  export type RepairUpdateWithoutServicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
-    logs?: RepairLogUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
-  }
-
-  export type RepairUncheckedUpdateWithoutServicesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type ServiceUpsertWithoutRepairsInput = {
@@ -19199,8 +20649,8 @@ export namespace Prisma {
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    part?: PartUpdateOneWithoutServicesNestedInput
     model?: DeviceModelUpdateOneWithoutServicesNestedInput
+    part?: PartUpdateOneWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateWithoutRepairsInput = {
@@ -19215,6 +20665,43 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type RepairUpsertWithoutServicesInput = {
+    update: XOR<RepairUpdateWithoutServicesInput, RepairUncheckedUpdateWithoutServicesInput>
+    create: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
+    where?: RepairWhereInput
+  }
+
+  export type RepairUpdateToOneWithWhereWithoutServicesInput = {
+    where?: RepairWhereInput
+    data: XOR<RepairUpdateWithoutServicesInput, RepairUncheckedUpdateWithoutServicesInput>
+  }
+
+  export type RepairUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+  }
+
   export type RepairCreateWithoutLogsInput = {
     id?: string
     status?: string
@@ -19222,10 +20709,10 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
     client: ClientCreateNestedOneWithoutRepairsInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
-    quotes?: QuoteCreateNestedManyWithoutRepairInput
-    invoices?: InvoiceCreateNestedManyWithoutRepairInput
   }
 
   export type RepairUncheckedCreateWithoutLogsInput = {
@@ -19236,9 +20723,9 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
-    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutLogsInput = {
@@ -19264,10 +20751,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUncheckedUpdateWithoutLogsInput = {
@@ -19278,89 +20765,9 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
-  }
-
-  export type RepairUpdateWithoutClientInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: RepairServiceUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUpdateManyWithoutRepairNestedInput
-    quotes?: QuoteUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
-  }
-
-  export type RepairUncheckedUpdateWithoutClientInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
-    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
-    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
-  }
-
-  export type RepairUncheckedUpdateManyWithoutClientInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type QuoteUpdateWithoutClientInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    repair?: RepairUpdateOneWithoutQuotesNestedInput
-    invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
-  }
-
-  export type QuoteUncheckedUpdateWithoutClientInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    repairId?: NullableStringFieldUpdateOperationsInput | string | null
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type QuoteUncheckedUpdateManyWithoutClientInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    repairId?: NullableStringFieldUpdateOperationsInput | string | null
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type InvoiceUpdateWithoutClientInput = {
@@ -19373,6 +20780,7 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
   }
@@ -19388,6 +20796,7 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -19402,62 +20811,193 @@ export namespace Prisma {
     paid?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QuoteUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    repair?: RepairUpdateOneWithoutQuotesNestedInput
+  }
+
+  export type QuoteUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QuoteUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RepairUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    partStatus?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeviceModelUpdateWithoutTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     brand?: DeviceBrandUpdateOneRequiredWithoutModelsNestedInput
-    services?: ServiceUpdateManyWithoutModelNestedInput
     parts?: PartUpdateManyWithoutModelNestedInput
+    services?: ServiceUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUncheckedUpdateWithoutTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     parts?: PartUncheckedUpdateManyWithoutModelNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUncheckedUpdateManyWithoutTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     brandId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeviceModelUpdateWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     type?: DeviceTypeUpdateOneRequiredWithoutModelsNestedInput
-    services?: ServiceUpdateManyWithoutModelNestedInput
     parts?: PartUpdateManyWithoutModelNestedInput
+    services?: ServiceUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUncheckedUpdateWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     typeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     parts?: PartUncheckedUpdateManyWithoutModelNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutModelNestedInput
   }
 
   export type DeviceModelUncheckedUpdateManyWithoutBrandInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
     typeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modelReference?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PartUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    services?: ServiceUpdateManyWithoutPartNestedInput
+  }
+
+  export type PartUncheckedUpdateWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    services?: ServiceUncheckedUpdateManyWithoutPartNestedInput
+  }
+
+  export type PartUncheckedUpdateManyWithoutModelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ServiceUpdateWithoutModelInput = {
@@ -19468,8 +21008,8 @@ export namespace Prisma {
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    part?: PartUpdateOneWithoutServicesNestedInput
     repairs?: RepairServiceUpdateManyWithoutServiceNestedInput
+    part?: PartUpdateOneWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateWithoutModelInput = {
@@ -19495,53 +21035,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type PartUpdateWithoutModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sku?: StringFieldUpdateOperationsInput | string
-    costPrice?: FloatFieldUpdateOperationsInput | number
-    stock?: IntFieldUpdateOperationsInput | number
-    minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
-    supplier?: NullableStringFieldUpdateOperationsInput | string | null
-    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: ServiceUpdateManyWithoutPartNestedInput
-  }
-
-  export type PartUncheckedUpdateWithoutModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sku?: StringFieldUpdateOperationsInput | string
-    costPrice?: FloatFieldUpdateOperationsInput | number
-    stock?: IntFieldUpdateOperationsInput | number
-    minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
-    supplier?: NullableStringFieldUpdateOperationsInput | string | null
-    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    services?: ServiceUncheckedUpdateManyWithoutPartNestedInput
-  }
-
-  export type PartUncheckedUpdateManyWithoutModelInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    sku?: StringFieldUpdateOperationsInput | string
-    costPrice?: FloatFieldUpdateOperationsInput | number
-    stock?: IntFieldUpdateOperationsInput | number
-    minStock?: IntFieldUpdateOperationsInput | number
-    quality?: NullableStringFieldUpdateOperationsInput | string | null
-    supplier?: NullableStringFieldUpdateOperationsInput | string | null
-    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ServiceUpdateWithoutPartInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -19550,8 +21043,8 @@ export namespace Prisma {
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    model?: DeviceModelUpdateOneWithoutServicesNestedInput
     repairs?: RepairServiceUpdateManyWithoutServiceNestedInput
+    model?: DeviceModelUpdateOneWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateWithoutPartInput = {
@@ -19598,25 +21091,96 @@ export namespace Prisma {
     priceAtTime?: FloatFieldUpdateOperationsInput | number
   }
 
-  export type RepairServiceUpdateWithoutRepairInput = {
+  export type InvoiceUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
-    priceAtTime?: FloatFieldUpdateOperationsInput | number
-    service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
+    number?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
+    quote?: QuoteUpdateOneWithoutInvoiceNestedInput
   }
 
-  export type RepairServiceUncheckedUpdateWithoutRepairInput = {
+  export type InvoiceUncheckedUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
-    serviceId?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
-    priceAtTime?: FloatFieldUpdateOperationsInput | number
+    number?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
-  export type RepairServiceUncheckedUpdateManyWithoutRepairInput = {
+  export type InvoiceUncheckedUpdateManyWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
-    serviceId?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
-    priceAtTime?: FloatFieldUpdateOperationsInput | number
+    number?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QuoteUpdateWithoutRepairInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
+  }
+
+  export type QuoteUncheckedUpdateWithoutRepairInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QuoteUncheckedUpdateManyWithoutRepairInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairLogUpdateWithoutRepairInput = {
@@ -19640,90 +21204,25 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type QuoteUpdateWithoutRepairInput = {
+  export type RepairServiceUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
-    invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    quantity?: IntFieldUpdateOperationsInput | number
+    priceAtTime?: FloatFieldUpdateOperationsInput | number
+    service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
   }
 
-  export type QuoteUncheckedUpdateWithoutRepairInput = {
+  export type RepairServiceUncheckedUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    priceAtTime?: FloatFieldUpdateOperationsInput | number
   }
 
-  export type QuoteUncheckedUpdateManyWithoutRepairInput = {
+  export type RepairServiceUncheckedUpdateManyWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type InvoiceUpdateWithoutRepairInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    paid?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
-    quote?: QuoteUpdateOneWithoutInvoiceNestedInput
-  }
-
-  export type InvoiceUncheckedUpdateWithoutRepairInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    paid?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
-  }
-
-  export type InvoiceUncheckedUpdateManyWithoutRepairInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    items?: StringFieldUpdateOperationsInput | string
-    totalHT?: FloatFieldUpdateOperationsInput | number
-    totalTTC?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    paid?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    priceAtTime?: FloatFieldUpdateOperationsInput | number
   }
 
 
@@ -19807,6 +21306,10 @@ export namespace Prisma {
      * @deprecated Use ShopProductDefaultArgs instead
      */
     export type ShopProductArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ShopProductDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use WorkshopSettingsDefaultArgs instead
+     */
+    export type WorkshopSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = WorkshopSettingsDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

@@ -127,7 +127,9 @@ exports.Prisma.ClientScalarFieldEnum = {
   address: 'address',
   zipCode: 'zipCode',
   city: 'city',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  siret: 'siret',
+  vatNumber: 'vatNumber'
 };
 
 exports.Prisma.QuoteScalarFieldEnum = {
@@ -143,7 +145,8 @@ exports.Prisma.QuoteScalarFieldEnum = {
   validUntil: 'validUntil',
   invoiceId: 'invoiceId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  taxDetails: 'taxDetails'
 };
 
 exports.Prisma.InvoiceScalarFieldEnum = {
@@ -157,7 +160,8 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   notes: 'notes',
   paid: 'paid',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  taxDetails: 'taxDetails'
 };
 
 exports.Prisma.DeviceTypeScalarFieldEnum = {
@@ -175,10 +179,10 @@ exports.Prisma.DeviceBrandScalarFieldEnum = {
 exports.Prisma.DeviceModelScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  modelReference: 'modelReference',
   brandId: 'brandId',
   typeId: 'typeId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  modelReference: 'modelReference'
 };
 
 exports.Prisma.PartScalarFieldEnum = {
@@ -188,13 +192,13 @@ exports.Prisma.PartScalarFieldEnum = {
   costPrice: 'costPrice',
   stock: 'stock',
   minStock: 'minStock',
-  quality: 'quality',
   supplier: 'supplier',
   supplierRef: 'supplierRef',
   location: 'location',
   description: 'description',
   modelId: 'modelId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  quality: 'quality'
 };
 
 exports.Prisma.ServiceScalarFieldEnum = {
@@ -252,6 +256,25 @@ exports.Prisma.ShopProductScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WorkshopSettingsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  address: 'address',
+  zipCode: 'zipCode',
+  city: 'city',
+  countryCode: 'countryCode',
+  phone: 'phone',
+  email: 'email',
+  siret: 'siret',
+  vatNumber: 'vatNumber',
+  legalForm: 'legalForm',
+  capital: 'capital',
+  rcs: 'rcs',
+  iban: 'iban',
+  bic: 'bic',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -275,7 +298,8 @@ exports.Prisma.ModelName = {
   Repair: 'Repair',
   RepairService: 'RepairService',
   RepairLog: 'RepairLog',
-  ShopProduct: 'ShopProduct'
+  ShopProduct: 'ShopProduct',
+  WorkshopSettings: 'WorkshopSettings'
 };
 
 /**
