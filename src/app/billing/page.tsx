@@ -28,6 +28,9 @@ import {
 import {
   formatCurrency,
   formatDate,
+  getRepairStatusLabel,
+  getRepairStatusStyle,
+  getRepairTotal,
 } from '@/lib/repair'
 import jsPDF from 'jspdf'
 
@@ -92,6 +95,7 @@ interface ShopProduct {
 interface Repair {
   id: string
   client: Client
+  status: string
   services: {
     id: string
     priceAtTime: number
@@ -99,6 +103,7 @@ interface Repair {
     service: { name: string }
   }[]
   notes?: string | null
+  createdAt: string
 }
 
 // --- Status Styles ---
@@ -133,8 +138,8 @@ function BillingContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
-  // Tabs: listing-quotes, listing-invoices, editor
-  const [activeTab, setActiveTab] = useState<'quotes' | 'invoices'>('quotes')
+  // Tabs: quotes, invoices, repairs
+  const [activeTab, setActiveTab] = useState<'quotes' | 'invoices' | 'repairs'>('repairs')
   const [showEditor, setShowEditor] = useState(false)
   const [editorMode, setEditorMode] = useState<'quote' | 'invoice'>('quote')
   
@@ -377,6 +382,19 @@ function BillingContent() {
     )
   }, [invoices, search])
 
+  const filteredRepairs = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return repairs
+      .filter(repair => 
+        repair.id.toLowerCase().includes(q) || repair.client.name.toLowerCase().includes(q)
+      )
+      .sort((a, b) => {
+        if (a.status === 'PENDING' && b.status !== 'PENDING') return -1
+        if (a.status !== 'PENDING' && b.status === 'PENDING') return 1
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
+  }, [repairs, search])
+
   const handleDownload = async () => {
     if (!draftClient) return
     setIsDownloading(true)
@@ -486,6 +504,13 @@ function BillingContent() {
                 <FileCheck className="w-4 h-4" />
                 Factures
               </button>
+              <button 
+                onClick={() => setActiveTab('repairs')}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'repairs' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                <Wrench className="w-4 h-4" />
+                Tickets Atelier
+              </button>
             </div>
 
             {/* Filter Bar */}
@@ -516,6 +541,34 @@ function BillingContent() {
                 <tbody className="divide-y divide-white/20">
                   {isLoading ? (
                     <tr><td colSpan={5} className="px-8 py-20 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-600" /></td></tr>
+                  ) : activeTab === 'repairs' ? (
+                    filteredRepairs.map((repair) => (
+                      <tr 
+                        key={repair.id} 
+                        onClick={() => createNewFromRepair(repair, 'quote')}
+                        className="group cursor-pointer hover:bg-white/40 transition-colors"
+                      >
+                        <td className="px-8 py-5">
+                          <p className="font-black text-slate-950">#{repair.id.slice(-6).toUpperCase()}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">TICKET ATELIER</p>
+                        </td>
+                        <td className="px-8 py-5">
+                          <p className="font-bold text-slate-800">{repair.client.name}</p>
+                          <p className="text-xs text-slate-400">{repair.client.phone}</p>
+                        </td>
+                        <td className="px-8 py-5">
+                          <p className="text-sm font-bold text-slate-600">{formatDate(repair.createdAt)}</p>
+                        </td>
+                        <td className="px-8 py-5">
+                           <span className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest ${getRepairStatusStyle(repair.status)}`}>
+                             {getRepairStatusLabel(repair.status)}
+                           </span>
+                        </td>
+                        <td className="px-8 py-5 text-right">
+                          <p className="text-lg font-black text-blue-600">{formatCurrency(getRepairTotal(repair))}</p>
+                        </td>
+                      </tr>
+                    ))
                   ) : (activeTab === 'quotes' ? filteredQuotes : filteredInvoices).map((doc) => (
                     <tr 
                       key={doc.id} 
@@ -707,19 +760,30 @@ function BillingContent() {
                      </div>
 
                      {editorMode === 'quote' ? (
-                       <div>
-                          <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Statut du Devis</label>
-                          <select 
-                            className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
-                            value={draftStatus}
-                            onChange={(e) => setDraftStatus(e.target.value)}
-                          >
-                            <option value="BROUILLON">Brouillon</option>
-                            <option value="EN_ATTENTE">En attente (Envoyé)</option>
-                            <option value="SIGNE">Signé / Accepté</option>
-                            <option value="REFUSE">Refusé</option>
-                          </select>
-                       </div>
+                       <>
+                         <div>
+                            <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Statut du Devis</label>
+                            <select 
+                              className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
+                              value={draftStatus}
+                              onChange={(e) => setDraftStatus(e.target.value)}
+                            >
+                              <option value="BROUILLON">Brouillon</option>
+                              <option value="EN_ATTENTE">En attente (Envoyé)</option>
+                              <option value="SIGNE">Signé / Accepté</option>
+                              <option value="REFUSE">Refusé</option>
+                            </select>
+                         </div>
+                         <div>
+                            <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Validité (jours)</label>
+                            <input 
+                              type="number"
+                              className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
+                              placeholder="30"
+                              defaultValue={30}
+                            />
+                         </div>
+                       </>
                      ) : (
                        <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100">
                           <span className="text-xs font-bold text-slate-600">Facture payée ?</span>
