@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   Clock,
   X,
+  User,
   Loader2,
   StickyNote,
 } from 'lucide-react'
@@ -139,7 +140,7 @@ function BillingContent() {
   const searchParams = useSearchParams()
   
   // Tabs: quotes, invoices, repairs
-  const [activeTab, setActiveTab] = useState<'quotes' | 'invoices' | 'repairs'>('repairs')
+  const [activeTab, setActiveTab] = useState<'quotes' | 'invoices' | 'repairs'>((searchParams?.get('tab') as any) || 'repairs')
   const [showEditor, setShowEditor] = useState(false)
   const [editorMode, setEditorMode] = useState<'quote' | 'invoice'>('quote')
   
@@ -202,6 +203,21 @@ function BillingContent() {
       console.error('Failed to load data:', err)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  async function togglePaymentStatus(id: string, currentPaid: boolean, e: React.MouseEvent) {
+    e.stopPropagation()
+    try {
+      const res = await fetch(`/api/invoices/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paid: !currentPaid }),
+      })
+      if (!res.ok) throw new Error('Failed to update')
+      void loadInitialData()
+    } catch (err) {
+      alert('Erreur lors de la mise à jour du paiement.')
     }
   }
 
@@ -727,7 +743,16 @@ function BillingContent() {
                         <p className="text-sm font-bold text-slate-600">{formatDate(doc.createdAt)}</p>
                       </td>
                       <td className="px-8 py-5">
-                        {activeTab === 'quotes' ? getQuoteStatusBadge((doc as Quote).status) : getInvoiceStatusBadge((doc as Invoice).paid)}
+                        {activeTab === 'quotes' ? (
+                          getQuoteStatusBadge((doc as Quote).status)
+                        ) : (
+                          <div 
+                            onClick={(e) => togglePaymentStatus(doc.id, (doc as Invoice).paid, e)}
+                            className="cursor-pointer hover:opacity-80 transition-opacity"
+                          >
+                            {getInvoiceStatusBadge((doc as Invoice).paid)}
+                          </div>
+                        )}
                       </td>
                       <td className="px-8 py-5 text-right">
                         <p className={`text-lg font-black ${activeTab === 'quotes' ? 'text-blue-600' : 'text-emerald-600'}`}>{formatCurrency(doc.totalTTC)}</p>
@@ -1057,12 +1082,6 @@ function BillingContent() {
         }
       `}</style>
     </div>
-  )
-}
-
-function User({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
   )
 }
 

@@ -212,6 +212,11 @@ interface RepairLog {
   createdAt: string
 }
 
+interface Quote {
+  id: string
+  status: 'BROUILLON' | 'EN_ATTENTE' | 'SIGNE' | 'REFUSE' | 'CONVERTI'
+}
+
 interface Repair {
   id: string
   status: string
@@ -359,6 +364,7 @@ function getRepairSummary(repair: Repair) {
 export default function Dashboard() {
   const router = useRouter()
   const [repairs, setRepairs] = useState<Repair[]>([])
+  const [quotes, setQuotes] = useState<Quote[]>([])
   const [clients, setClients] = useState<Client[]>([])
   const [parts, setParts] = useState<Part[]>([])
   const [services, setServices] = useState<Service[]>([])
@@ -398,9 +404,10 @@ export default function Dashboard() {
       setIsLoading(true)
       setError(null)
 
-      const [repairsResult, clientsResult, partsResult, servicesResult, modelsResult] =
+      const [repairsResult, quotesResult, clientsResult, partsResult, servicesResult, modelsResult] =
         await Promise.allSettled([
           apiRequest<Repair[]>('/api/repairs', {}, 'Impossible de charger les réparations.'),
+          apiRequest<Quote[]>('/api/quotes', {}, 'Impossible de charger les devis.'),
           apiRequest<Client[]>('/api/clients', {}, 'Impossible de charger les clients.'),
           apiRequest<Part[]>('/api/parts', {}, 'Impossible de charger le stock.'),
           apiRequest<Service[]>('/api/services', {}, 'Impossible de charger les forfaits.'),
@@ -440,6 +447,7 @@ export default function Dashboard() {
         )
 
       setRepairs(nextRepairs)
+      setQuotes(quotesResult.status === 'fulfilled' ? quotesResult.value : [])
       setClients(nextClients)
       setParts(nextParts)
       setServices(nextServices)
@@ -522,9 +530,9 @@ export default function Dashboard() {
   const diagnosisCount = repairs.filter((repair) => repair.status === 'DIAGNOSIS').length
   const inProgressCount = repairs.filter((repair) => repair.status === 'IN_PROGRESS').length
   const readyCount = repairs.filter((repair) => repair.status === 'READY').length
-  const quoteWaitingCount = repairs.filter(
-    (repair) => repair.status === 'DIAGNOSIS' && getRepairTotal(repair) > 0
-  ).length
+
+
+
   const lowStockParts = parts.filter((part) => part.stock <= 2)
   const totalOpenRevenue = repairs
     .filter((repair) => ['PENDING', 'DIAGNOSIS', 'IN_PROGRESS', 'READY'].includes(repair.status))
@@ -861,9 +869,9 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             <StatCard
               icon={<FileText className="h-5 w-5" />}
               title="Devis à traiter"
-              value={quoteWaitingCount}
-              subtitle="Dossiers au stade diagnostic"
-            onClick={() => router.push('/billing')}
+              value={quotes.filter(q => q.status === 'EN_ATTENTE' || q.status === 'BROUILLON').length}
+              subtitle="En attente ou brouillon"
+            onClick={() => router.push('/billing?tab=quotes')}
             />
             <StatCard
               icon={<Package className="h-5 w-5" />}
