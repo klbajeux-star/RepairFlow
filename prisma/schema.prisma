@@ -23,7 +23,45 @@ model Client {
   zipCode     String?
   city        String?
   repairs     Repair[]
+  quotes      Quote[]
+  invoices    Invoice[]
   createdAt   DateTime @default(now())
+}
+
+model Quote {
+  id          String   @id @default(cuid())
+  number      String   @unique // Ex: DEV-2026-0001
+  status      String   @default("BROUILLON") // BROUILLON, EN_ATTENTE, SIGNE, REFUSE, CONVERTI
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  repairId    String?
+  repair      Repair?  @relation(fields: [repairId], references: [id])
+  items       String   // JSON string of { name: string, price: number, quantity: number }[]
+  totalHT     Float
+  totalTTC    Float
+  notes       String?
+  validUntil  DateTime?
+  invoiceId   String?  @unique
+  invoice     Invoice? @relation("QuoteToInvoice", fields: [invoiceId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  number      String   @unique // Ex: FAC-2026-0001
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  repairId    String?
+  repair      Repair?  @relation(fields: [repairId], references: [id])
+  quote       Quote?   @relation("QuoteToInvoice")
+  items       String   // JSON string of { name: string, price: number, quantity: number }[]
+  totalHT     Float
+  totalTTC    Float
+  notes       String?
+  paid        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model DeviceType {
@@ -96,6 +134,8 @@ model Repair {
   client      Client   @relation(fields: [clientId], references: [id])
   services    RepairService[]
   logs        RepairLog[]
+  quotes      Quote[]
+  invoices    Invoice[]
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
