@@ -217,6 +217,8 @@ interface RepairLog {
 
 interface Quote {
   id: string
+  number: string
+  repairId: string | null
   status: 'BROUILLON' | 'EN_ATTENTE' | 'SIGNE' | 'REFUSE' | 'CONVERTI'
 }
 
@@ -351,7 +353,7 @@ async function apiRequest<T>(input: RequestInfo | URL, init: RequestInit, fallba
 }
 
 function getRepairSummary(repair: Repair) {
-  const serviceLabel = repair.services.map((service) => service.service.name).join(' • ')
+  const serviceLabel = repair.services.map((service) => service.service.name).join('  • ')
   return serviceLabel || 'Aucune prestation renseignée'
 }
 
@@ -708,7 +710,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
 
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}))
-        throw new Error(payload.error || 'Impossible de mettre à jour le statut de la pièce.')
+        throw new Error(payload.error || 'Impossible de mettre  • jour le statut de la pièce.')
       }
 
       const data = await response.json()
@@ -772,13 +774,13 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
         body: JSON.stringify({
           status: 'ARCHIVED',
           notes: repair.notes || '',
-          comment: 'Dossier archivé par l’utilisateur.',
+          comment: "Dossier archivé par l'utilisateur.",
         }),
       })
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || 'Impossible d’archiver le ticket.')
+        throw new Error(data.error || "Impossible d'archiver le ticket.")
       }
 
       const updatedRepair = await res.json()
@@ -835,14 +837,14 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 <QuickActionCard
                   icon={<UserPlus className="h-5 w-5" />}
                   title="Nouveau client"
-                  description="Créer une fiche sans quitter le dashboard"
+                  description="créer une fiche sans quitter le dashboard"
                   tone="light"
                   onClick={() => openWorkflow('repair')}
                 />
                 <QuickActionCard
                   icon={<FilePlus2 className="h-5 w-5" />}
                   title="Nouveau devis"
-                  description="Créer un dossier et ouvrir le devis"
+                  description="créer un dossier et ouvrir le devis"
                   tone="brand"
                   onClick={() => openWorkflow('quote')}
                 />
@@ -867,7 +869,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             />
             <StatCard
               icon={<FileText className="h-5 w-5" />}
-              title="Devis à traiter"
+              title="Devis  • traiter"
               value={(quotes || []).filter(q => q.status === 'EN_ATTENTE' || q.status === 'BROUILLON').length}
               subtitle="En attente ou brouillon"
             onClick={() => router.push('/billing?tab=quotes')}
@@ -876,14 +878,14 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
               icon={<Package className="h-5 w-5" />}
               title="Stock faible"
               value={lowStockParts.length}
-              subtitle="Pièces à surveiller rapidement"
+              subtitle="pièces  • surveiller rapidement"
             onClick={() => router.push('/inventory')}
             />
             <StatCard
               icon={<CheckCircle2 className="h-5 w-5" />}
               title="Montant ouvert"
               value={formatCurrency(totalOpenRevenue)}
-              subtitle="Total cumulé des dossiers actifs"
+              subtitle="Total cumul • des dossiers actifs"
               compactValue
             />
           </div>
@@ -896,11 +898,11 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 Tableau principal
               </p>
               <h2 className="mt-2 text-[1.65rem] font-black tracking-tight text-slate-950">
-                Kanban des tickets d’intervention
+                Kanban des tickets d'intervention
               </h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Le kanban occupe toute la largeur du dashboard pour rester visible, rapide à lire,
-                déplaçable et directement exploitable au comptoir comme à l’atelier.
+                Le kanban occupe toute la largeur du dashboard pour rester visible, rapide  • lire,
+                déplaçable et directement exploitable au comptoir comme  • l'atelier.
               </p>
             </div>
 
@@ -1024,7 +1026,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                                 : 'border-slate-200 bg-white/40 text-slate-400'
                             }`}
                           >
-                            Déposez un ticket ici ou laissez la colonne vide pour l’instant.
+                            Déposez un ticket ici ou laissez la colonne vide pour l'instant.
                           </div>
                         ) : null}
 
@@ -1174,8 +1176,8 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 Informations du ticket sélectionné
               </h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Visualisez les détails de l’intervention sélectionnée, le montant estimé, le statut
-                du ticket, ainsi que les notes de l’atelier et le client associé.
+                Visualisez les détails de l'intervention sélectionnée, le montant estimé, le statut
+                du ticket, ainsi que les notes de l'atelier et le client associé.
               </p>
             </div>
 
@@ -1232,6 +1234,43 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       value={formatCurrency(getRepairTotal(selectedRepair))}
                     />
                   </div>
+
+                  {quotes.find((q) => q.repairId === selectedRepair.id) && (
+                    <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.8rem] border border-blue-100 bg-blue-50/50 p-4 shadow-sm transition-all hover:bg-blue-100/50">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                        <FileText className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-400">
+                          Document commercial associé
+                        </p>
+                        <p className="text-sm font-black tracking-tight text-blue-700">
+                          {quotes.find((q) => q.repairId === selectedRepair.id)?.number}
+                        </p>
+                      </div>
+                      <div className="ml-auto">
+                        <span
+                          className={`rounded-xl px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-wider shadow-sm ${
+                            quotes.find((q) => q.repairId === selectedRepair.id)?.status === 'SIGNE'
+                              ? 'bg-emerald-500 text-white'
+                              : quotes.find((q) => q.repairId === selectedRepair.id)?.status === 'CONVERTI'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-blue-200 text-blue-700'
+                          }`}
+                        >
+                          {quotes.find((q) => q.repairId === selectedRepair.id)?.status === 'CONVERTI'
+                            ? 'Facturé'
+                            : quotes.find((q) => q.repairId === selectedRepair.id)?.status === 'SIGNE'
+                            ? 'Signé'
+                            : quotes.find((q) => q.repairId === selectedRepair.id)?.status === 'BROUILLON'
+                            ? 'Brouillon'
+                            : quotes.find((q) => q.repairId === selectedRepair.id)?.status === 'EN_ATTENTE'
+                            ? 'En attente'
+                            : quotes.find((q) => q.repairId === selectedRepair.id)?.status}
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="mt-6 rounded-[1.8rem] border border-slate-200/60 bg-white p-5 shadow-sm">
                     <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-400">
@@ -1456,7 +1495,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:underline"
                     >
                       <UserPlus className="h-4 w-4" />
-                      Créer une nouvelle fiche
+                      créer une nouvelle fiche
                     </button>
                   </div>
                 </>
@@ -1500,7 +1539,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <Field label="Téléphone">
+                      <Field label="téléphone">
                         <input 
                           value={clientForm.phone} 
                           onChange={e => setClientForm(p => ({ ...p, phone: e.target.value }))}
@@ -1605,7 +1644,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                             <div>
                               <p className="font-bold text-slate-950">{m.name}</p>
                               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                                {m.brand.name} • {m.type.name}
+                                {m.brand.name}  • {m.type.name}
                               </p>
                             </div>
                             <ChevronRight className="h-4 w-4 text-slate-300" />
@@ -1636,7 +1675,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                   </Field>
                 </div>
 
-                <Field label={`État cosmétique : ${deviceForm.condition}/5`}>
+                <Field label={`ÉTAT cosmétique : ${deviceForm.condition}/5`}>
                   <div className="mt-2 flex items-center gap-3">
                     <span className="text-xs font-bold text-rose-500">Médiocre</span>
                     <input
@@ -1716,7 +1755,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
 
                 {services.filter((s) => !deviceForm.modelId || s.modelId === deviceForm.modelId).length === 0 && (
                   <div className="rounded-2xl border border-dashed border-slate-200 py-12 text-center text-sm text-slate-400">
-                    Aucune prestation spécifique trouvée pour ce modèle.
+                    Aucune prestation spécifique trouvée pour ce Modèle.
                   </div>
                 )}
               </div>
@@ -1782,11 +1821,11 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                 </div>
               </div>
 
-              <Field label="Notes complémentaires (panne, état...)">
+              <Field label="Notes complémentaires (panne, ÉTAT...)">
                 <textarea
                   value={quickFlowForm.notes}
                   onChange={(e) => setQuickFlowForm((prev) => ({ ...prev, notes: e.target.value }))}
-                  placeholder="Écran fissuré, ne s'allume plus..."
+                  placeholder="écran fissuré, ne s'allume plus..."
                   className="h-24 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                 />
               </Field>
@@ -1815,7 +1854,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
               
               <p className="text-sm leading-6 text-slate-600">
                 En signant ci-dessous, le client reconnaît avoir déposé l'appareil pour réparation 
-                et valide l'état cosmétique de l'appareil mentionné à l'étape 2.
+                et valide l'ÉTAT cosmétique de l'appareil mentionné à l'Étape 2.
               </p>
 
               <SignaturePad onSign={setSignatureData} />
@@ -2030,3 +2069,7 @@ function Field({
     </label>
   )
 }
+
+
+
+
