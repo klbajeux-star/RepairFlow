@@ -795,7 +795,7 @@ function BillingContent() {
             </button>
             
             <div className="flex items-center gap-3">
-              {editorMode === 'quote' && selectedDocId && (draftStatus === 'SIGNE' || draftStatus === 'EN_ATTENTE') && (
+              {editorMode === 'quote' && selectedDocId && draftStatus === 'SIGNE' && (
                  <button 
                   onClick={convertQuoteToInvoice}
                   disabled={isSaving}
