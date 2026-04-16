@@ -42,9 +42,9 @@ model Quote {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   taxDetails String?
-  invoice    Invoice?  @relation("QuoteToInvoice", fields: [invoiceId], references: [id])
-  repair     Repair?   @relation(fields: [repairId], references: [id])
   client     Client    @relation(fields: [clientId], references: [id])
+  repair     Repair?   @relation(fields: [repairId], references: [id])
+  invoice    Invoice?  @relation("QuoteToInvoice", fields: [invoiceId], references: [id])
 }
 
 model Invoice {
@@ -60,8 +60,8 @@ model Invoice {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   taxDetails String?
-  repair     Repair?  @relation(fields: [repairId], references: [id])
   client     Client   @relation(fields: [clientId], references: [id])
+  repair     Repair?  @relation(fields: [repairId], references: [id])
   quote      Quote?   @relation("QuoteToInvoice")
 }
 
@@ -86,8 +86,8 @@ model DeviceModel {
   typeId         String
   createdAt      DateTime    @default(now())
   modelReference String?
-  type           DeviceType  @relation(fields: [typeId], references: [id])
   brand          DeviceBrand @relation(fields: [brandId], references: [id])
+  type           DeviceType  @relation(fields: [typeId], references: [id])
   parts          Part[]
   services       Service[]
 
@@ -123,8 +123,8 @@ model Service {
   description    String?
   createdAt      DateTime        @default(now())
   repairs        RepairService[]
-  model          DeviceModel?    @relation(fields: [modelId], references: [id])
   part           Part?           @relation(fields: [partId], references: [id])
+  model          DeviceModel?    @relation(fields: [modelId], references: [id])
 }
 
 model Repair {
@@ -148,8 +148,8 @@ model RepairService {
   serviceId   String
   quantity    Int     @default(1)
   priceAtTime Float
-  service     Service @relation(fields: [serviceId], references: [id])
   repair      Repair  @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  service     Service @relation(fields: [serviceId], references: [id])
 }
 
 model RepairLog {

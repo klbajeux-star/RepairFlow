@@ -159,7 +159,14 @@ export function handleApiError(
     }
 
     const message = error instanceof Error ? error.message : fallbackMessage
-    return NextResponse.json({ error: message }, { status: 500 })
+    const stack = error instanceof Error ? error.stack : undefined
+    return NextResponse.json(
+      { 
+        error: message, 
+        stack: process.env.NODE_ENV === 'development' ? stack : undefined 
+      }, 
+      { status: 500 }
+    )
   } catch (criticalError) {
     return NextResponse.json({ error: fallbackMessage }, { status: 500 })
   }

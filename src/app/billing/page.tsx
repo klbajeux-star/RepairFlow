@@ -476,7 +476,10 @@ function BillingContent() {
     setIsDownloading(true)
     try {
       const response = await fetch(`/api/documents/${editorMode}/${selectedDocId}/pdf`)
-      if (!response.ok) throw new Error('Erreur lors du téléchargement')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }))
+        throw new Error(errorData.error || `Erreur serveur (${response.status})`)
+      }
       
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
@@ -488,7 +491,7 @@ function BillingContent() {
       window.URL.revokeObjectURL(url)
     } catch (err) {
       console.error(err)
-      alert('Erreur lors de la génération du PDF.')
+      alert(err instanceof Error ? err.message : 'Erreur lors de la génération du PDF.')
     } finally {
       setIsDownloading(false)
     }
