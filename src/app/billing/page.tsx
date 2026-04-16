@@ -34,7 +34,6 @@ import {
   getRepairTotal,
   getTicketReference,
 } from '@/lib/repair'
-import jsPDF from 'jspdf'
 
 // --- Types ---
 
@@ -469,209 +468,24 @@ function BillingContent() {
 
   const handleDownload = async () => {
     if (!draftClient) return
+    if (!selectedDocId) {
+      alert('Veuillez d\'abord enregistrer le document avant de générer le PDF certifié.')
+      return
+    }
+    
     setIsDownloading(true)
     try {
-      const doc = new jsPDF()
-      const margin = 15
-      let y = margin
-
-      // Background Title (Stylized)
-      doc.setFontSize(55)
-      doc.setTextColor(248, 250, 252)
-      doc.setFont('helvetica', 'bold')
-      doc.text(editorMode === 'quote' ? 'DEVIS' : 'FACTURE', 210 - margin, y + 15, { align: 'right' })
-
-      // Header Brand
-      doc.setFillColor(15, 23, 42)
-      doc.roundedRect(margin, y, 12, 12, 3, 3, 'F')
-      doc.setFontSize(20)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(15, 23, 42)
-      doc.text('RepairFlow', margin + 16, y + 8)
+      const response = await fetch(`/api/documents/${editorMode}/${selectedDocId}/pdf`)
+      if (!response.ok) throw new Error('Erreur lors du téléchargement')
       
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(59, 130, 246)
-      doc.text('EXPERTISE & RÉPARATION MOBILE', margin + 17, y + 12)
-
-      y += 22
-      
-      // Top Bar Info (Number & Date)
-      doc.setFillColor(15, 23, 42)
-      doc.roundedRect(135, y - 22, 60, 15, 2, 2, 'F')
-      doc.setTextColor(255, 255, 255)
-      doc.setFontSize(11)
-      doc.setFont('helvetica', 'bold')
-      doc.text(draftNumber, 165, y - 14, { align: 'center' })
-      doc.setFontSize(6)
-      doc.setFont('helvetica', 'normal')
-      doc.text(`ÉMIS LE ${new Date().toLocaleDateString('fr-FR')}`, 165, y - 10, { align: 'center' })
-      
-      if (draftTicketRef || draftQuoteNumber) {
-        doc.setFontSize(5)
-        doc.setFont('helvetica', 'bold')
-        doc.setTextColor(59, 130, 246)
-        let refText = ''
-        if (draftTicketRef) refText += `RÉF TICKET: ${draftTicketRef}  `
-        if (draftQuoteNumber) refText += `ISSU DU DEVIS: ${draftQuoteNumber}`
-        doc.text(refText.trim(), 165, y - 6, { align: 'center' })
-        doc.setTextColor(15, 23, 42)
-      }
-
-      doc.setDrawColor(241, 245, 249)
-      doc.setLineWidth(0.5)
-      doc.line(margin, y, 210 - margin, y)
-
-      y += 10
-
-      // Two Columns: Company vs Client
-      const colWidth = (210 - (margin * 3)) / 2
-      
-      // Left: Company Info
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(148, 163, 184)
-      doc.text('ÉMETTEUR', margin, y)
-      y += 5
-      doc.setFontSize(9)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(15, 23, 42)
-      doc.text(settings?.name || 'MOMUY&TECH SAS', margin, y)
-      y += 4
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(100)
-      doc.text(`${settings?.address || '123 Avenue de la Réparation'}, ${settings?.zipCode || '75001'} ${settings?.city || 'Paris'}`, margin, y)
-      y += 3.5
-      doc.text(`Tél: ${settings?.phone || '01 23 45 67 89'} — Email: ${settings?.email || 'contact@repairflow.fr'}`, margin, y)
-      y += 3.5
-      doc.text(`SIRET: ${settings?.siret || '123 456 789 00012'} — TVA: ${settings?.vatNumber || 'FR 12 123 456 789'}`, margin, y)
-
-      // Right: Client Info (Same Y level)
-      let clientY = y - 16
-      doc.setFillColor(248, 250, 252)
-      doc.roundedRect(margin + colWidth + margin, clientY - 5, colWidth, 32, 3, 3, 'F')
-      
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(59, 130, 246)
-      doc.text('DESTINATAIRE', margin + colWidth + margin + 6, clientY)
-      clientY += 6
-      doc.setFontSize(11)
-      doc.setTextColor(15, 23, 42)
-      doc.text(draftClient.name.toUpperCase(), margin + colWidth + margin + 6, clientY)
-      clientY += 5
-      doc.setFontSize(8)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(71, 85, 105)
-      if (draftClient.address) {
-        doc.text(draftClient.address, margin + colWidth + margin + 6, clientY)
-        clientY += 4
-      }
-      if (draftClient.zipCode || draftClient.city) {
-        doc.text(`${draftClient.zipCode || ''} ${draftClient.city || ''}`, margin + colWidth + margin + 6, clientY)
-        clientY += 4
-      }
-      doc.text(draftClient.phone, margin + colWidth + margin + 6, clientY)
-      
-      y += 18
-
-      // Table Header
-      doc.setFillColor(248, 250, 252)
-      doc.rect(margin, y, 210 - (margin * 2), 8, 'F')
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(148, 163, 184)
-      doc.text('DESCRIPTION DES PRESTATIONS', margin + 4, y + 5.5)
-      doc.text('QTÉ', 125, y + 5.5, { align: 'center' })
-      doc.text('P.U. HT', 155, y + 5.5, { align: 'right' })
-      doc.text('TOTAL HT', 190, y + 5.5, { align: 'right' })
-      
-      y += 12
-      doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(15, 23, 42)
-      
-      draftLines.forEach((line) => {
-        doc.setFont('helvetica', 'bold')
-        doc.text(line.name, margin + 4, y)
-        doc.setFont('helvetica', 'normal')
-        doc.text(line.quantity.toString(), 125, y, { align: 'center' })
-        doc.text(`${(line.price / 1.2).toFixed(2)} €`, 155, y, { align: 'right' })
-        doc.text(`${((line.price * line.quantity) / 1.2).toFixed(2)} €`, 190, y, { align: 'right' })
-        y += 8
-        doc.setDrawColor(248, 250, 252)
-        doc.setLineWidth(0.1)
-        doc.line(margin, y - 4, 210 - margin, y - 4)
-      })
-
-      y += 5
-      // Totals Box (Compact)
-      const totalWidth = 65
-      const totalBoxX = 210 - margin - totalWidth
-      doc.setFillColor(15, 23, 42)
-      doc.roundedRect(totalBoxX, y, totalWidth, 25, 2, 2, 'F')
-      
-      y += 7
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(148, 163, 184)
-      doc.text('TOTAL HT', totalBoxX + 6, y)
-      doc.setTextColor(255, 255, 255)
-      doc.text(`${totals.totalHT.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
-      
-      y += 5
-      doc.setTextColor(148, 163, 184)
-      doc.text('TVA (20%)', totalBoxX + 6, y)
-      doc.setTextColor(255, 255, 255)
-      doc.text(`${totals.tva.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
-      
-      y += 7
-      doc.setFontSize(9)
-      doc.setTextColor(59, 130, 246)
-      doc.text('TOTAL TTC À PAYER', totalBoxX + 6, y)
-      doc.setFontSize(12)
-      doc.setTextColor(255, 255, 255)
-      doc.text(`${totals.totalTTC.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
-
-      // Notes & Signature
-      y += 15
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(148, 163, 184)
-      doc.text('INFORMATIONS COMPLÉMENTAIRES', margin, y)
-      y += 5
-      doc.setFontSize(7)
-      doc.setFont('helvetica', 'italic')
-      doc.setTextColor(100)
-      const splitNotes = doc.splitTextToSize(draftNotes || 'Aucune note spécifique.', 100)
-      doc.text(splitNotes, margin, y)
-      
-      const signatureY = y + 15
-      doc.setDrawColor(241, 245, 249)
-      doc.setLineWidth(0.5)
-      doc.line(margin, signatureY, margin + 70, signatureY)
-      doc.setFontSize(6)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(203, 213, 225)
-      doc.text('CACHET & SIGNATURE DE L\'ENTREPRISE', margin, signatureY + 4)
-
-      // Legal Footer (Fixed at the bottom)
-      doc.setDrawColor(241, 245, 249)
-      doc.line(margin, 280, 210 - margin, 280)
-      doc.setFontSize(6)
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(180)
-      const footerLine1 = `${settings?.name || 'RepairFlow'} — ${settings?.legalForm || 'SAS'} au capital de ${settings?.capital || '1000'}€ — SIRET ${settings?.siret || '12345678900012'} — RCS ${settings?.rcs || 'PARIS'} — TVA Intra: ${settings?.vatNumber || 'FR 12 123 456 789'}`
-      doc.text(footerLine1, 105, 285, { align: 'center' })
-      if (settings?.iban) {
-        doc.text(`IBAN: ${settings.iban} — BIC: ${settings.bic || ''}`, 105, 288, { align: 'center' })
-        doc.text('En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.', 105, 291, { align: 'center' })
-      } else {
-        doc.text('En cas de retard de paiement, une indemnité forfaitaire de 40€ pour frais de recouvrement sera appliquée.', 105, 288, { align: 'center' })
-      }
-
-      doc.save(`${editorMode === 'quote' ? 'DEVIS' : 'FACTURE'}_${draftNumber}.pdf`)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${editorMode === 'quote' ? 'DEVIS' : 'FACTURE'}_${draftNumber}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
     } catch (err) {
       console.error(err)
       alert('Erreur lors de la génération du PDF.')
