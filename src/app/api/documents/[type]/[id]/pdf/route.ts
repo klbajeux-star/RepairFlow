@@ -23,7 +23,7 @@ export async function GET(
 
     const filename = `${type.toUpperCase()}_${id}.pdf`
 
-    return new Response(pdfBuffer, {
+    return new Response(pdfBuffer as any, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
