@@ -36,6 +36,8 @@ export interface ClientData {
   zipCode?: string | null
   city?: string | null
   phone: string
+  siret?: string | null
+  vatNumber?: string | null
 }
 
 export interface DocumentData {

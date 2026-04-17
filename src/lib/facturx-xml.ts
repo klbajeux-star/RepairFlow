@@ -37,12 +37,13 @@ export function generateFacturXXML(data: DocumentData): string {
     }
   }
 
-  // Basic XML Template for Factur-X (Basic Profile / EN 16931)
+  // EN 16931 (Comfort) XML Template
+  // GuidelineID urn:cen.eu:en16931:2017 is the mandatory ID for full compliance
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rsm:CrossIndustryInvoice xmlns:a="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:10" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
   <rsm:ExchangedDocumentContext>
     <ram:GuidelineSpecifiedDocumentContextParameter>
-      <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic</ram:ID>
+      <ram:ID>urn:cen.eu:en16931:2017</ram:ID>
     </ram:GuidelineSpecifiedDocumentContextParameter>
   </rsm:ExchangedDocumentContext>
   <rsm:ExchangedDocument>
@@ -57,6 +58,7 @@ export function generateFacturXXML(data: DocumentData): string {
       const rate = item.vatRate || 20
       const puHT = item.price / (1 + rate / 100)
       const lineHT = (item.price * item.quantity) / (1 + rate / 100)
+      const categoryCode = rate === 0 ? 'E' : 'S'
       
       return `
     <ram:IncludedSupplyChainTradeLineItem>
@@ -72,12 +74,12 @@ export function generateFacturXXML(data: DocumentData): string {
         </ram:NetPriceProductTradePrice>
       </ram:SpecifiedLineTradeAgreement>
       <ram:SpecifiedLineTradeDelivery>
-        <ram:BilledQuantity unitCode="${item.unit || 'HUR'}">${item.quantity || 1}</ram:BilledQuantity>
+        <ram:BilledQuantity unitCode="${item.unit || 'C62'}">${item.quantity || 1}</ram:BilledQuantity>
       </ram:SpecifiedLineTradeDelivery>
       <ram:SpecifiedLineTradeSettlement>
         <ram:ApplicableTradeTax>
           <ram:TypeCode>VAT</ram:TypeCode>
-          <ram:CategoryCode>S</ram:CategoryCode>
+          <ram:CategoryCode>${categoryCode}</ram:CategoryCode>
           <ram:RateApplicablePercent>${rate}</ram:RateApplicablePercent>
         </ram:ApplicableTradeTax>
         <ram:SpecifiedTradeSettlementLineMonetarySummation>
@@ -109,6 +111,10 @@ export function generateFacturXXML(data: DocumentData): string {
           <ram:CityName>${escapeXml(client.city || '')}</ram:CityName>
           <ram:CountryID>FR</ram:CountryID>
         </ram:PostalTradeAddress>
+        ${client.vatNumber ? `
+        <ram:SpecifiedTaxRegistration>
+          <ram:ID schemeID="VA">${(client.vatNumber || '').replace(/\s/g, '')}</ram:ID>
+        </ram:SpecifiedTaxRegistration>` : ''}
       </ram:BuyerTradeParty>
     </ram:ApplicableHeaderTradeAgreement>
     <ram:ApplicableHeaderTradeDelivery>
@@ -129,14 +135,17 @@ export function generateFacturXXML(data: DocumentData): string {
           <ram:BICID>${(settings.bic || '').replace(/\s/g, '') || ''}</ram:BICID>
         </ram:PayeeSpecifiedCreditorFinancialInstitution>` : ''}
       </ram:SpecifiedTradeSettlementPaymentMeans>
-      ${taxDetails.map(tax => `
+      ${taxDetails.map(tax => {
+        const categoryCode = tax.rate === 0 ? 'E' : 'S'
+        return `
       <ram:ApplicableTradeTax>
         <ram:CalculatedAmount>${(tax.vatAmount || 0).toFixed(2)}</ram:CalculatedAmount>
         <ram:TypeCode>VAT</ram:TypeCode>
         <ram:BasisAmount>${(tax.baseHT || 0).toFixed(2)}</ram:BasisAmount>
-        <ram:CategoryCode>S</ram:CategoryCode>
+        <ram:CategoryCode>${categoryCode}</ram:CategoryCode>
         <ram:RateApplicablePercent>${tax.rate || 20}</ram:RateApplicablePercent>
-      </ram:ApplicableTradeTax>`).join('')}
+        ${tax.rate === 0 ? '<ram:ExemptionReason>Exonération de TVA, article 293 B du CGI</ram:ExemptionReason>' : ''}
+      </ram:ApplicableTradeTax>`}).join('')}
       <ram:SpecifiedTradePaymentTerms>
         <ram:DueDateDateTime>
           <udt:DateTimeString format="102">${dueDateStr}</udt:DateTimeString>

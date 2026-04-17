@@ -58,7 +58,9 @@ export async function getDocumentPDF(type: 'quote' | 'invoice', id: string): Pro
         address: docData.client.address,
         zipCode: docData.client.zipCode,
         city: docData.client.city,
-        phone: docData.client.phone
+        phone: docData.client.phone,
+        siret: docData.client.siret,
+        vatNumber: docData.client.vatNumber
       },
       items,
       taxDetails,
@@ -96,7 +98,7 @@ export async function getDocumentPDF(type: 'quote' | 'invoice', id: string): Pro
       const title = `${settings?.name || 'Ma Boutique'}: Invoice ${data.number}`
       const subject = `Invoice ${data.number} dated ${dateStr} issued by ${settings?.name || 'Ma Boutique'}`
       const author = settings?.name || 'Ma Boutique'
-      const creator = 'RepairFlow ERP (Factur-X Basic)'
+      const creator = 'RepairFlow ERP (Factur-X EN 16931)'
       
       // Attach the XML
       const encoder = new TextEncoder()
@@ -188,7 +190,7 @@ export async function getDocumentPDF(type: 'quote' | 'invoice', id: string): Pro
       <fx:DocumentType>INVOICE</fx:DocumentType>
       <fx:DocumentFileName>factur-x.xml</fx:DocumentFileName>
       <fx:Version>1.0</fx:Version>
-      <fx:ConformanceLevel>BASIC</fx:ConformanceLevel>
+      <fx:ConformanceLevel>EN 16931</fx:ConformanceLevel>
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
