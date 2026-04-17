@@ -103,6 +103,8 @@ export async function POST(request: Request) {
         taxDetails: json.taxDetails ? JSON.stringify(json.taxDetails) : null,
         notes: optionalString(json.notes),
         paid: !!json.paid,
+        dueDate: json.dueDate ? new Date(json.dueDate) : null,
+        paymentMethod: optionalString(json.paymentMethod),
       },
       include: {
         client: true,

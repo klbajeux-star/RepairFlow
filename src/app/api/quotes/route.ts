@@ -86,6 +86,7 @@ export async function POST(request: Request) {
         taxDetails: json.taxDetails ? JSON.stringify(json.taxDetails) : null,
         notes: optionalString(json.notes),
         validUntil: json.validUntil ? new Date(json.validUntil) : null,
+        paymentMethod: optionalString(json.paymentMethod),
       },
       include: {
         client: true,

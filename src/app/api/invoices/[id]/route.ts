@@ -27,6 +27,8 @@ export async function PATCH(
         totalTTC: json.totalTTC !== undefined ? requireNumber(json.totalTTC, 'Total TTC') : undefined,
         taxDetails: json.taxDetails !== undefined ? JSON.stringify(json.taxDetails) : undefined,
         notes: json.notes !== undefined ? optionalString(json.notes) : undefined,
+        dueDate: json.dueDate ? new Date(json.dueDate) : undefined,
+        paymentMethod: json.paymentMethod !== undefined ? optionalString(json.paymentMethod) : undefined,
       },
       include: {
         client: true,

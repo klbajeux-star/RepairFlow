@@ -28,6 +28,7 @@ export async function PATCH(
         taxDetails: json.taxDetails !== undefined ? JSON.stringify(json.taxDetails) : undefined,
         notes: json.notes !== undefined ? optionalString(json.notes) : undefined,
         validUntil: json.validUntil ? new Date(json.validUntil) : undefined,
+        paymentMethod: json.paymentMethod !== undefined ? optionalString(json.paymentMethod) : undefined,
       },
       include: {
         client: true,
