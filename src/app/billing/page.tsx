@@ -71,6 +71,8 @@ interface DraftLine {
   name: string
   price: number
   quantity: number
+  vatRate: number
+  unit?: 'HUR' | 'C62'
 }
 
 interface Quote {
@@ -86,6 +88,7 @@ interface Quote {
   taxDetails?: string | null
   notes?: string | null
   validUntil?: string | null
+  paymentMethod?: string | null
   invoiceId?: string | null
   createdAt: string
 }
@@ -103,6 +106,8 @@ interface Invoice {
   taxDetails?: string | null
   notes?: string | null
   paid: boolean
+  dueDate?: string | null
+  paymentMethod?: string | null
   quote?: Quote | null
   createdAt: string
 }
@@ -111,6 +116,7 @@ interface ShopProduct {
   id: string
   name: string
   sellingPrice: number
+  vatRate: number
   category: string
   stock: number
 }
@@ -123,6 +129,7 @@ interface Repair {
     id: string
     priceAtTime: number
     quantity: number
+    vatRate?: number
     service: { name: string }
   }[]
   notes?: string | null
@@ -187,6 +194,9 @@ function BillingContent() {
   const [draftQuoteNumber, setDraftQuoteNumber] = useState<string | null>(null)
   const [draftStatus, setDraftStatus] = useState<string>('BROUILLON')
   const [draftPaid, setDraftPaid] = useState(false)
+  const [draftDueDate, setDraftDueDate] = useState<string>('')
+  const [draftPaymentMethod, setDraftPaymentMethod] = useState<string>('VIREMENT')
+  const [draftValidity, setDraftValidity] = useState<number>(30)
   
   // Search & Filter
   const [search, setSearch] = useState('')
@@ -267,7 +277,9 @@ function BillingContent() {
       id: s.id,
       name: s.service.name,
       price: s.priceAtTime,
-      quantity: s.quantity
+      quantity: s.quantity,
+      vatRate: s.vatRate ?? 20,
+      unit: 'HUR'
     })))
     const ticketRef = getTicketReference(repair)
     const autoNote = `Document généré à partir du ticket ${ticketRef}`
@@ -275,6 +287,8 @@ function BillingContent() {
     setDraftNumber('NOUVEAU')
     setDraftStatus('BROUILLON')
     setDraftPaid(false)
+    setDraftPaymentMethod('VIREMENT')
+    setDraftValidity(30)
     setSelectedDocId(null)
     setSelectedDocType(null)
     setShowEditor(true)
@@ -287,15 +301,14 @@ function BillingContent() {
     setDraftLines(JSON.parse(doc.items))
     setDraftNotes(doc.notes || '')
     setDraftNumber(doc.number)
+    setDraftPaymentMethod(doc.paymentMethod || 'VIREMENT')
     if (type === 'invoice') {
       setDraftQuoteNumber((doc as Invoice).quote?.number || null)
+      setDraftPaid((doc as Invoice).paid)
+      setDraftDueDate((doc as Invoice).dueDate ? new Date((doc as Invoice).dueDate!).toISOString().split('T')[0] : '')
     } else {
       setDraftQuoteNumber(null)
-    }
-    if (type === 'quote') {
       setDraftStatus((doc as Quote).status)
-    } else {
-      setDraftPaid((doc as Invoice).paid)
     }
     setSelectedDocId(doc.id)
     setSelectedDocType(type)
@@ -316,14 +329,12 @@ function BillingContent() {
         items: draftLines,
         totalHT: totals.totalHT,
         totalTTC: totals.totalTTC,
-        taxDetails: [{
-          baseHT: totals.totalHT,
-          rate: 20,
-          vatAmount: totals.tva
-        }],
+        taxDetails: totals.taxDetails,
         notes: draftNotes,
         status: editorMode === 'quote' ? draftStatus : undefined,
         paid: editorMode === 'invoice' ? draftPaid : undefined,
+        dueDate: editorMode === 'invoice' && draftDueDate ? new Date(draftDueDate).toISOString() : undefined,
+        paymentMethod: draftPaymentMethod,
       }
 
       const res = await fetch(url, {
@@ -366,12 +377,9 @@ function BillingContent() {
           items: draftLines,
           totalHT: totals.totalHT,
           totalTTC: totals.totalTTC,
-          taxDetails: [{
-            baseHT: totals.totalHT,
-            rate: 20,
-            vatAmount: totals.tva
-          }],
+          taxDetails: totals.taxDetails,
           notes: draftNotes,
+          paymentMethod: draftPaymentMethod,
           paid: false
         })
       })
@@ -390,9 +398,32 @@ function BillingContent() {
 
   const totals = useMemo(() => {
     const totalTTC = draftLines.reduce((acc, line) => acc + (line.price * line.quantity), 0)
-    const totalHT = totalTTC / 1.2
-    const tva = totalTTC - totalHT
-    return { totalTTC, totalHT, tva }
+    
+    // Group by VAT rate
+    const vatGroups = draftLines.reduce((acc, line) => {
+      const rate = line.vatRate || 20
+      const ttc = line.price * line.quantity
+      const ht = ttc / (1 + rate / 100)
+      const vat = ttc - ht
+      
+      if (!acc[rate]) {
+        acc[rate] = { baseHT: 0, vatAmount: 0 }
+      }
+      acc[rate].baseHT += ht
+      acc[rate].vatAmount += vat
+      return acc
+    }, {} as Record<number, { baseHT: number, vatAmount: number }>)
+
+    const totalHT = Object.values(vatGroups).reduce((acc, g) => acc + g.baseHT, 0)
+    const tva = Object.values(vatGroups).reduce((acc, g) => acc + g.vatAmount, 0)
+    
+    const taxDetails = Object.entries(vatGroups).map(([rate, data]) => ({
+      rate: Number(rate),
+      baseHT: Number(data.baseHT.toFixed(2)),
+      vatAmount: Number(data.vatAmount.toFixed(2))
+    }))
+
+    return { totalTTC, totalHT, tva, taxDetails }
   }, [draftLines])
 
   const updateLine = (index: number, field: keyof DraftLine, value: string | number) => {
@@ -410,7 +441,9 @@ function BillingContent() {
       id: Math.random().toString(36).substr(2, 9), 
       name: 'Prestation / Produit', 
       price: 0, 
-      quantity: 1 
+      quantity: 1,
+      vatRate: 20,
+      unit: 'HUR'
     }])
   }
 
@@ -419,7 +452,9 @@ function BillingContent() {
       id: Math.random().toString(36).substr(2, 9),
       name: p.name,
       price: p.sellingPrice,
-      quantity: 1
+      quantity: 1,
+      vatRate: p.vatRate ?? 20,
+      unit: 'C62'
     }])
     setShopSearch('')
   }
@@ -516,6 +551,7 @@ function BillingContent() {
               setDraftNotes('')
               setDraftClient(null)
               setDraftNumber('NOUVEAU')
+              setDraftPaymentMethod('VIREMENT')
               setSelectedDocId(null)
               setShowEditor(true)
             }}
@@ -764,9 +800,11 @@ function BillingContent() {
                         </div>
                         <div className="text-right flex flex-col justify-end">
                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Conditions de règlement</p>
-                           <p className="text-xs font-bold text-slate-700">Paiement à réception de facture</p>
-                           {editorMode === 'quote' && (
+                           <p className="text-xs font-bold text-slate-700">Paiement par {draftPaymentMethod.toLowerCase()}</p>
+                           {editorMode === 'quote' ? (
                              <p className="text-xs font-bold text-slate-700 mt-1">Devis valable 30 jours</p>
+                           ) : (
+                             <p className="text-xs font-bold text-slate-700 mt-1">Échéance: {draftDueDate ? formatDate(draftDueDate) : 'À réception'}</p>
                            )}
                         </div>
                      </div>
@@ -777,8 +815,9 @@ function BillingContent() {
                               <tr className="text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b-2 border-slate-100">
                                  <th className="py-6 px-4">Description de la prestation</th>
                                  <th className="py-6 px-4 text-center w-24">Quantité</th>
-                                 <th className="py-6 px-4 text-right w-32">P.U. HT</th>
-                                 <th className="py-6 px-4 text-right w-32">Total HT</th>
+                                 <th className="py-6 px-4 text-right w-24">P.U. HT</th>
+                                 <th className="py-6 px-4 text-center w-20">TVA</th>
+                                 <th className="py-6 px-4 text-right w-28">Total HT</th>
                                  <th className="py-6 px-4 text-right w-12 print:hidden"></th>
                               </tr>
                            </thead>
@@ -788,7 +827,7 @@ function BillingContent() {
                                    <td className="py-6 px-4">
                                       <input 
                                         className="w-full font-black text-slate-900 bg-transparent outline-none focus:text-blue-600 transition-colors" 
-                                        value={line.name} 
+                                        value={line.name || ''} 
                                         onChange={e => updateLine(idx, 'name', e.target.value)} 
                                       />
                                    </td>
@@ -796,7 +835,7 @@ function BillingContent() {
                                       <input 
                                         className="w-full text-center font-bold bg-transparent outline-none" 
                                         type="number" 
-                                        value={line.quantity} 
+                                        value={line.quantity || 0} 
                                         onChange={e => updateLine(idx, 'quantity', parseInt(e.target.value) || 0)} 
                                       />
                                    </td>
@@ -804,12 +843,24 @@ function BillingContent() {
                                       <input 
                                         className="w-full text-right font-bold text-slate-600 bg-transparent outline-none" 
                                         type="number" 
-                                        value={(line.price / 1.2).toFixed(2)} 
-                                        onChange={e => updateLine(idx, 'price', parseFloat(e.target.value) * 1.2 || 0)} 
+                                        value={(line.price / (1 + (line.vatRate || 20) / 100)).toFixed(2)} 
+                                        onChange={e => updateLine(idx, 'price', parseFloat(e.target.value) * (1 + (line.vatRate || 20) / 100) || 0)} 
                                       />
                                    </td>
+                                   <td className="py-6 px-4 text-center">
+                                      <select 
+                                         value={line.vatRate || 20}
+                                         onChange={e => updateLine(idx, 'vatRate', parseFloat(e.target.value))}
+                                         className="bg-transparent text-[10px] font-black text-slate-600 outline-none appearance-none cursor-pointer hover:text-blue-600"
+                                      >
+                                         <option value={20}>20%</option>
+                                         <option value={10}>10%</option>
+                                         <option value={5.5}>5.5%</option>
+                                         <option value={0}>0%</option>
+                                      </select>
+                                   </td>
                                    <td className="py-6 px-4 text-right font-black text-slate-950">
-                                      {((line.price * line.quantity) / 1.2).toFixed(2)} €
+                                      {((line.price * line.quantity) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} €
                                    </td>
                                    <td className="py-6 px-4 text-right print:hidden">
                                       <button 
@@ -847,10 +898,12 @@ function BillingContent() {
                                  <span>Total HT</span>
                                  <span className="text-slate-900">{formatCurrency(totals.totalHT)}</span>
                               </div>
-                              <div className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest pb-4 border-b border-slate-200">
-                                 <span>TVA (20%)</span>
-                                 <span className="text-slate-900">{formatCurrency(totals.tva)}</span>
-                              </div>
+                              {totals.taxDetails.map((tax) => (
+                                <div key={tax.rate} className="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest pb-2">
+                                   <span>TVA ({tax.rate}%) sur {formatCurrency(tax.baseHT)}</span>
+                                   <span className="text-slate-900">{formatCurrency(tax.vatAmount)}</span>
+                                </div>
+                              ))}
                               <div className="flex justify-between items-center pt-2">
                                  <span className="text-sm font-black text-blue-600 uppercase tracking-tighter">Total à payer</span>
                                  <span className="text-4xl font-black text-slate-950 tracking-tighter">{formatCurrency(totals.totalTTC)}</span>
@@ -893,49 +946,75 @@ function BillingContent() {
                         </div>
                      </div>
 
-                     {editorMode === 'quote' ? (
-                       <>
-                         <div>
-                            <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Statut du Devis</label>
-                            <select 
-                              className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
-                              value={draftStatus}
-                              onChange={(e) => setDraftStatus(e.target.value)}
-                            >
-                              <option value="BROUILLON">Brouillon</option>
-                              <option value="EN_ATTENTE">En attente (Envoyé)</option>
-                              <option value="SIGNE">Signé / Accepté</option>
-                              <option value="REFUSE">Refusé</option>
-                            </select>
-                         </div>
-                         <div>
-                            <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Validité (jours)</label>
-                            <input 
-                              type="number"
-                              className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
-                              placeholder="30"
-                              defaultValue={30}
-                            />
-                         </div>
-                       </>
-                     ) : (
-                       <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100">
-                          <span className="text-xs font-bold text-slate-600">Facture payée ?</span>
-                          <button 
-                            onClick={() => setDraftPaid(!draftPaid)}
-                            className={`w-12 h-6 rounded-full transition-all relative ${draftPaid ? 'bg-emerald-500' : 'bg-slate-200'}`}
-                          >
-                             <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${draftPaid ? 'left-7' : 'left-1'}`} />
-                          </button>
-                       </div>
-                     )}
+                     <div>
+                        <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Méthode de Paiement</label>
+                        <select 
+                          className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
+                          value={draftPaymentMethod || 'VIREMENT'}
+                          onChange={(e) => setDraftPaymentMethod(e.target.value)}
+                        >
+                          <option value="VIREMENT">Virement Bancaire</option>
+                          <option value="CARTE">Carte Bancaire</option>
+                          <option value="ESPECES">Espèces</option>
+                          <option value="CHEQUE">Chèque</option>
+                        </select>
+                     </div>
+
+                         {editorMode === 'quote' ? (
+                           <div key="quote-fields" className="space-y-4">
+                             <div>
+                                <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Statut du Devis</label>
+                                <select 
+                                  className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
+                                  value={draftStatus || 'BROUILLON'}
+                                  onChange={(e) => setDraftStatus(e.target.value)}
+                                >
+                                  <option value="BROUILLON">Brouillon</option>
+                                  <option value="EN_ATTENTE">En attente (Envoyé)</option>
+                                  <option value="SIGNE">Signé / Accepté</option>
+                                  <option value="REFUSE">Refusé</option>
+                                </select>
+                             </div>
+                             <div>
+                                <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Validité (jours)</label>
+                                <input 
+                                  type="number"
+                                  className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
+                                  placeholder="30"
+                                  value={draftValidity}
+                                  onChange={(e) => setDraftValidity(parseInt(e.target.value) || 0)}
+                                />
+                             </div>
+                           </div>
+                         ) : (
+                           <div key="invoice-fields" className="space-y-4">
+                            <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100">
+                               <span className="text-xs font-bold text-slate-600">Facture payée ?</span>
+                               <button 
+                                 onClick={() => setDraftPaid(!draftPaid)}
+                                 className={`w-12 h-6 rounded-full transition-all relative ${draftPaid ? 'bg-emerald-500' : 'bg-slate-200'}`}
+                               >
+                                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${draftPaid ? 'left-7' : 'left-1'}`} />
+                               </button>
+                            </div>
+                            <div>
+                               <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Date d'échéance</label>
+                               <input 
+                                 type="date"
+                                 className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
+                                 value={draftDueDate || ''}
+                                 onChange={(e) => setDraftDueDate(e.target.value)}
+                               />
+                            </div>
+                           </div>
+                         )}
 
                      <div>
                         <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Notes document</label>
                         <textarea 
                            className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-medium outline-none"
                            rows={4}
-                           value={draftNotes}
+                           value={draftNotes || ''}
                            onChange={e => setDraftNotes(e.target.value)}
                            placeholder="Apparait en bas du document..."
                         />

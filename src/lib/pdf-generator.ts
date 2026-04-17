@@ -4,6 +4,14 @@ export interface InvoiceLine {
   name: string
   quantity: number
   price: number
+  vatRate: number
+  unit?: string
+}
+
+export interface TaxDetail {
+  rate: number
+  baseHT: number
+  vatAmount: number
 }
 
 export interface WorkshopSettings {
@@ -39,7 +47,10 @@ export interface DocumentData {
   totalHT: number
   totalTTC: number
   tva: number
+  taxDetails: TaxDetail[]
   notes?: string | null
+  dueDate?: Date | null
+  paymentMethod?: string | null
   ticketRef?: string | null
   quoteRef?: string | null
   settings: WorkshopSettings | null
@@ -47,7 +58,7 @@ export interface DocumentData {
 
 export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
   try {
-    const { type, number, date, client, items, totalHT, totalTTC, tva, notes, ticketRef, quoteRef, settings } = data
+    const { type, number, date, client, items, totalHT, totalTTC, taxDetails, notes, ticketRef, quoteRef, settings } = data
     const doc = new jsPDF()
     const margin = 15
     let y = 30
@@ -155,8 +166,9 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(148, 163, 184)
     doc.text('DESCRIPTION DES PRESTATIONS', margin + 4, y + 5.5)
-    doc.text('QTÉ', 125, y + 5.5, { align: 'center' })
-    doc.text('P.U. HT', 155, y + 5.5, { align: 'right' })
+    doc.text('QTÉ', 115, y + 5.5, { align: 'center' })
+    doc.text('P.U. HT', 140, y + 5.5, { align: 'right' })
+    doc.text('TVA', 160, y + 5.5, { align: 'center' })
     doc.text('TOTAL HT', 190, y + 5.5, { align: 'right' })
     
     y += 12
@@ -165,12 +177,17 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     doc.setTextColor(15, 23, 42)
     
     items.forEach((line) => {
+      const rate = line.vatRate || 20
+      const puHT = line.price / (1 + rate / 100)
+      const totalHTLine = (line.price * line.quantity) / (1 + rate / 100)
+
       doc.setFont('helvetica', 'bold')
       doc.text(line.name, margin + 4, y)
       doc.setFont('helvetica', 'normal')
-      doc.text(line.quantity.toString(), 125, y, { align: 'center' })
-      doc.text(`${(line.price / 1.2).toFixed(2)} €`, 155, y, { align: 'right' })
-      doc.text(`${((line.price * line.quantity) / 1.2).toFixed(2)} €`, 190, y, { align: 'right' })
+      doc.text(line.quantity.toString(), 115, y, { align: 'center' })
+      doc.text(`${puHT.toFixed(2)} €`, 140, y, { align: 'right' })
+      doc.text(`${rate}%`, 160, y, { align: 'center' })
+      doc.text(`${totalHTLine.toFixed(2)} €`, 190, y, { align: 'right' })
       y += 8
       doc.setDrawColor(248, 250, 252)
       doc.setLineWidth(0.1)
@@ -181,8 +198,9 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     // Totals Box (Compact)
     const totalWidth = 65
     const totalBoxX = 210 - margin - totalWidth
+    const totalBoxHeight = 25 + (taxDetails.length * 5) // Increased height for payment method
     doc.setFillColor(15, 23, 42)
-    doc.roundedRect(totalBoxX, y, totalWidth, 25, 2, 2, 'F')
+    doc.roundedRect(totalBoxX, y, totalWidth, totalBoxHeight, 2, 2, 'F')
     
     y += 7
     doc.setFontSize(7)
@@ -190,13 +208,15 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     doc.setTextColor(148, 163, 184)
     doc.text('TOTAL HT', totalBoxX + 6, y)
     doc.setTextColor(255, 255, 255)
-    doc.text(`${totalHT.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+    doc.text(`${(totalHT || 0).toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
     
-    y += 5
-    doc.setTextColor(148, 163, 184)
-    doc.text('TVA (20%)', totalBoxX + 6, y)
-    doc.setTextColor(255, 255, 255)
-    doc.text(`${tva.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+    taxDetails.forEach(tax => {
+      y += 5
+      doc.setTextColor(148, 163, 184)
+      doc.text(`TVA (${tax.rate || 20}%)`, totalBoxX + 6, y)
+      doc.setTextColor(255, 255, 255)
+      doc.text(`${(tax.vatAmount || 0).toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+    })
     
     y += 7
     doc.setFontSize(9)
@@ -204,7 +224,23 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     doc.text('TOTAL TTC À PAYER', totalBoxX + 6, y)
     doc.setFontSize(12)
     doc.setTextColor(255, 255, 255)
-    doc.text(`${totalTTC.toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+    doc.text(`${(totalTTC || 0).toFixed(2)} €`, 210 - margin - 6, y, { align: 'right' })
+
+    // Payment Info in the total box
+    y += 6
+    doc.setFontSize(6)
+    doc.setTextColor(148, 163, 184)
+    doc.setFont('helvetica', 'normal')
+    const paymentLabel = type === 'invoice' ? 'RÈGLEMENT :' : 'VALIDITÉ :'
+    const paymentVal = type === 'invoice' 
+      ? (data.paymentMethod || 'NON SPÉCIFIÉ') 
+      : '30 JOURS'
+    doc.text(`${paymentLabel} ${paymentVal}`, totalBoxX + 6, y)
+    
+    if (type === 'invoice' && data.dueDate) {
+      y += 3
+      doc.text(`ÉCHÉANCE : ${data.dueDate.toLocaleDateString('fr-FR')}`, totalBoxX + 6, y)
+    }
 
     // Notes & Signature
     y += 15

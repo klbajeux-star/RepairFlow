@@ -80,6 +80,7 @@ export async function POST(request: Request) {
             repairId: newRepair.id,
             serviceId: service.id,
             priceAtTime: totalPrice,
+            vatRate: (service as any).vatRate ?? 20,
             quantity: 1,
           },
         })
