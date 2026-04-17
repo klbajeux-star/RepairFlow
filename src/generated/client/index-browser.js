@@ -143,6 +143,7 @@ exports.Prisma.QuoteScalarFieldEnum = {
   totalTTC: 'totalTTC',
   notes: 'notes',
   validUntil: 'validUntil',
+  paymentMethod: 'paymentMethod',
   invoiceId: 'invoiceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -159,6 +160,8 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   totalTTC: 'totalTTC',
   notes: 'notes',
   paid: 'paid',
+  dueDate: 'dueDate',
+  paymentMethod: 'paymentMethod',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   taxDetails: 'taxDetails'
@@ -190,6 +193,8 @@ exports.Prisma.PartScalarFieldEnum = {
   name: 'name',
   sku: 'sku',
   costPrice: 'costPrice',
+  sellingPrice: 'sellingPrice',
+  vatRate: 'vatRate',
   stock: 'stock',
   minStock: 'minStock',
   supplier: 'supplier',
@@ -206,6 +211,7 @@ exports.Prisma.ServiceScalarFieldEnum = {
   name: 'name',
   laborCost: 'laborCost',
   suggestedPrice: 'suggestedPrice',
+  vatRate: 'vatRate',
   duration: 'duration',
   partId: 'partId',
   modelId: 'modelId',
@@ -228,7 +234,8 @@ exports.Prisma.RepairServiceScalarFieldEnum = {
   repairId: 'repairId',
   serviceId: 'serviceId',
   quantity: 'quantity',
-  priceAtTime: 'priceAtTime'
+  priceAtTime: 'priceAtTime',
+  vatRate: 'vatRate'
 };
 
 exports.Prisma.RepairLogScalarFieldEnum = {
@@ -247,6 +254,7 @@ exports.Prisma.ShopProductScalarFieldEnum = {
   barcode: 'barcode',
   purchasePrice: 'purchasePrice',
   sellingPrice: 'sellingPrice',
+  vatRate: 'vatRate',
   stock: 'stock',
   minStock: 'minStock',
   supplier: 'supplier',

@@ -3181,6 +3181,7 @@ export namespace Prisma {
     totalTTC: number | null
     notes: string | null
     validUntil: Date | null
+    paymentMethod: string | null
     invoiceId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3198,6 +3199,7 @@ export namespace Prisma {
     totalTTC: number | null
     notes: string | null
     validUntil: Date | null
+    paymentMethod: string | null
     invoiceId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3215,6 +3217,7 @@ export namespace Prisma {
     totalTTC: number
     notes: number
     validUntil: number
+    paymentMethod: number
     invoiceId: number
     createdAt: number
     updatedAt: number
@@ -3244,6 +3247,7 @@ export namespace Prisma {
     totalTTC?: true
     notes?: true
     validUntil?: true
+    paymentMethod?: true
     invoiceId?: true
     createdAt?: true
     updatedAt?: true
@@ -3261,6 +3265,7 @@ export namespace Prisma {
     totalTTC?: true
     notes?: true
     validUntil?: true
+    paymentMethod?: true
     invoiceId?: true
     createdAt?: true
     updatedAt?: true
@@ -3278,6 +3283,7 @@ export namespace Prisma {
     totalTTC?: true
     notes?: true
     validUntil?: true
+    paymentMethod?: true
     invoiceId?: true
     createdAt?: true
     updatedAt?: true
@@ -3382,6 +3388,7 @@ export namespace Prisma {
     totalTTC: number
     notes: string | null
     validUntil: Date | null
+    paymentMethod: string | null
     invoiceId: string | null
     createdAt: Date
     updatedAt: Date
@@ -3418,6 +3425,7 @@ export namespace Prisma {
     totalTTC?: boolean
     notes?: boolean
     validUntil?: boolean
+    paymentMethod?: boolean
     invoiceId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3438,6 +3446,7 @@ export namespace Prisma {
     totalTTC?: boolean
     notes?: boolean
     validUntil?: boolean
+    paymentMethod?: boolean
     invoiceId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3469,6 +3478,7 @@ export namespace Prisma {
       totalTTC: number
       notes: string | null
       validUntil: Date | null
+      paymentMethod: string | null
       invoiceId: string | null
       createdAt: Date
       updatedAt: Date
@@ -3866,6 +3876,7 @@ export namespace Prisma {
     readonly totalTTC: FieldRef<"Quote", 'Float'>
     readonly notes: FieldRef<"Quote", 'String'>
     readonly validUntil: FieldRef<"Quote", 'DateTime'>
+    readonly paymentMethod: FieldRef<"Quote", 'String'>
     readonly invoiceId: FieldRef<"Quote", 'String'>
     readonly createdAt: FieldRef<"Quote", 'DateTime'>
     readonly updatedAt: FieldRef<"Quote", 'DateTime'>
@@ -4249,6 +4260,8 @@ export namespace Prisma {
     totalTTC: number | null
     notes: string | null
     paid: boolean | null
+    dueDate: Date | null
+    paymentMethod: string | null
     createdAt: Date | null
     updatedAt: Date | null
     taxDetails: string | null
@@ -4264,6 +4277,8 @@ export namespace Prisma {
     totalTTC: number | null
     notes: string | null
     paid: boolean | null
+    dueDate: Date | null
+    paymentMethod: string | null
     createdAt: Date | null
     updatedAt: Date | null
     taxDetails: string | null
@@ -4279,6 +4294,8 @@ export namespace Prisma {
     totalTTC: number
     notes: number
     paid: number
+    dueDate: number
+    paymentMethod: number
     createdAt: number
     updatedAt: number
     taxDetails: number
@@ -4306,6 +4323,8 @@ export namespace Prisma {
     totalTTC?: true
     notes?: true
     paid?: true
+    dueDate?: true
+    paymentMethod?: true
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
@@ -4321,6 +4340,8 @@ export namespace Prisma {
     totalTTC?: true
     notes?: true
     paid?: true
+    dueDate?: true
+    paymentMethod?: true
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
@@ -4336,6 +4357,8 @@ export namespace Prisma {
     totalTTC?: true
     notes?: true
     paid?: true
+    dueDate?: true
+    paymentMethod?: true
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
@@ -4438,6 +4461,8 @@ export namespace Prisma {
     totalTTC: number
     notes: string | null
     paid: boolean
+    dueDate: Date | null
+    paymentMethod: string | null
     createdAt: Date
     updatedAt: Date
     taxDetails: string | null
@@ -4472,6 +4497,8 @@ export namespace Prisma {
     totalTTC?: boolean
     notes?: boolean
     paid?: boolean
+    dueDate?: boolean
+    paymentMethod?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     taxDetails?: boolean
@@ -4490,6 +4517,8 @@ export namespace Prisma {
     totalTTC?: boolean
     notes?: boolean
     paid?: boolean
+    dueDate?: boolean
+    paymentMethod?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     taxDetails?: boolean
@@ -4519,6 +4548,8 @@ export namespace Prisma {
       totalTTC: number
       notes: string | null
       paid: boolean
+      dueDate: Date | null
+      paymentMethod: string | null
       createdAt: Date
       updatedAt: Date
       taxDetails: string | null
@@ -4914,6 +4945,8 @@ export namespace Prisma {
     readonly totalTTC: FieldRef<"Invoice", 'Float'>
     readonly notes: FieldRef<"Invoice", 'String'>
     readonly paid: FieldRef<"Invoice", 'Boolean'>
+    readonly dueDate: FieldRef<"Invoice", 'DateTime'>
+    readonly paymentMethod: FieldRef<"Invoice", 'String'>
     readonly createdAt: FieldRef<"Invoice", 'DateTime'>
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
     readonly taxDetails: FieldRef<"Invoice", 'String'>
@@ -8020,12 +8053,16 @@ export namespace Prisma {
 
   export type PartAvgAggregateOutputType = {
     costPrice: number | null
+    sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
   }
 
   export type PartSumAggregateOutputType = {
     costPrice: number | null
+    sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
   }
@@ -8035,6 +8072,8 @@ export namespace Prisma {
     name: string | null
     sku: string | null
     costPrice: number | null
+    sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
     supplier: string | null
@@ -8051,6 +8090,8 @@ export namespace Prisma {
     name: string | null
     sku: string | null
     costPrice: number | null
+    sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
     supplier: string | null
@@ -8067,6 +8108,8 @@ export namespace Prisma {
     name: number
     sku: number
     costPrice: number
+    sellingPrice: number
+    vatRate: number
     stock: number
     minStock: number
     supplier: number
@@ -8082,12 +8125,16 @@ export namespace Prisma {
 
   export type PartAvgAggregateInputType = {
     costPrice?: true
+    sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
   }
 
   export type PartSumAggregateInputType = {
     costPrice?: true
+    sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
   }
@@ -8097,6 +8144,8 @@ export namespace Prisma {
     name?: true
     sku?: true
     costPrice?: true
+    sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
     supplier?: true
@@ -8113,6 +8162,8 @@ export namespace Prisma {
     name?: true
     sku?: true
     costPrice?: true
+    sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
     supplier?: true
@@ -8129,6 +8180,8 @@ export namespace Prisma {
     name?: true
     sku?: true
     costPrice?: true
+    sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
     supplier?: true
@@ -8232,6 +8285,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice: number | null
+    vatRate: number
     stock: number
     minStock: number
     supplier: string | null
@@ -8267,6 +8322,8 @@ export namespace Prisma {
     name?: boolean
     sku?: boolean
     costPrice?: boolean
+    sellingPrice?: boolean
+    vatRate?: boolean
     stock?: boolean
     minStock?: boolean
     supplier?: boolean
@@ -8286,6 +8343,8 @@ export namespace Prisma {
     name?: boolean
     sku?: boolean
     costPrice?: boolean
+    sellingPrice?: boolean
+    vatRate?: boolean
     stock?: boolean
     minStock?: boolean
     supplier?: boolean
@@ -8315,6 +8374,8 @@ export namespace Prisma {
       name: string
       sku: string
       costPrice: number
+      sellingPrice: number | null
+      vatRate: number
       stock: number
       minStock: number
       supplier: string | null
@@ -8709,6 +8770,8 @@ export namespace Prisma {
     readonly name: FieldRef<"Part", 'String'>
     readonly sku: FieldRef<"Part", 'String'>
     readonly costPrice: FieldRef<"Part", 'Float'>
+    readonly sellingPrice: FieldRef<"Part", 'Float'>
+    readonly vatRate: FieldRef<"Part", 'Float'>
     readonly stock: FieldRef<"Part", 'Int'>
     readonly minStock: FieldRef<"Part", 'Int'>
     readonly supplier: FieldRef<"Part", 'String'>
@@ -9085,12 +9148,14 @@ export namespace Prisma {
   export type ServiceAvgAggregateOutputType = {
     laborCost: number | null
     suggestedPrice: number | null
+    vatRate: number | null
     duration: number | null
   }
 
   export type ServiceSumAggregateOutputType = {
     laborCost: number | null
     suggestedPrice: number | null
+    vatRate: number | null
     duration: number | null
   }
 
@@ -9099,6 +9164,7 @@ export namespace Prisma {
     name: string | null
     laborCost: number | null
     suggestedPrice: number | null
+    vatRate: number | null
     duration: number | null
     partId: string | null
     modelId: string | null
@@ -9111,6 +9177,7 @@ export namespace Prisma {
     name: string | null
     laborCost: number | null
     suggestedPrice: number | null
+    vatRate: number | null
     duration: number | null
     partId: string | null
     modelId: string | null
@@ -9123,6 +9190,7 @@ export namespace Prisma {
     name: number
     laborCost: number
     suggestedPrice: number
+    vatRate: number
     duration: number
     partId: number
     modelId: number
@@ -9135,12 +9203,14 @@ export namespace Prisma {
   export type ServiceAvgAggregateInputType = {
     laborCost?: true
     suggestedPrice?: true
+    vatRate?: true
     duration?: true
   }
 
   export type ServiceSumAggregateInputType = {
     laborCost?: true
     suggestedPrice?: true
+    vatRate?: true
     duration?: true
   }
 
@@ -9149,6 +9219,7 @@ export namespace Prisma {
     name?: true
     laborCost?: true
     suggestedPrice?: true
+    vatRate?: true
     duration?: true
     partId?: true
     modelId?: true
@@ -9161,6 +9232,7 @@ export namespace Prisma {
     name?: true
     laborCost?: true
     suggestedPrice?: true
+    vatRate?: true
     duration?: true
     partId?: true
     modelId?: true
@@ -9173,6 +9245,7 @@ export namespace Prisma {
     name?: true
     laborCost?: true
     suggestedPrice?: true
+    vatRate?: true
     duration?: true
     partId?: true
     modelId?: true
@@ -9272,6 +9345,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice: number
+    vatRate: number
     duration: number
     partId: string | null
     modelId: string | null
@@ -9303,6 +9377,7 @@ export namespace Prisma {
     name?: boolean
     laborCost?: boolean
     suggestedPrice?: boolean
+    vatRate?: boolean
     duration?: boolean
     partId?: boolean
     modelId?: boolean
@@ -9319,6 +9394,7 @@ export namespace Prisma {
     name?: boolean
     laborCost?: boolean
     suggestedPrice?: boolean
+    vatRate?: boolean
     duration?: boolean
     partId?: boolean
     modelId?: boolean
@@ -9346,6 +9422,7 @@ export namespace Prisma {
       name: string
       laborCost: number
       suggestedPrice: number
+      vatRate: number
       duration: number
       partId: string | null
       modelId: string | null
@@ -9738,6 +9815,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Service", 'String'>
     readonly laborCost: FieldRef<"Service", 'Float'>
     readonly suggestedPrice: FieldRef<"Service", 'Float'>
+    readonly vatRate: FieldRef<"Service", 'Float'>
     readonly duration: FieldRef<"Service", 'Int'>
     readonly partId: FieldRef<"Service", 'String'>
     readonly modelId: FieldRef<"Service", 'String'>
@@ -11144,11 +11222,13 @@ export namespace Prisma {
   export type RepairServiceAvgAggregateOutputType = {
     quantity: number | null
     priceAtTime: number | null
+    vatRate: number | null
   }
 
   export type RepairServiceSumAggregateOutputType = {
     quantity: number | null
     priceAtTime: number | null
+    vatRate: number | null
   }
 
   export type RepairServiceMinAggregateOutputType = {
@@ -11157,6 +11237,7 @@ export namespace Prisma {
     serviceId: string | null
     quantity: number | null
     priceAtTime: number | null
+    vatRate: number | null
   }
 
   export type RepairServiceMaxAggregateOutputType = {
@@ -11165,6 +11246,7 @@ export namespace Prisma {
     serviceId: string | null
     quantity: number | null
     priceAtTime: number | null
+    vatRate: number | null
   }
 
   export type RepairServiceCountAggregateOutputType = {
@@ -11173,6 +11255,7 @@ export namespace Prisma {
     serviceId: number
     quantity: number
     priceAtTime: number
+    vatRate: number
     _all: number
   }
 
@@ -11180,11 +11263,13 @@ export namespace Prisma {
   export type RepairServiceAvgAggregateInputType = {
     quantity?: true
     priceAtTime?: true
+    vatRate?: true
   }
 
   export type RepairServiceSumAggregateInputType = {
     quantity?: true
     priceAtTime?: true
+    vatRate?: true
   }
 
   export type RepairServiceMinAggregateInputType = {
@@ -11193,6 +11278,7 @@ export namespace Prisma {
     serviceId?: true
     quantity?: true
     priceAtTime?: true
+    vatRate?: true
   }
 
   export type RepairServiceMaxAggregateInputType = {
@@ -11201,6 +11287,7 @@ export namespace Prisma {
     serviceId?: true
     quantity?: true
     priceAtTime?: true
+    vatRate?: true
   }
 
   export type RepairServiceCountAggregateInputType = {
@@ -11209,6 +11296,7 @@ export namespace Prisma {
     serviceId?: true
     quantity?: true
     priceAtTime?: true
+    vatRate?: true
     _all?: true
   }
 
@@ -11304,6 +11392,7 @@ export namespace Prisma {
     serviceId: string
     quantity: number
     priceAtTime: number
+    vatRate: number
     _count: RepairServiceCountAggregateOutputType | null
     _avg: RepairServiceAvgAggregateOutputType | null
     _sum: RepairServiceSumAggregateOutputType | null
@@ -11331,6 +11420,7 @@ export namespace Prisma {
     serviceId?: boolean
     quantity?: boolean
     priceAtTime?: boolean
+    vatRate?: boolean
     repair?: boolean | RepairDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repairService"]>
@@ -11341,6 +11431,7 @@ export namespace Prisma {
     serviceId?: boolean
     quantity?: boolean
     priceAtTime?: boolean
+    vatRate?: boolean
   }
 
   export type RepairServiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11361,6 +11452,7 @@ export namespace Prisma {
       serviceId: string
       quantity: number
       priceAtTime: number
+      vatRate: number
     }, ExtArgs["result"]["repairService"]>
     composites: {}
   }
@@ -11747,6 +11839,7 @@ export namespace Prisma {
     readonly serviceId: FieldRef<"RepairService", 'String'>
     readonly quantity: FieldRef<"RepairService", 'Int'>
     readonly priceAtTime: FieldRef<"RepairService", 'Float'>
+    readonly vatRate: FieldRef<"RepairService", 'Float'>
   }
     
 
@@ -12967,6 +13060,7 @@ export namespace Prisma {
   export type ShopProductAvgAggregateOutputType = {
     purchasePrice: number | null
     sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
   }
@@ -12974,6 +13068,7 @@ export namespace Prisma {
   export type ShopProductSumAggregateOutputType = {
     purchasePrice: number | null
     sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
   }
@@ -12986,6 +13081,7 @@ export namespace Prisma {
     barcode: string | null
     purchasePrice: number | null
     sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
     supplier: string | null
@@ -13003,6 +13099,7 @@ export namespace Prisma {
     barcode: string | null
     purchasePrice: number | null
     sellingPrice: number | null
+    vatRate: number | null
     stock: number | null
     minStock: number | null
     supplier: string | null
@@ -13020,6 +13117,7 @@ export namespace Prisma {
     barcode: number
     purchasePrice: number
     sellingPrice: number
+    vatRate: number
     stock: number
     minStock: number
     supplier: number
@@ -13034,6 +13132,7 @@ export namespace Prisma {
   export type ShopProductAvgAggregateInputType = {
     purchasePrice?: true
     sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
   }
@@ -13041,6 +13140,7 @@ export namespace Prisma {
   export type ShopProductSumAggregateInputType = {
     purchasePrice?: true
     sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
   }
@@ -13053,6 +13153,7 @@ export namespace Prisma {
     barcode?: true
     purchasePrice?: true
     sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
     supplier?: true
@@ -13070,6 +13171,7 @@ export namespace Prisma {
     barcode?: true
     purchasePrice?: true
     sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
     supplier?: true
@@ -13087,6 +13189,7 @@ export namespace Prisma {
     barcode?: true
     purchasePrice?: true
     sellingPrice?: true
+    vatRate?: true
     stock?: true
     minStock?: true
     supplier?: true
@@ -13191,6 +13294,7 @@ export namespace Prisma {
     barcode: string | null
     purchasePrice: number
     sellingPrice: number
+    vatRate: number
     stock: number
     minStock: number
     supplier: string | null
@@ -13227,6 +13331,7 @@ export namespace Prisma {
     barcode?: boolean
     purchasePrice?: boolean
     sellingPrice?: boolean
+    vatRate?: boolean
     stock?: boolean
     minStock?: boolean
     supplier?: boolean
@@ -13244,6 +13349,7 @@ export namespace Prisma {
     barcode?: boolean
     purchasePrice?: boolean
     sellingPrice?: boolean
+    vatRate?: boolean
     stock?: boolean
     minStock?: boolean
     supplier?: boolean
@@ -13265,6 +13371,7 @@ export namespace Prisma {
       barcode: string | null
       purchasePrice: number
       sellingPrice: number
+      vatRate: number
       stock: number
       minStock: number
       supplier: string | null
@@ -13657,6 +13764,7 @@ export namespace Prisma {
     readonly barcode: FieldRef<"ShopProduct", 'String'>
     readonly purchasePrice: FieldRef<"ShopProduct", 'Float'>
     readonly sellingPrice: FieldRef<"ShopProduct", 'Float'>
+    readonly vatRate: FieldRef<"ShopProduct", 'Float'>
     readonly stock: FieldRef<"ShopProduct", 'Int'>
     readonly minStock: FieldRef<"ShopProduct", 'Int'>
     readonly supplier: FieldRef<"ShopProduct", 'String'>
@@ -14943,6 +15051,7 @@ export namespace Prisma {
     totalTTC: 'totalTTC',
     notes: 'notes',
     validUntil: 'validUntil',
+    paymentMethod: 'paymentMethod',
     invoiceId: 'invoiceId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
@@ -14962,6 +15071,8 @@ export namespace Prisma {
     totalTTC: 'totalTTC',
     notes: 'notes',
     paid: 'paid',
+    dueDate: 'dueDate',
+    paymentMethod: 'paymentMethod',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     taxDetails: 'taxDetails'
@@ -15005,6 +15116,8 @@ export namespace Prisma {
     name: 'name',
     sku: 'sku',
     costPrice: 'costPrice',
+    sellingPrice: 'sellingPrice',
+    vatRate: 'vatRate',
     stock: 'stock',
     minStock: 'minStock',
     supplier: 'supplier',
@@ -15024,6 +15137,7 @@ export namespace Prisma {
     name: 'name',
     laborCost: 'laborCost',
     suggestedPrice: 'suggestedPrice',
+    vatRate: 'vatRate',
     duration: 'duration',
     partId: 'partId',
     modelId: 'modelId',
@@ -15052,7 +15166,8 @@ export namespace Prisma {
     repairId: 'repairId',
     serviceId: 'serviceId',
     quantity: 'quantity',
-    priceAtTime: 'priceAtTime'
+    priceAtTime: 'priceAtTime',
+    vatRate: 'vatRate'
   };
 
   export type RepairServiceScalarFieldEnum = (typeof RepairServiceScalarFieldEnum)[keyof typeof RepairServiceScalarFieldEnum]
@@ -15077,6 +15192,7 @@ export namespace Prisma {
     barcode: 'barcode',
     purchasePrice: 'purchasePrice',
     sellingPrice: 'sellingPrice',
+    vatRate: 'vatRate',
     stock: 'stock',
     minStock: 'minStock',
     supplier: 'supplier',
@@ -15285,6 +15401,7 @@ export namespace Prisma {
     totalTTC?: FloatFilter<"Quote"> | number
     notes?: StringNullableFilter<"Quote"> | string | null
     validUntil?: DateTimeNullableFilter<"Quote"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Quote"> | string | null
     invoiceId?: StringNullableFilter<"Quote"> | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
@@ -15305,6 +15422,7 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrderInput | SortOrder
     validUntil?: SortOrderInput | SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
     invoiceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15329,6 +15447,7 @@ export namespace Prisma {
     totalTTC?: FloatFilter<"Quote"> | number
     notes?: StringNullableFilter<"Quote"> | string | null
     validUntil?: DateTimeNullableFilter<"Quote"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Quote"> | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     taxDetails?: StringNullableFilter<"Quote"> | string | null
@@ -15348,6 +15467,7 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrderInput | SortOrder
     validUntil?: SortOrderInput | SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
     invoiceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15373,6 +15493,7 @@ export namespace Prisma {
     totalTTC?: FloatWithAggregatesFilter<"Quote"> | number
     notes?: StringNullableWithAggregatesFilter<"Quote"> | string | null
     validUntil?: DateTimeNullableWithAggregatesFilter<"Quote"> | Date | string | null
+    paymentMethod?: StringNullableWithAggregatesFilter<"Quote"> | string | null
     invoiceId?: StringNullableWithAggregatesFilter<"Quote"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
@@ -15392,6 +15513,8 @@ export namespace Prisma {
     totalTTC?: FloatFilter<"Invoice"> | number
     notes?: StringNullableFilter<"Invoice"> | string | null
     paid?: BoolFilter<"Invoice"> | boolean
+    dueDate?: DateTimeNullableFilter<"Invoice"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
@@ -15410,6 +15533,8 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrderInput | SortOrder
     paid?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
@@ -15431,6 +15556,8 @@ export namespace Prisma {
     totalTTC?: FloatFilter<"Invoice"> | number
     notes?: StringNullableFilter<"Invoice"> | string | null
     paid?: BoolFilter<"Invoice"> | boolean
+    dueDate?: DateTimeNullableFilter<"Invoice"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
@@ -15449,6 +15576,8 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrderInput | SortOrder
     paid?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
@@ -15472,6 +15601,8 @@ export namespace Prisma {
     totalTTC?: FloatWithAggregatesFilter<"Invoice"> | number
     notes?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     paid?: BoolWithAggregatesFilter<"Invoice"> | boolean
+    dueDate?: DateTimeNullableWithAggregatesFilter<"Invoice"> | Date | string | null
+    paymentMethod?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
@@ -15645,6 +15776,8 @@ export namespace Prisma {
     name?: StringFilter<"Part"> | string
     sku?: StringFilter<"Part"> | string
     costPrice?: FloatFilter<"Part"> | number
+    sellingPrice?: FloatNullableFilter<"Part"> | number | null
+    vatRate?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
     supplier?: StringNullableFilter<"Part"> | string | null
@@ -15663,6 +15796,8 @@ export namespace Prisma {
     name?: SortOrder
     sku?: SortOrder
     costPrice?: SortOrder
+    sellingPrice?: SortOrderInput | SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrderInput | SortOrder
@@ -15684,6 +15819,8 @@ export namespace Prisma {
     NOT?: PartWhereInput | PartWhereInput[]
     name?: StringFilter<"Part"> | string
     costPrice?: FloatFilter<"Part"> | number
+    sellingPrice?: FloatNullableFilter<"Part"> | number | null
+    vatRate?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
     supplier?: StringNullableFilter<"Part"> | string | null
@@ -15702,6 +15839,8 @@ export namespace Prisma {
     name?: SortOrder
     sku?: SortOrder
     costPrice?: SortOrder
+    sellingPrice?: SortOrderInput | SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrderInput | SortOrder
@@ -15726,6 +15865,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Part"> | string
     sku?: StringWithAggregatesFilter<"Part"> | string
     costPrice?: FloatWithAggregatesFilter<"Part"> | number
+    sellingPrice?: FloatNullableWithAggregatesFilter<"Part"> | number | null
+    vatRate?: FloatWithAggregatesFilter<"Part"> | number
     stock?: IntWithAggregatesFilter<"Part"> | number
     minStock?: IntWithAggregatesFilter<"Part"> | number
     supplier?: StringNullableWithAggregatesFilter<"Part"> | string | null
@@ -15745,6 +15886,7 @@ export namespace Prisma {
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
     suggestedPrice?: FloatFilter<"Service"> | number
+    vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
     modelId?: StringNullableFilter<"Service"> | string | null
@@ -15760,6 +15902,7 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrderInput | SortOrder
     modelId?: SortOrderInput | SortOrder
@@ -15778,6 +15921,7 @@ export namespace Prisma {
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
     suggestedPrice?: FloatFilter<"Service"> | number
+    vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
     modelId?: StringNullableFilter<"Service"> | string | null
@@ -15793,6 +15937,7 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrderInput | SortOrder
     modelId?: SortOrderInput | SortOrder
@@ -15813,6 +15958,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Service"> | string
     laborCost?: FloatWithAggregatesFilter<"Service"> | number
     suggestedPrice?: FloatWithAggregatesFilter<"Service"> | number
+    vatRate?: FloatWithAggregatesFilter<"Service"> | number
     duration?: IntWithAggregatesFilter<"Service"> | number
     partId?: StringNullableWithAggregatesFilter<"Service"> | string | null
     modelId?: StringNullableWithAggregatesFilter<"Service"> | string | null
@@ -15906,6 +16052,7 @@ export namespace Prisma {
     serviceId?: StringFilter<"RepairService"> | string
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
+    vatRate?: FloatFilter<"RepairService"> | number
     repair?: XOR<RepairRelationFilter, RepairWhereInput>
     service?: XOR<ServiceRelationFilter, ServiceWhereInput>
   }
@@ -15916,6 +16063,7 @@ export namespace Prisma {
     serviceId?: SortOrder
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
     repair?: RepairOrderByWithRelationInput
     service?: ServiceOrderByWithRelationInput
   }
@@ -15929,6 +16077,7 @@ export namespace Prisma {
     serviceId?: StringFilter<"RepairService"> | string
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
+    vatRate?: FloatFilter<"RepairService"> | number
     repair?: XOR<RepairRelationFilter, RepairWhereInput>
     service?: XOR<ServiceRelationFilter, ServiceWhereInput>
   }, "id">
@@ -15939,6 +16088,7 @@ export namespace Prisma {
     serviceId?: SortOrder
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
     _count?: RepairServiceCountOrderByAggregateInput
     _avg?: RepairServiceAvgOrderByAggregateInput
     _max?: RepairServiceMaxOrderByAggregateInput
@@ -15955,6 +16105,7 @@ export namespace Prisma {
     serviceId?: StringWithAggregatesFilter<"RepairService"> | string
     quantity?: IntWithAggregatesFilter<"RepairService"> | number
     priceAtTime?: FloatWithAggregatesFilter<"RepairService"> | number
+    vatRate?: FloatWithAggregatesFilter<"RepairService"> | number
   }
 
   export type RepairLogWhereInput = {
@@ -16023,6 +16174,7 @@ export namespace Prisma {
     barcode?: StringNullableFilter<"ShopProduct"> | string | null
     purchasePrice?: FloatFilter<"ShopProduct"> | number
     sellingPrice?: FloatFilter<"ShopProduct"> | number
+    vatRate?: FloatFilter<"ShopProduct"> | number
     stock?: IntFilter<"ShopProduct"> | number
     minStock?: IntFilter<"ShopProduct"> | number
     supplier?: StringNullableFilter<"ShopProduct"> | string | null
@@ -16040,6 +16192,7 @@ export namespace Prisma {
     barcode?: SortOrderInput | SortOrder
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrderInput | SortOrder
@@ -16060,6 +16213,7 @@ export namespace Prisma {
     category?: StringFilter<"ShopProduct"> | string
     purchasePrice?: FloatFilter<"ShopProduct"> | number
     sellingPrice?: FloatFilter<"ShopProduct"> | number
+    vatRate?: FloatFilter<"ShopProduct"> | number
     stock?: IntFilter<"ShopProduct"> | number
     minStock?: IntFilter<"ShopProduct"> | number
     supplier?: StringNullableFilter<"ShopProduct"> | string | null
@@ -16077,6 +16231,7 @@ export namespace Prisma {
     barcode?: SortOrderInput | SortOrder
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrderInput | SortOrder
@@ -16102,6 +16257,7 @@ export namespace Prisma {
     barcode?: StringNullableWithAggregatesFilter<"ShopProduct"> | string | null
     purchasePrice?: FloatWithAggregatesFilter<"ShopProduct"> | number
     sellingPrice?: FloatWithAggregatesFilter<"ShopProduct"> | number
+    vatRate?: FloatWithAggregatesFilter<"ShopProduct"> | number
     stock?: IntWithAggregatesFilter<"ShopProduct"> | number
     minStock?: IntWithAggregatesFilter<"ShopProduct"> | number
     supplier?: StringNullableWithAggregatesFilter<"ShopProduct"> | string | null
@@ -16335,6 +16491,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -16354,6 +16511,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     invoiceId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16369,6 +16527,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16388,6 +16547,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16403,6 +16563,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16419,6 +16580,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16433,6 +16595,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -16451,6 +16615,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -16465,6 +16631,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16483,6 +16651,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16497,6 +16667,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16512,6 +16684,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16662,6 +16836,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -16679,6 +16855,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -16696,6 +16874,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16713,6 +16893,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16730,6 +16912,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16745,6 +16929,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16761,6 +16947,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     description?: string | null
     createdAt?: Date | string
@@ -16774,6 +16961,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     partId?: string | null
     modelId?: string | null
@@ -16787,6 +16975,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16800,6 +16989,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16813,6 +17003,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16823,6 +17014,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16909,6 +17101,7 @@ export namespace Prisma {
     id?: string
     quantity?: number
     priceAtTime: number
+    vatRate?: number
     repair: RepairCreateNestedOneWithoutServicesInput
     service: ServiceCreateNestedOneWithoutRepairsInput
   }
@@ -16919,12 +17112,14 @@ export namespace Prisma {
     serviceId: string
     quantity?: number
     priceAtTime: number
+    vatRate?: number
   }
 
   export type RepairServiceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     repair?: RepairUpdateOneRequiredWithoutServicesNestedInput
     service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
   }
@@ -16935,12 +17130,14 @@ export namespace Prisma {
     serviceId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
   export type RepairServiceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
   export type RepairServiceUncheckedUpdateManyInput = {
@@ -16949,6 +17146,7 @@ export namespace Prisma {
     serviceId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
   export type RepairLogCreateInput = {
@@ -17006,6 +17204,7 @@ export namespace Prisma {
     barcode?: string | null
     purchasePrice: number
     sellingPrice: number
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -17023,6 +17222,7 @@ export namespace Prisma {
     barcode?: string | null
     purchasePrice: number
     sellingPrice: number
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -17040,6 +17240,7 @@ export namespace Prisma {
     barcode?: NullableStringFieldUpdateOperationsInput | string | null
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     sellingPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17057,6 +17258,7 @@ export namespace Prisma {
     barcode?: NullableStringFieldUpdateOperationsInput | string | null
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     sellingPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17074,6 +17276,7 @@ export namespace Prisma {
     barcode?: NullableStringFieldUpdateOperationsInput | string | null
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     sellingPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17091,6 +17294,7 @@ export namespace Prisma {
     barcode?: NullableStringFieldUpdateOperationsInput | string | null
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     sellingPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17432,6 +17636,7 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrder
     validUntil?: SortOrder
+    paymentMethod?: SortOrder
     invoiceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17454,6 +17659,7 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrder
     validUntil?: SortOrder
+    paymentMethod?: SortOrder
     invoiceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17471,6 +17677,7 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrder
     validUntil?: SortOrder
+    paymentMethod?: SortOrder
     invoiceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17532,6 +17739,8 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrder
     paid?: SortOrder
+    dueDate?: SortOrder
+    paymentMethod?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
@@ -17552,6 +17761,8 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrder
     paid?: SortOrder
+    dueDate?: SortOrder
+    paymentMethod?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
@@ -17567,6 +17778,8 @@ export namespace Prisma {
     totalTTC?: SortOrder
     notes?: SortOrder
     paid?: SortOrder
+    dueDate?: SortOrder
+    paymentMethod?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
@@ -17693,6 +17906,17 @@ export namespace Prisma {
     modelReference?: SortOrder
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -17714,6 +17938,8 @@ export namespace Prisma {
     name?: SortOrder
     sku?: SortOrder
     costPrice?: SortOrder
+    sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
@@ -17727,6 +17953,8 @@ export namespace Prisma {
 
   export type PartAvgOrderByAggregateInput = {
     costPrice?: SortOrder
+    sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
   }
@@ -17736,6 +17964,8 @@ export namespace Prisma {
     name?: SortOrder
     sku?: SortOrder
     costPrice?: SortOrder
+    sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
@@ -17752,6 +17982,8 @@ export namespace Prisma {
     name?: SortOrder
     sku?: SortOrder
     costPrice?: SortOrder
+    sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
@@ -17765,8 +17997,26 @@ export namespace Prisma {
 
   export type PartSumOrderByAggregateInput = {
     costPrice?: SortOrder
+    sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -17805,6 +18055,7 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
     modelId?: SortOrder
@@ -17815,6 +18066,7 @@ export namespace Prisma {
   export type ServiceAvgOrderByAggregateInput = {
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
   }
 
@@ -17823,6 +18075,7 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
     modelId?: SortOrder
@@ -17835,6 +18088,7 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
     modelId?: SortOrder
@@ -17845,6 +18099,7 @@ export namespace Prisma {
   export type ServiceSumOrderByAggregateInput = {
     laborCost?: SortOrder
     suggestedPrice?: SortOrder
+    vatRate?: SortOrder
     duration?: SortOrder
   }
 
@@ -17904,11 +18159,13 @@ export namespace Prisma {
     serviceId?: SortOrder
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
   }
 
   export type RepairServiceAvgOrderByAggregateInput = {
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
   }
 
   export type RepairServiceMaxOrderByAggregateInput = {
@@ -17917,6 +18174,7 @@ export namespace Prisma {
     serviceId?: SortOrder
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
   }
 
   export type RepairServiceMinOrderByAggregateInput = {
@@ -17925,11 +18183,13 @@ export namespace Prisma {
     serviceId?: SortOrder
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
   }
 
   export type RepairServiceSumOrderByAggregateInput = {
     quantity?: SortOrder
     priceAtTime?: SortOrder
+    vatRate?: SortOrder
   }
 
   export type RepairLogCountOrderByAggregateInput = {
@@ -17964,6 +18224,7 @@ export namespace Prisma {
     barcode?: SortOrder
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
@@ -17976,6 +18237,7 @@ export namespace Prisma {
   export type ShopProductAvgOrderByAggregateInput = {
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
   }
@@ -17988,6 +18250,7 @@ export namespace Prisma {
     barcode?: SortOrder
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
@@ -18005,6 +18268,7 @@ export namespace Prisma {
     barcode?: SortOrder
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
@@ -18017,6 +18281,7 @@ export namespace Prisma {
   export type ShopProductSumOrderByAggregateInput = {
     purchasePrice?: SortOrder
     sellingPrice?: SortOrder
+    vatRate?: SortOrder
     stock?: SortOrder
     minStock?: SortOrder
   }
@@ -18526,6 +18791,14 @@ export namespace Prisma {
     connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -19022,6 +19295,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -19046,6 +19346,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19062,6 +19364,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19082,6 +19386,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19099,6 +19404,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     invoiceId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19170,6 +19476,8 @@ export namespace Prisma {
     totalTTC?: FloatFilter<"Invoice"> | number
     notes?: StringNullableFilter<"Invoice"> | string | null
     paid?: BoolFilter<"Invoice"> | boolean
+    dueDate?: DateTimeNullableFilter<"Invoice"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
@@ -19205,6 +19513,7 @@ export namespace Prisma {
     totalTTC?: FloatFilter<"Quote"> | number
     notes?: StringNullableFilter<"Quote"> | string | null
     validUntil?: DateTimeNullableFilter<"Quote"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Quote"> | string | null
     invoiceId?: StringNullableFilter<"Quote"> | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
@@ -19320,6 +19629,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19337,6 +19648,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19450,6 +19763,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19467,6 +19782,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19553,6 +19870,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19571,6 +19889,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -19685,6 +20004,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19703,6 +20023,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19841,6 +20162,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -19857,6 +20180,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -19878,6 +20203,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     description?: string | null
     createdAt?: Date | string
@@ -19890,6 +20216,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     partId?: string | null
     description?: string | null
@@ -19972,6 +20299,8 @@ export namespace Prisma {
     name?: StringFilter<"Part"> | string
     sku?: StringFilter<"Part"> | string
     costPrice?: FloatFilter<"Part"> | number
+    sellingPrice?: FloatNullableFilter<"Part"> | number | null
+    vatRate?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
     supplier?: StringNullableFilter<"Part"> | string | null
@@ -20007,6 +20336,7 @@ export namespace Prisma {
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
     suggestedPrice?: FloatFilter<"Service"> | number
+    vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
     modelId?: StringNullableFilter<"Service"> | string | null
@@ -20044,6 +20374,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     description?: string | null
     createdAt?: Date | string
@@ -20056,6 +20387,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     modelId?: string | null
     description?: string | null
@@ -20119,6 +20451,7 @@ export namespace Prisma {
     id?: string
     quantity?: number
     priceAtTime: number
+    vatRate?: number
     repair: RepairCreateNestedOneWithoutServicesInput
   }
 
@@ -20127,6 +20460,7 @@ export namespace Prisma {
     repairId: string
     quantity?: number
     priceAtTime: number
+    vatRate?: number
   }
 
   export type RepairServiceCreateOrConnectWithoutServiceInput = {
@@ -20139,6 +20473,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -20155,6 +20491,8 @@ export namespace Prisma {
     name: string
     sku: string
     costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
     stock?: number
     minStock?: number
     supplier?: string | null
@@ -20221,6 +20559,7 @@ export namespace Prisma {
     serviceId?: StringFilter<"RepairService"> | string
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
+    vatRate?: FloatFilter<"RepairService"> | number
   }
 
   export type PartUpsertWithoutServicesInput = {
@@ -20239,6 +20578,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20255,6 +20596,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20305,6 +20648,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -20321,6 +20666,8 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -20341,6 +20688,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
@@ -20358,6 +20706,7 @@ export namespace Prisma {
     totalTTC: number
     notes?: string | null
     validUntil?: Date | string | null
+    paymentMethod?: string | null
     invoiceId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20433,6 +20782,7 @@ export namespace Prisma {
     id?: string
     quantity?: number
     priceAtTime: number
+    vatRate?: number
     service: ServiceCreateNestedOneWithoutRepairsInput
   }
 
@@ -20441,6 +20791,7 @@ export namespace Prisma {
     serviceId: string
     quantity?: number
     priceAtTime: number
+    vatRate?: number
   }
 
   export type RepairServiceCreateOrConnectWithoutRepairInput = {
@@ -20606,6 +20957,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     description?: string | null
     createdAt?: Date | string
@@ -20618,6 +20970,7 @@ export namespace Prisma {
     name: string
     laborCost: number
     suggestedPrice?: number
+    vatRate?: number
     duration?: number
     partId?: string | null
     modelId?: string | null
@@ -20683,6 +21036,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20695,6 +21049,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20778,6 +21133,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20794,6 +21151,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20809,6 +21168,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20823,6 +21184,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20840,6 +21202,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20856,6 +21219,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20958,6 +21322,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20974,6 +21340,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20990,6 +21358,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
     costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21005,6 +21375,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21017,6 +21388,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21029,6 +21401,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21040,6 +21413,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21052,6 +21426,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21064,6 +21439,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21074,6 +21450,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     repair?: RepairUpdateOneRequiredWithoutServicesNestedInput
   }
 
@@ -21082,6 +21459,7 @@ export namespace Prisma {
     repairId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
   export type RepairServiceUncheckedUpdateManyWithoutServiceInput = {
@@ -21089,6 +21467,7 @@ export namespace Prisma {
     repairId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
   export type InvoiceUpdateWithoutRepairInput = {
@@ -21099,6 +21478,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21115,6 +21496,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21130,6 +21513,8 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21144,6 +21529,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21161,6 +21547,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21177,6 +21564,7 @@ export namespace Prisma {
     totalTTC?: FloatFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21208,6 +21596,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
     service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
   }
 
@@ -21216,6 +21605,7 @@ export namespace Prisma {
     serviceId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
   export type RepairServiceUncheckedUpdateManyWithoutRepairInput = {
@@ -21223,6 +21613,7 @@ export namespace Prisma {
     serviceId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
+    vatRate?: FloatFieldUpdateOperationsInput | number
   }
 
 
