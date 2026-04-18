@@ -1123,6 +1123,18 @@ function BillingContent() {
                                   <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${draftPaid ? 'left-7' : 'left-1'}`} />
                                </button>
                             </div>
+                            <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100">
+                               <span className="text-xs font-bold text-slate-600">Paiement comptant ?</span>
+                               <button 
+                                 onClick={() => {
+                                   const today = new Date().toISOString().split('T')[0]
+                                   setDraftDueDate(draftDueDate === today ? '' : today)
+                                 }}
+                                 className={`w-12 h-6 rounded-full transition-all relative ${draftDueDate === new Date().toISOString().split('T')[0] ? 'bg-blue-500' : 'bg-slate-200'}`}
+                               >
+                                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${draftDueDate === new Date().toISOString().split('T')[0] ? 'left-7' : 'left-1'}`} />
+                               </button>
+                            </div>
                             <div>
                                <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Date d'échéance</label>
                                <input 
