@@ -169,7 +169,7 @@ function BillingContent() {
   const searchParams = useSearchParams()
   
   // Tabs: quotes, invoices, repairs
-  const [activeTab, setActiveTab] = useState<'quotes' | 'invoices' | 'repairs'>((searchParams?.get('tab') as any) || 'repairs')
+  const [activeTab, setActiveTab] = useState<'quotes' | 'invoices' | 'repairs'>((searchParams?.get('tab') as any) || 'quotes')
   const [showEditor, setShowEditor] = useState(false)
   const [editorMode, setEditorMode] = useState<'quote' | 'invoice'>('quote')
   
