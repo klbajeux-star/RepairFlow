@@ -34,6 +34,8 @@ import {
   getRepairTotal,
   getTicketReference,
 } from '@/lib/repair'
+import { validateInvoiceForIssuance } from '@/lib/invoice-validation'
+import { DocumentData } from '@/lib/pdf-generator'
 
 // --- Types ---
 
@@ -406,6 +408,7 @@ function BillingContent() {
           taxDetails: totals.taxDetails,
           notes: draftNotes,
           paymentMethod: draftPaymentMethod,
+          dueDate: draftDueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           paid: false
         })
       })
@@ -534,6 +537,42 @@ function BillingContent() {
     if (!r) return null
     return getTicketReference(r)
   }, [draftRepairId, repairs])
+
+  const validation = useMemo(() => {
+    if (!draftClient) return { isValid: false, errors: [], warnings: [], infos: [] }
+    
+    const data: DocumentData = {
+      type: editorMode,
+      number: draftNumber,
+      date: new Date(),
+      client: {
+        name: draftClient.name,
+        address: draftClient.address,
+        zipCode: draftClient.zipCode,
+        city: draftClient.city,
+        phone: draftClient.phone,
+        siret: draftClient.siret,
+        vatNumber: draftClient.vatNumber
+      },
+      items: draftLines.map(l => ({
+        name: l.name,
+        quantity: l.quantity,
+        price: l.price,
+        vatRate: l.vatRate,
+        unit: l.unit
+      })),
+      totalHT: totals.totalHT,
+      totalTTC: totals.totalTTC,
+      tva: totals.tva,
+      taxDetails: totals.taxDetails,
+      notes: draftNotes,
+      dueDate: draftDueDate ? new Date(draftDueDate) : null,
+      paymentMethod: draftPaymentMethod || 'VIREMENT',
+      settings: settings as any
+    }
+
+    return validateInvoiceForIssuance(data)
+  }, [editorMode, draftNumber, draftClient, draftLines, totals, draftNotes, draftDueDate, draftPaymentMethod, settings])
 
   const handleDownload = async () => {
     if (!draftClient) return
@@ -734,21 +773,34 @@ function BillingContent() {
             </button>
             
             <div className="flex items-center gap-3">
-              {editorMode === 'quote' && selectedDocId && draftStatus === 'SIGNE' && (
-                 <button 
+              {editorMode === 'quote' && selectedDocId && (
+                <button 
                   onClick={convertQuoteToInvoice}
-                  disabled={isSaving}
-                  className="flex h-14 items-center gap-3 rounded-2xl bg-violet-600 px-6 text-sm font-black text-white shadow-xl shadow-violet-600/20 transition-all hover:bg-violet-700 active:scale-95"
+                  disabled={isSaving || !validation.isValid || draftStatus !== 'SIGNE'}
+                  className={`flex h-14 items-center gap-3 rounded-2xl px-6 text-sm font-black text-white shadow-xl transition-all active:scale-95 ${
+                    validation.isValid && draftStatus === 'SIGNE'
+                      ? 'bg-violet-600 shadow-violet-600/20 hover:bg-violet-700'
+                      : 'bg-slate-300 shadow-none cursor-not-allowed'
+                  }`}
                 >
                   <ArrowRight className="w-5 h-5" />
-                  Générer Facture
+                  {draftStatus !== 'SIGNE' ? 'Signer pour facturer' : 'Générer Facture'}
                 </button>
+              )}
+              {editorMode === 'quote' && selectedDocId && draftStatus !== 'SIGNE' && (
+                <p className="text-[10px] font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-100 animate-pulse">
+                  Pensez à passer le statut en "Signé" pour débloquer la facturation.
+                </p>
               )}
               
               <button 
                 onClick={handleSaveDoc}
-                disabled={isSaving || !draftClient}
-                className="flex h-14 items-center gap-3 rounded-2xl bg-emerald-600 px-6 text-sm font-black text-white shadow-xl shadow-emerald-600/20 transition-all hover:bg-emerald-700 active:scale-95"
+                disabled={isSaving || !validation.isValid}
+                className={`flex h-14 items-center gap-3 rounded-2xl px-6 text-sm font-black text-white shadow-xl transition-all active:scale-95 ${
+                  validation.isValid 
+                    ? 'bg-emerald-600 shadow-emerald-600/20 hover:bg-emerald-700' 
+                    : 'bg-slate-300 shadow-none cursor-not-allowed'
+                }`}
               >
                 {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                 {selectedDocId ? 'Mettre à jour' : 'Enregistrer'}
@@ -756,8 +808,8 @@ function BillingContent() {
               
               <button 
                 onClick={handleDownload}
-                disabled={!draftClient || isDownloading}
-                className="flex h-14 items-center gap-2 rounded-2xl bg-white/40 border border-white/60 px-6 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-white/60 active:scale-95"
+                disabled={!validation.isValid || isDownloading}
+                className="flex h-14 items-center gap-2 rounded-2xl bg-white/40 border border-white/60 px-6 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-white/60 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
                 PDF
@@ -962,6 +1014,45 @@ function BillingContent() {
 
             {/* Config Panel */}
             <aside className="space-y-6">
+               {/* Validation Panel */}
+               <div className={`rounded-[2rem] border p-6 shadow-sm backdrop-blur-md transition-all ${
+                 validation.isValid 
+                   ? 'border-emerald-100 bg-emerald-50/40' 
+                   : validation.errors.length > 0 
+                     ? 'border-rose-100 bg-rose-50/40' 
+                     : 'border-amber-100 bg-amber-50/40'
+               }`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contrôle de Conformité</p>
+                    {validation.isValid ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    ) : (
+                      <AlertCircle className={`w-4 h-4 ${validation.errors.length > 0 ? 'text-rose-500' : 'text-amber-500'}`} />
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    {validation.errors.map((err, i) => (
+                      <div key={i} className="flex gap-2 text-[10px] leading-tight text-rose-700 bg-rose-100/50 p-2 rounded-lg">
+                        <X className="w-3 h-3 shrink-0" />
+                        <span>{err.message}</span>
+                      </div>
+                    ))}
+                    {validation.warnings.map((warn, i) => (
+                      <div key={i} className="flex gap-2 text-[10px] leading-tight text-amber-700 bg-amber-100/50 p-2 rounded-lg">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{warn.message}</span>
+                      </div>
+                    ))}
+                    {validation.isValid && validation.errors.length === 0 && (
+                      <div className="flex gap-2 text-[10px] leading-tight text-emerald-700 bg-emerald-100/50 p-2 rounded-lg">
+                        <CheckCircle2 className="w-3 h-3 shrink-0" />
+                        <span>Document conforme et prêt pour émission.</span>
+                      </div>
+                    )}
+                  </div>
+               </div>
+
                <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-sm backdrop-blur-md">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Configuration</p>
                   
