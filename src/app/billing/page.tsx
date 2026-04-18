@@ -282,9 +282,16 @@ function BillingContent() {
       const repair = repairs.find(r => r.id === repairId)
       if (repair) {
         createNewFromRepair(repair, mode)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     }
   }, [searchParams, repairs, quotes, invoices, isLoading])
+
+  useEffect(() => {
+    if (showEditor) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [showEditor])
 
   function createNewFromRepair(repair: Repair, mode: 'quote' | 'invoice' = 'quote') {
     setEditorMode(mode)
@@ -309,6 +316,7 @@ function BillingContent() {
     setSelectedDocId(null)
     setSelectedDocType(null)
     setShowEditor(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function openEditor(doc: Quote | Invoice, type: 'quote' | 'invoice') {
@@ -330,6 +338,7 @@ function BillingContent() {
     setSelectedDocId(doc.id)
     setSelectedDocType(type)
     setShowEditor(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function handleSaveDoc() {
@@ -579,6 +588,7 @@ function BillingContent() {
               setDraftPaymentMethod('VIREMENT')
               setSelectedDocId(null)
               setShowEditor(true)
+              window.scrollTo({ top: 0, behavior: 'smooth' })
             }}
             className="flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white shadow-xl transition hover:bg-blue-600 active:scale-95"
           >
