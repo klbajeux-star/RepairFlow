@@ -1,6 +1,7 @@
 import prisma from './prisma'
 import { generatePDF, DocumentData, InvoiceLine } from './pdf-generator'
 import { generateFacturXXML } from './facturx-xml'
+import { validateInvoiceForIssuance } from './invoice-validation'
 import { PDFDocument, PDFName, PDFHexString, AFRelationship } from 'pdf-lib'
 import { format } from 'date-fns'
 import { randomBytes } from 'node:crypto'
@@ -73,6 +74,14 @@ export async function getDocumentPDF(type: 'quote' | 'invoice', id: string): Pro
       ticketRef: docData.repair?.number,
       quoteRef: docData.quote?.number,
       settings: settings as any
+    }
+
+    // Backend Validation
+    const validation = validateInvoiceForIssuance(data)
+    if (!validation.isValid) {
+      const errorMsg = validation.errors.map(e => e.message).join(' | ')
+      console.error(`[DOC-SERVICE] Validation failed for ${type} ${id}: ${errorMsg}`)
+      throw new Error(`Conformité non respectée : ${errorMsg}`)
     }
 
     // Generate the base PDF using jsPDF

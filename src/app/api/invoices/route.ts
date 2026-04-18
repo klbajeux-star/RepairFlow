@@ -7,6 +7,8 @@ import {
   requireNumber,
   requireString,
 } from '@/lib/api-utils'
+import { validateInvoiceForIssuance } from '@/lib/invoice-validation'
+import { DocumentData } from '@/lib/pdf-generator'
 
 async function getNextDocSequence() {
   const year = new Date().getFullYear()
@@ -90,6 +92,35 @@ export async function POST(request: Request) {
         console.error('[INVOICE NUMBER ERROR]', e)
         throw new Error('Erreur lors de la génération du numéro de facture.')
       })
+    }
+
+    // Validation Backend
+    const settings = await prisma.workshopSettings.findFirst()
+    const client = await prisma.client.findUnique({ where: { id: json.clientId } })
+    if (!client) throw new Error('Client introuvable.')
+
+    const validationData: DocumentData = {
+      type: 'invoice',
+      number: number,
+      date: new Date(),
+      client: client as any,
+      items: json.items || [],
+      totalHT: json.totalHT || 0,
+      totalTTC: json.totalTTC || 0,
+      tva: (json.totalTTC || 0) - (json.totalHT || 0),
+      taxDetails: json.taxDetails || [],
+      notes: json.notes,
+      dueDate: json.dueDate ? new Date(json.dueDate) : null,
+      paymentMethod: json.paymentMethod,
+      settings: settings as any
+    }
+
+    const validation = validateInvoiceForIssuance(validationData)
+    if (!validation.isValid) {
+      return NextResponse.json({ 
+        error: 'Conformité non respectée', 
+        details: validation.errors.map(e => e.message) 
+      }, { status: 400 })
     }
 
     const invoice = await prisma.invoice.create({
