@@ -261,13 +261,30 @@ function BillingContent() {
   // Handle URL params for direct opening
   useEffect(() => {
     const repairId = searchParams?.get('repairId')
-    if (repairId && repairs.length > 0) {
+    const mode = (searchParams?.get('mode') as any) === 'devis' ? 'quote' : 'invoice'
+
+    if (repairId && repairs.length > 0 && !isLoading) {
+      // Vérifier si un document du type demandé existe déjà pour ce ticket
+      if (mode === 'quote') {
+        const existingQuote = quotes.find(q => q.repairId === repairId)
+        if (existingQuote) {
+          openEditor(existingQuote, 'quote')
+          return
+        }
+      } else {
+        const existingInvoice = invoices.find(i => i.repairId === repairId)
+        if (existingInvoice) {
+          openEditor(existingInvoice, 'invoice')
+          return
+        }
+      }
+
       const repair = repairs.find(r => r.id === repairId)
       if (repair) {
-        createNewFromRepair(repair, (searchParams?.get('mode') as any) === 'devis' ? 'quote' : 'invoice')
+        createNewFromRepair(repair, mode)
       }
     }
-  }, [searchParams, repairs])
+  }, [searchParams, repairs, quotes, invoices, isLoading])
 
   function createNewFromRepair(repair: Repair, mode: 'quote' | 'invoice' = 'quote') {
     setEditorMode(mode)
@@ -483,16 +500,24 @@ function BillingContent() {
 
   const filteredRepairs = useMemo(() => {
     const q = search.trim().toLowerCase()
+    
+    // On récupère tous les IDs de tickets déjà liés à un devis ou une facture
+    const usedRepairIds = new Set([
+      ...quotes.map(q => q.repairId).filter(Boolean),
+      ...invoices.map(i => i.repairId).filter(Boolean)
+    ])
+
     return repairs
       .filter(repair => 
-        repair.id.toLowerCase().includes(q) || repair.client.name.toLowerCase().includes(q)
+        (repair.id.toLowerCase().includes(q) || repair.client.name.toLowerCase().includes(q)) &&
+        !usedRepairIds.has(repair.id)
       )
       .sort((a, b) => {
         if (a.status === 'PENDING' && b.status !== 'PENDING') return -1
         if (a.status !== 'PENDING' && b.status === 'PENDING') return 1
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       })
-  }, [repairs, search])
+  }, [repairs, quotes, invoices, search])
 
   const draftTicketRef = useMemo(() => {
     if (!draftRepairId) return null

@@ -1393,6 +1393,15 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       Actions de gestion
                     </p>
                     <div className="mt-4 flex flex-col gap-2">
+                      {!quotes.find((q) => q.repairId === selectedRepair.id) && (
+                        <button
+                          onClick={() => router.push(`/billing?repairId=${selectedRepair.id}&mode=devis`)}
+                          className="flex w-full items-center justify-between rounded-2xl border border-blue-100 bg-blue-50 px-4 py-4 text-sm font-black text-blue-600 transition hover:border-blue-200 hover:bg-blue-100 shadow-sm shadow-blue-600/5 active:scale-[0.98]"
+                        >
+                          Générer un Devis
+                          <FileText className="h-5 w-5 text-blue-400" />
+                        </button>
+                      )}
                       <button
                         onClick={() => archiveRepair(selectedRepair.id)}
                         className="flex w-full items-center justify-between rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm font-bold text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"
