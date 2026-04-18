@@ -72,7 +72,7 @@ interface DraftLine {
   price: number
   quantity: number
   vatRate: number
-  unit?: 'HUR' | 'C62'
+  unit?: 'C62'
 }
 
 interface Quote {
@@ -303,7 +303,7 @@ function BillingContent() {
       price: s.priceAtTime,
       quantity: s.quantity,
       vatRate: s.vatRate ?? 20,
-      unit: 'HUR'
+      unit: 'C62'
     })))
     const ticketRef = getTicketReference(repair)
     const autoNote = `Document généré à partir du ticket ${ticketRef}`
@@ -469,7 +469,7 @@ function BillingContent() {
       price: 0, 
       quantity: 1,
       vatRate: 20,
-      unit: 'HUR'
+      unit: 'C62'
     }])
   }
 

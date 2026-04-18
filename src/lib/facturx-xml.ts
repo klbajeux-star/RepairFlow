@@ -60,6 +60,8 @@ export function generateFacturXXML(data: DocumentData): string {
       const lineHT = (item.price * item.quantity) / (1 + rate / 100)
       const categoryCode = rate === 0 ? 'E' : 'S'
       
+      const unitCode = (item.unit === 'HUR' || !item.unit) ? 'C62' : item.unit
+      
       return `
     <ram:IncludedSupplyChainTradeLineItem>
       <ram:AssociatedDocumentLineDocument>
@@ -74,7 +76,7 @@ export function generateFacturXXML(data: DocumentData): string {
         </ram:NetPriceProductTradePrice>
       </ram:SpecifiedLineTradeAgreement>
       <ram:SpecifiedLineTradeDelivery>
-        <ram:BilledQuantity unitCode="${item.unit || 'C62'}">${item.quantity || 1}</ram:BilledQuantity>
+        <ram:BilledQuantity unitCode="${unitCode}">${item.quantity || 1}</ram:BilledQuantity>
       </ram:SpecifiedLineTradeDelivery>
       <ram:SpecifiedLineTradeSettlement>
         <ram:ApplicableTradeTax>
