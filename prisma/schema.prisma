@@ -51,6 +51,7 @@ model Quote {
 model Invoice {
   id         String   @id @default(cuid())
   number     String   @unique
+  status     String   @default("BROUILLON")
   clientId   String
   repairId   String?
   items      String

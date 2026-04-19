@@ -25,6 +25,7 @@ import {
   User,
   Loader2,
   StickyNote,
+  Lock as LockIcon,
 } from 'lucide-react'
 import {
   formatCurrency,
@@ -98,6 +99,7 @@ interface Quote {
 interface Invoice {
   id: string
   number: string
+  status?: string | null
   clientId: string
   client: Client
   repairId?: string | null
@@ -157,11 +159,14 @@ function getQuoteStatusBadge(status: string) {
   }
 }
 
-function getInvoiceStatusBadge(paid: boolean) {
+function getInvoiceStatusBadge(paid: boolean, status?: string) {
   if (paid) {
     return <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-600">Payée</span>
   }
-  return <span className="rounded-full bg-amber-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-amber-600">Non payée</span>
+  if (status === 'EMISE') {
+    return <span className="rounded-full bg-blue-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-blue-600">Émise</span>
+  }
+  return <span className="rounded-full bg-amber-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-amber-600">Brouillon</span>
 }
 
 // --- Main Component ---
@@ -195,7 +200,7 @@ function BillingContent() {
   const [draftNumber, setDraftNumber] = useState('')
   const [draftQuoteNumber, setDraftQuoteNumber] = useState<string | null>(null)
   const [draftStatus, setDraftStatus] = useState<string>('BROUILLON')
-  const [draftPaid, setDraftPaid] = useState(false)
+  const [draftPaid, setDraftPaid] = useState(false); const [initialStatus, setInitialStatus] = useState("BROUILLON"); const [initialPaid, setInitialPaid] = useState(false)
   const [draftDueDate, setDraftDueDate] = useState<string>('')
   const [draftPaymentMethod, setDraftPaymentMethod] = useState<string>('VIREMENT')
   const [draftValidity, setDraftValidity] = useState<number>(30)
@@ -321,21 +326,21 @@ function BillingContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function openEditor(doc: Quote | Invoice, type: 'quote' | 'invoice') {
+  function openEditor(doc: any, type: 'quote' | 'invoice') {
     setEditorMode(type)
     setDraftClient(doc.client)
     setDraftRepairId(doc.repairId || null)
-    setDraftLines(JSON.parse(doc.items))
+    setDraftLines(JSON.parse(doc.items).map((l: any) => ({ ...l, unit: l.unit || "C62" })))
     setDraftNotes(doc.notes || '')
-    setDraftNumber(doc.number)
+    setDraftNumber(doc.number); setDraftStatus(doc.status || (type === "invoice" ? "BROUILLON" : "EN_ATTENTE")); setInitialStatus(doc.status || (type === "invoice" ? "BROUILLON" : "EN_ATTENTE"))
     setDraftPaymentMethod(doc.paymentMethod || 'VIREMENT')
     if (type === 'invoice') {
       setDraftQuoteNumber((doc as Invoice).quote?.number || null)
-      setDraftPaid((doc as Invoice).paid)
+      setDraftPaid((doc as Invoice).paid); setInitialPaid((doc as Invoice).paid)
       setDraftDueDate((doc as Invoice).dueDate ? new Date((doc as Invoice).dueDate!).toISOString().split('T')[0] : '')
     } else {
       setDraftQuoteNumber(null)
-      setDraftStatus((doc as Quote).status)
+      setInitialPaid(false)
     }
     setSelectedDocId(doc.id)
     setSelectedDocType(type)
@@ -377,7 +382,7 @@ function BillingContent() {
         throw new Error(data.error || 'Erreur lors de l’enregistrement.')
       }
       
-      const saved = data
+      const saved = data as any; setInitialStatus(saved.status || draftStatus); if (editorMode === "invoice") { setInitialPaid(saved.paid ?? draftPaid); }
       setDraftNumber(saved.number)
       setSelectedDocId(saved.id)
       setSelectedDocType(editorMode)
@@ -416,8 +421,7 @@ function BillingContent() {
       if (!res.ok) throw new Error('Conversion échouée.')
       
       const invoice = await res.json()
-      await loadInitialData()
-      openEditor(invoice, 'invoice')
+      setActiveTab("invoices"); openEditor(invoice, "invoice"); void loadInitialData()
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Erreur')
     } finally {
@@ -573,6 +577,14 @@ function BillingContent() {
 
     return validateInvoiceForIssuance(data)
   }, [editorMode, draftNumber, draftClient, draftLines, totals, draftNotes, draftDueDate, draftPaymentMethod, settings])
+
+  const isLocked = useMemo(() => {
+    if (editorMode === 'invoice') {
+      return !!selectedDocId && (initialStatus === 'EMISE' || initialPaid)
+    }
+    // Devis : verrouillé si Signé ou Converti
+    return !!selectedDocId && (initialStatus === 'SIGNE' || initialStatus === 'CONVERTI')
+  }, [editorMode, selectedDocId, initialStatus, initialPaid])
 
   const handleDownload = async () => {
     if (!draftClient) return
@@ -746,7 +758,7 @@ function BillingContent() {
                             onClick={(e) => togglePaymentStatus(doc.id, (doc as Invoice).paid, e)}
                             className="cursor-pointer hover:opacity-80 transition-opacity"
                           >
-                            {getInvoiceStatusBadge((doc as Invoice).paid)}
+                            {getInvoiceStatusBadge((doc as Invoice).paid, (doc as Invoice).status || 'BROUILLON')}
                           </div>
                         )}
                       </td>
@@ -773,33 +785,24 @@ function BillingContent() {
             </button>
             
             <div className="flex items-center gap-3">
-              {editorMode === 'quote' && selectedDocId && (
+              {editorMode === 'quote' && draftStatus === 'SIGNE' && (
                 <button 
                   onClick={convertQuoteToInvoice}
-                  disabled={isSaving || !validation.isValid || draftStatus !== 'SIGNE'}
-                  className={`flex h-14 items-center gap-3 rounded-2xl px-6 text-sm font-black text-white shadow-xl transition-all active:scale-95 ${
-                    validation.isValid && draftStatus === 'SIGNE'
-                      ? 'bg-violet-600 shadow-violet-600/20 hover:bg-violet-700'
-                      : 'bg-slate-300 shadow-none cursor-not-allowed'
-                  }`}
+                  disabled={isSaving}
+                  className="flex h-14 items-center gap-3 rounded-2xl px-6 text-sm font-black text-white shadow-xl bg-violet-600 hover:bg-violet-700 transition-all active:scale-95 shadow-violet-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowRight className="w-5 h-5" />
-                  {draftStatus !== 'SIGNE' ? 'Signer pour facturer' : 'Générer Facture'}
+                  Générer la Facture
                 </button>
               )}
-              {editorMode === 'quote' && selectedDocId && draftStatus !== 'SIGNE' && (
-                <p className="text-[10px] font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-100 animate-pulse">
-                  Pensez à passer le statut en "Signé" pour débloquer la facturation.
-                </p>
-              )}
-              
+
               <button 
                 onClick={handleSaveDoc}
-                disabled={isSaving || !validation.isValid}
+                disabled={isSaving || (isLocked && draftPaid === initialPaid && draftStatus === initialStatus)}
                 className={`flex h-14 items-center gap-3 rounded-2xl px-6 text-sm font-black text-white shadow-xl transition-all active:scale-95 ${
-                  validation.isValid 
-                    ? 'bg-emerald-600 shadow-emerald-600/20 hover:bg-emerald-700' 
-                    : 'bg-slate-300 shadow-none cursor-not-allowed'
+                  (isLocked && draftPaid === initialPaid && draftStatus === initialStatus)
+                    ? 'bg-slate-300 shadow-none cursor-not-allowed'
+                    : 'bg-emerald-600 shadow-emerald-600/20 hover:bg-emerald-700'
                 }`}
               >
                 {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
@@ -808,7 +811,7 @@ function BillingContent() {
               
               <button 
                 onClick={handleDownload}
-                disabled={!validation.isValid || isDownloading}
+                disabled={isDownloading}
                 className="flex h-14 items-center gap-2 rounded-2xl bg-white/40 border border-white/60 px-6 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-white/60 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
@@ -914,7 +917,7 @@ function BillingContent() {
                                    <td className="py-6 px-4">
                                       <input 
                                         className="w-full font-black text-slate-900 bg-transparent outline-none focus:text-blue-600 transition-colors" 
-                                        value={line.name || ''} 
+                                        value={line.name || ""} disabled={isLocked} 
                                         onChange={e => updateLine(idx, 'name', e.target.value)} 
                                       />
                                    </td>
@@ -928,17 +931,17 @@ function BillingContent() {
                                    </td>
                                    <td className="py-6 px-4 text-right">
                                       <input 
-                                        className="w-full text-right font-bold text-slate-600 bg-transparent outline-none" 
+                                        className="w-full text-right font-bold text-slate-600 bg-transparent outline-none disabled:text-slate-400" 
                                         type="number" 
-                                        value={(line.price / (1 + (line.vatRate || 20) / 100)).toFixed(2)} 
+                                        value={(line.price / (1 + (line.vatRate || 20) / 100)).toFixed(2)} disabled={isLocked} 
                                         onChange={e => updateLine(idx, 'price', parseFloat(e.target.value) * (1 + (line.vatRate || 20) / 100) || 0)} 
                                       />
                                    </td>
                                    <td className="py-6 px-4 text-center">
                                       <select 
-                                         value={line.vatRate || 20}
+                                         value={line.vatRate || 20} disabled={isLocked}
                                          onChange={e => updateLine(idx, 'vatRate', parseFloat(e.target.value))}
-                                         className="bg-transparent text-[10px] font-black text-slate-600 outline-none appearance-none cursor-pointer hover:text-blue-600"
+                                         className="bg-transparent text-[10px] font-black text-slate-600 outline-none appearance-none cursor-pointer hover:text-blue-600 disabled:text-slate-400 disabled:cursor-not-allowed"
                                       >
                                          <option value={20}>20%</option>
                                          <option value={10}>10%</option>
@@ -951,7 +954,7 @@ function BillingContent() {
                                    </td>
                                    <td className="py-6 px-4 text-right print:hidden">
                                       <button 
-                                        onClick={() => removeLine(idx)}
+                                        onClick={() => removeLine(idx)} disabled={isLocked}
                                         className="text-slate-200 hover:text-red-500 transition-colors"
                                       >
                                         <Trash2 className="w-4 h-4" />
@@ -962,8 +965,8 @@ function BillingContent() {
                            </tbody>
                        </table>
                        <button 
-                          onClick={addLine} 
-                          className="mt-6 flex items-center gap-3 px-6 py-3 rounded-xl border-2 border-dashed border-slate-100 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 hover:border-blue-200 transition-all print:hidden"
+                          onClick={addLine} disabled={isLocked} 
+                          className="mt-6 flex items-center gap-3 px-6 py-3 rounded-xl border-2 border-dashed border-slate-100 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 hover:border-blue-200 transition-all print:hidden disabled:opacity-0"
                         >
                           <Plus className="w-4 h-4" /> 
                           Ajouter une ligne personnalisée
@@ -1014,6 +1017,12 @@ function BillingContent() {
 
             {/* Config Panel */}
             <aside className="space-y-6">
+               {isLocked && (
+                 <div className="flex items-center gap-3 rounded-[2rem] bg-amber-50 border border-amber-200 px-6 py-4 text-[10px] font-black text-amber-600 uppercase tracking-widest animate-in fade-in slide-in-from-top-2 duration-500">
+                   <LockIcon className="w-4 h-4 text-amber-500" />
+                   Ce document est émis ou payé et ne peut plus être modifié.
+                 </div>
+               )}
                {/* Validation Panel */}
                <div className={`rounded-[2rem] border p-6 shadow-sm backdrop-blur-md transition-all ${
                  validation.isValid 
@@ -1076,7 +1085,7 @@ function BillingContent() {
                         <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Méthode de Paiement</label>
                         <select 
                           className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
-                          value={draftPaymentMethod || 'VIREMENT'}
+                          value={draftPaymentMethod || "VIREMENT"} disabled={isLocked}
                           onChange={(e) => setDraftPaymentMethod(e.target.value)}
                         >
                           <option value="VIREMENT">Virement Bancaire</option>
@@ -1091,14 +1100,16 @@ function BillingContent() {
                              <div>
                                 <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Statut du Devis</label>
                                 <select 
-                                  className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
-                                  value={draftStatus || 'BROUILLON'}
-                                  onChange={(e) => setDraftStatus(e.target.value)}
+                          className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none disabled:bg-slate-50 disabled:text-slate-400"
+                          value={draftStatus || 'BROUILLON'}
+                          onChange={(e) => setDraftStatus(e.target.value)}
+                          disabled={isLocked}
                                 >
                                   <option value="BROUILLON">Brouillon</option>
                                   <option value="EN_ATTENTE">En attente (Envoyé)</option>
                                   <option value="SIGNE">Signé / Accepté</option>
                                   <option value="REFUSE">Refusé</option>
+                          <option value="CONVERTI">Converti en Facture</option>
                                 </select>
                              </div>
                              <div>
@@ -1114,10 +1125,22 @@ function BillingContent() {
                            </div>
                          ) : (
                            <div key="invoice-fields" className="space-y-4">
+                            <div>
+                               <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">Statut de la Facture</label>
+                               <select 
+                                 className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none disabled:bg-slate-50 disabled:text-slate-400"
+                                 value={draftStatus || 'BROUILLON'}
+                                 onChange={(e) => setDraftStatus(e.target.value)}
+                                 disabled={isLocked}
+                               >
+                                 <option value="BROUILLON">Brouillon</option>
+                                 <option value="EMISE">Émise (Verrouillée)</option>
+                               </select>
+                            </div>
                             <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100">
                                <span className="text-xs font-bold text-slate-600">Facture payée ?</span>
                                <button 
-                                 onClick={() => setDraftPaid(!draftPaid)}
+                                 onClick={() => !isLocked && setDraftPaid(!draftPaid)}
                                  className={`w-12 h-6 rounded-full transition-all relative ${draftPaid ? 'bg-emerald-500' : 'bg-slate-200'}`}
                                >
                                   <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${draftPaid ? 'left-7' : 'left-1'}`} />
@@ -1140,7 +1163,7 @@ function BillingContent() {
                                <input 
                                  type="date"
                                  className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-bold outline-none"
-                                 value={draftDueDate || ''}
+                                 value={draftDueDate || ""} disabled={isLocked}
                                  onChange={(e) => setDraftDueDate(e.target.value)}
                                />
                             </div>
@@ -1152,7 +1175,7 @@ function BillingContent() {
                         <textarea 
                            className="w-full rounded-xl border border-slate-100 bg-white p-3 text-xs font-medium outline-none"
                            rows={4}
-                           value={draftNotes || ''}
+                           value={draftNotes || ""} disabled={isLocked}
                            onChange={e => setDraftNotes(e.target.value)}
                            placeholder="Apparait en bas du document..."
                         />

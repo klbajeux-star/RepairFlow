@@ -13,7 +13,6 @@ import { DocumentData } from '@/lib/pdf-generator'
 async function getNextDocSequence() {
   const year = new Date().getFullYear()
   
-  // Trouver le dernier numéro dans les deux tables
   const [lastQuote, lastInvoice] = await Promise.all([
     prisma.quote.findFirst({
       where: { number: { contains: `-${year}-` } },
@@ -25,8 +24,6 @@ async function getNextDocSequence() {
     })
   ])
 
-  let maxSeq = 0
-  
   const parseSeq = (docNumber: string | undefined) => {
     if (!docNumber) return 0
     const parts = docNumber.split('-')
@@ -34,8 +31,7 @@ async function getNextDocSequence() {
     return isNaN(seq) ? 0 : seq
   }
 
-  maxSeq = Math.max(parseSeq(lastQuote?.number), parseSeq(lastInvoice?.number))
-  
+  const maxSeq = Math.max(parseSeq(lastQuote?.number), parseSeq(lastInvoice?.number))
   return maxSeq + 1
 }
 
@@ -76,33 +72,16 @@ export async function POST(request: Request) {
       throw new Error('Erreur lors de la génération du numéro de devis.')
     })
     
-    // Validation Backend
-    const settings = await prisma.workshopSettings.findFirst()
-    const client = await prisma.client.findUnique({ where: { id: json.clientId } })
-    if (!client) throw new Error('Client introuvable.')
+    // Sécurité : Pour les devis, on est beaucoup plus souple que pour les factures.
+    // On ne bloque PAS la création d'un devis même si des infos Factur-X manquent.
+    // L'utilisateur verra les avertissements dans l'UI.
 
-    const validationData: DocumentData = {
-      type: 'quote',
-      number: number,
-      date: new Date(),
-      client: client as any,
-      items: json.items || [],
-      totalHT: json.totalHT || 0,
-      totalTTC: json.totalTTC || 0,
-      tva: (json.totalTTC || 0) - (json.totalHT || 0),
-      taxDetails: json.taxDetails || [],
-      notes: json.notes,
-      paymentMethod: json.paymentMethod,
-      settings: settings as any
-    }
-
-    const validation = validateInvoiceForIssuance(validationData)
-    if (!validation.isValid) {
-      return NextResponse.json({ 
-        error: 'Conformité non respectée', 
-        details: validation.errors.map(e => e.message) 
-      }, { status: 400 })
-    }
+    // Injection de l'unité par défaut (C62) si manquante
+    const rawItems = json.items || []
+    const itemsWithUnit = rawItems.map((item: any) => ({
+      ...item,
+      unit: item.unit || 'C62'
+    }))
 
     const quote = await prisma.quote.create({
       data: {
@@ -110,7 +89,7 @@ export async function POST(request: Request) {
         status: optionalString(json.status) || 'BROUILLON',
         clientId: json.clientId,
         repairId: optionalString(json.repairId),
-        items: JSON.stringify(json.items || []),
+        items: JSON.stringify(itemsWithUnit),
         totalHT: requireNumber(json.totalHT || 0, 'Total HT'),
         totalTTC: requireNumber(json.totalTTC || 0, 'Total TTC'),
         taxDetails: json.taxDetails ? JSON.stringify(json.taxDetails) : null,

@@ -35,7 +35,7 @@ export function validateInvoiceForIssuance(data: DocumentData): ValidationResult
   validateBuyer(data, errors, warnings)
 
   // 4. Validation des lignes
-  validateLines(data.items, errors, warnings)
+  validateLines(data.items, data.type, errors, warnings)
 
   // 5. Validation des totaux et taxes
   validateTotals(data, errors, warnings)
@@ -124,7 +124,7 @@ function validateBuyer(data: DocumentData, errors: ValidationMessage[], warnings
   }
 }
 
-function validateLines(items: InvoiceLine[], errors: ValidationMessage[], warnings: ValidationMessage[]) {
+function validateLines(items: InvoiceLine[], type: 'quote' | 'invoice', errors: ValidationMessage[], warnings: ValidationMessage[]) {
   if (!items || items.length === 0) {
     errors.push({ code: 'LNS_EMPTY', severity: 'error', message: 'Le document doit contenir au moins une ligne.' })
     return
@@ -137,7 +137,7 @@ function validateLines(items: InvoiceLine[], errors: ValidationMessage[], warnin
     if (item.price < 0) errors.push({ code: 'LNS_PRICE_INVALID', severity: 'error', message: `${prefix} : Le prix ne peut pas être négatif.` })
     
     if (!item.unit) {
-      if (data.type === 'invoice') {
+      if (type === 'invoice') {
         errors.push({ code: 'LNS_UNIT_MISSING', severity: 'error', message: `${prefix} : Unité de mesure manquante (C62 recommandé).` })
       } else {
         warnings.push({ code: 'LNS_UNIT_MISSING', severity: 'warning', message: `${prefix} : Unité de mesure manquante.` })

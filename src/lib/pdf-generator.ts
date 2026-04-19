@@ -32,6 +32,7 @@ export interface WorkshopSettings {
 
 export interface ClientData {
   name: string
+  clientType?: string | null
   address?: string | null
   zipCode?: string | null
   city?: string | null

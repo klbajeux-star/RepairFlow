@@ -4253,6 +4253,7 @@ export namespace Prisma {
   export type InvoiceMinAggregateOutputType = {
     id: string | null
     number: string | null
+    status: string | null
     clientId: string | null
     repairId: string | null
     items: string | null
@@ -4270,6 +4271,7 @@ export namespace Prisma {
   export type InvoiceMaxAggregateOutputType = {
     id: string | null
     number: string | null
+    status: string | null
     clientId: string | null
     repairId: string | null
     items: string | null
@@ -4287,6 +4289,7 @@ export namespace Prisma {
   export type InvoiceCountAggregateOutputType = {
     id: number
     number: number
+    status: number
     clientId: number
     repairId: number
     items: number
@@ -4316,6 +4319,7 @@ export namespace Prisma {
   export type InvoiceMinAggregateInputType = {
     id?: true
     number?: true
+    status?: true
     clientId?: true
     repairId?: true
     items?: true
@@ -4333,6 +4337,7 @@ export namespace Prisma {
   export type InvoiceMaxAggregateInputType = {
     id?: true
     number?: true
+    status?: true
     clientId?: true
     repairId?: true
     items?: true
@@ -4350,6 +4355,7 @@ export namespace Prisma {
   export type InvoiceCountAggregateInputType = {
     id?: true
     number?: true
+    status?: true
     clientId?: true
     repairId?: true
     items?: true
@@ -4454,6 +4460,7 @@ export namespace Prisma {
   export type InvoiceGroupByOutputType = {
     id: string
     number: string
+    status: string
     clientId: string
     repairId: string | null
     items: string
@@ -4490,6 +4497,7 @@ export namespace Prisma {
   export type InvoiceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     number?: boolean
+    status?: boolean
     clientId?: boolean
     repairId?: boolean
     items?: boolean
@@ -4510,6 +4518,7 @@ export namespace Prisma {
   export type InvoiceSelectScalar = {
     id?: boolean
     number?: boolean
+    status?: boolean
     clientId?: boolean
     repairId?: boolean
     items?: boolean
@@ -4541,6 +4550,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       number: string
+      status: string
       clientId: string
       repairId: string | null
       items: string
@@ -4938,6 +4948,7 @@ export namespace Prisma {
   interface InvoiceFieldRefs {
     readonly id: FieldRef<"Invoice", 'String'>
     readonly number: FieldRef<"Invoice", 'String'>
+    readonly status: FieldRef<"Invoice", 'String'>
     readonly clientId: FieldRef<"Invoice", 'String'>
     readonly repairId: FieldRef<"Invoice", 'String'>
     readonly items: FieldRef<"Invoice", 'String'>
@@ -15064,6 +15075,7 @@ export namespace Prisma {
   export const InvoiceScalarFieldEnum: {
     id: 'id',
     number: 'number',
+    status: 'status',
     clientId: 'clientId',
     repairId: 'repairId',
     items: 'items',
@@ -15506,6 +15518,7 @@ export namespace Prisma {
     NOT?: InvoiceWhereInput | InvoiceWhereInput[]
     id?: StringFilter<"Invoice"> | string
     number?: StringFilter<"Invoice"> | string
+    status?: StringFilter<"Invoice"> | string
     clientId?: StringFilter<"Invoice"> | string
     repairId?: StringNullableFilter<"Invoice"> | string | null
     items?: StringFilter<"Invoice"> | string
@@ -15526,6 +15539,7 @@ export namespace Prisma {
   export type InvoiceOrderByWithRelationInput = {
     id?: SortOrder
     number?: SortOrder
+    status?: SortOrder
     clientId?: SortOrder
     repairId?: SortOrderInput | SortOrder
     items?: SortOrder
@@ -15549,6 +15563,7 @@ export namespace Prisma {
     AND?: InvoiceWhereInput | InvoiceWhereInput[]
     OR?: InvoiceWhereInput[]
     NOT?: InvoiceWhereInput | InvoiceWhereInput[]
+    status?: StringFilter<"Invoice"> | string
     clientId?: StringFilter<"Invoice"> | string
     repairId?: StringNullableFilter<"Invoice"> | string | null
     items?: StringFilter<"Invoice"> | string
@@ -15569,6 +15584,7 @@ export namespace Prisma {
   export type InvoiceOrderByWithAggregationInput = {
     id?: SortOrder
     number?: SortOrder
+    status?: SortOrder
     clientId?: SortOrder
     repairId?: SortOrderInput | SortOrder
     items?: SortOrder
@@ -15594,6 +15610,7 @@ export namespace Prisma {
     NOT?: InvoiceScalarWhereWithAggregatesInput | InvoiceScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Invoice"> | string
     number?: StringWithAggregatesFilter<"Invoice"> | string
+    status?: StringWithAggregatesFilter<"Invoice"> | string
     clientId?: StringWithAggregatesFilter<"Invoice"> | string
     repairId?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     items?: StringWithAggregatesFilter<"Invoice"> | string
@@ -16590,6 +16607,7 @@ export namespace Prisma {
   export type InvoiceCreateInput = {
     id?: string
     number: string
+    status?: string
     items: string
     totalHT: number
     totalTTC: number
@@ -16608,6 +16626,7 @@ export namespace Prisma {
   export type InvoiceUncheckedCreateInput = {
     id?: string
     number: string
+    status?: string
     clientId: string
     repairId?: string | null
     items: string
@@ -16626,6 +16645,7 @@ export namespace Prisma {
   export type InvoiceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
     totalTTC?: FloatFieldUpdateOperationsInput | number
@@ -16644,6 +16664,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     repairId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
@@ -16662,6 +16683,7 @@ export namespace Prisma {
   export type InvoiceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
     totalTTC?: FloatFieldUpdateOperationsInput | number
@@ -16677,6 +16699,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     repairId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
@@ -17732,6 +17755,7 @@ export namespace Prisma {
   export type InvoiceCountOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
+    status?: SortOrder
     clientId?: SortOrder
     repairId?: SortOrder
     items?: SortOrder
@@ -17754,6 +17778,7 @@ export namespace Prisma {
   export type InvoiceMaxOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
+    status?: SortOrder
     clientId?: SortOrder
     repairId?: SortOrder
     items?: SortOrder
@@ -17771,6 +17796,7 @@ export namespace Prisma {
   export type InvoiceMinOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
+    status?: SortOrder
     clientId?: SortOrder
     repairId?: SortOrder
     items?: SortOrder
@@ -19341,6 +19367,7 @@ export namespace Prisma {
   export type InvoiceCreateWithoutClientInput = {
     id?: string
     number: string
+    status?: string
     items: string
     totalHT: number
     totalTTC: number
@@ -19358,6 +19385,7 @@ export namespace Prisma {
   export type InvoiceUncheckedCreateWithoutClientInput = {
     id?: string
     number: string
+    status?: string
     repairId?: string | null
     items: string
     totalHT: number
@@ -19469,6 +19497,7 @@ export namespace Prisma {
     NOT?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
     id?: StringFilter<"Invoice"> | string
     number?: StringFilter<"Invoice"> | string
+    status?: StringFilter<"Invoice"> | string
     clientId?: StringFilter<"Invoice"> | string
     repairId?: StringNullableFilter<"Invoice"> | string | null
     items?: StringFilter<"Invoice"> | string
@@ -19624,6 +19653,7 @@ export namespace Prisma {
   export type InvoiceCreateWithoutQuoteInput = {
     id?: string
     number: string
+    status?: string
     items: string
     totalHT: number
     totalTTC: number
@@ -19641,6 +19671,7 @@ export namespace Prisma {
   export type InvoiceUncheckedCreateWithoutQuoteInput = {
     id?: string
     number: string
+    status?: string
     clientId: string
     repairId?: string | null
     items: string
@@ -19758,6 +19789,7 @@ export namespace Prisma {
   export type InvoiceUpdateWithoutQuoteInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
     totalTTC?: FloatFieldUpdateOperationsInput | number
@@ -19775,6 +19807,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateWithoutQuoteInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     repairId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
@@ -20643,6 +20676,7 @@ export namespace Prisma {
   export type InvoiceCreateWithoutRepairInput = {
     id?: string
     number: string
+    status?: string
     items: string
     totalHT: number
     totalTTC: number
@@ -20660,6 +20694,7 @@ export namespace Prisma {
   export type InvoiceUncheckedCreateWithoutRepairInput = {
     id?: string
     number: string
+    status?: string
     clientId: string
     items: string
     totalHT: number
@@ -21128,6 +21163,7 @@ export namespace Prisma {
   export type InvoiceUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
     totalTTC?: FloatFieldUpdateOperationsInput | number
@@ -21145,6 +21181,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     repairId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
@@ -21162,6 +21199,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     repairId?: NullableStringFieldUpdateOperationsInput | string | null
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
@@ -21473,6 +21511,7 @@ export namespace Prisma {
   export type InvoiceUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
     totalTTC?: FloatFieldUpdateOperationsInput | number
@@ -21490,6 +21529,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number
@@ -21507,6 +21547,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateManyWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     items?: StringFieldUpdateOperationsInput | string
     totalHT?: FloatFieldUpdateOperationsInput | number

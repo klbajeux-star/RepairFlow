@@ -13,7 +13,6 @@ import { DocumentData } from '@/lib/pdf-generator'
 async function getNextDocSequence() {
   const year = new Date().getFullYear()
   
-  // Trouver le dernier numéro dans les deux tables pour éviter les collisions
   const [lastQuote, lastInvoice] = await Promise.all([
     prisma.quote.findFirst({
       where: { number: { contains: `-${year}-` } },
@@ -73,7 +72,6 @@ export async function POST(request: Request) {
     let number: string
 
     if (quoteId) {
-      // Si on vient d'un devis, on reprend le numéro du devis en changeant le préfixe
       const quote = await prisma.quote.findUnique({
         where: { id: quoteId },
         select: { number: true }
@@ -81,54 +79,32 @@ export async function POST(request: Request) {
       if (!quote) throw new Error('Devis introuvable.')
       number = quote.number.replace('DEV-', 'FAC-')
       
-      // Vérifier si ce numéro de facture existe déjà (cas rare de collision manuelle)
       const existing = await prisma.invoice.findUnique({ where: { number } })
       if (existing) {
-        // Fallback sur une génération classique si collision (pour ne pas bloquer)
         number = await generateInvoiceNumber()
       }
     } else {
-      number = await generateInvoiceNumber().catch(e => {
-        console.error('[INVOICE NUMBER ERROR]', e)
-        throw new Error('Erreur lors de la génération du numéro de facture.')
-      })
+      number = await generateInvoiceNumber()
     }
 
-    // Validation Backend
-    const settings = await prisma.workshopSettings.findFirst()
-    const client = await prisma.client.findUnique({ where: { id: json.clientId } })
-    if (!client) throw new Error('Client introuvable.')
+    // Sécurité : On autorise toujours la création en BROUILLON sans validation stricte
+    // La validation stricte (IBAN, BIC, etc.) sera faite lors du passage à EMISE via PATCH
+    const targetStatus = json.status || 'BROUILLON'
 
-    const validationData: DocumentData = {
-      type: 'invoice',
-      number: number,
-      date: new Date(),
-      client: client as any,
-      items: json.items || [],
-      totalHT: json.totalHT || 0,
-      totalTTC: json.totalTTC || 0,
-      tva: (json.totalTTC || 0) - (json.totalHT || 0),
-      taxDetails: json.taxDetails || [],
-      notes: json.notes,
-      dueDate: json.dueDate ? new Date(json.dueDate) : null,
-      paymentMethod: json.paymentMethod,
-      settings: settings as any
-    }
-
-    const validation = validateInvoiceForIssuance(validationData)
-    if (!validation.isValid) {
-      return NextResponse.json({ 
-        error: 'Conformité non respectée', 
-        details: validation.errors.map(e => e.message) 
-      }, { status: 400 })
-    }
+    // Injection de l'unité par défaut (C62) pour la conformité Factur-X si manquante
+    const rawItems = json.items || []
+    const itemsWithUnit = rawItems.map((item: any) => ({
+      ...item,
+      unit: item.unit || 'C62'
+    }))
 
     const invoice = await prisma.invoice.create({
       data: {
         number,
+        status: targetStatus,
         clientId: json.clientId,
         repairId: optionalString(json.repairId),
-        items: JSON.stringify(json.items || []),
+        items: JSON.stringify(itemsWithUnit),
         totalHT: requireNumber(json.totalHT || 0, 'Total HT'),
         totalTTC: requireNumber(json.totalTTC || 0, 'Total TTC'),
         taxDetails: json.taxDetails ? JSON.stringify(json.taxDetails) : null,
@@ -136,6 +112,7 @@ export async function POST(request: Request) {
         paid: !!json.paid,
         dueDate: json.dueDate ? new Date(json.dueDate) : null,
         paymentMethod: optionalString(json.paymentMethod),
+        quote: quoteId ? { connect: { id: quoteId } } : undefined,
       },
       include: {
         client: true,

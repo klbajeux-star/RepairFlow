@@ -153,6 +153,7 @@ exports.Prisma.QuoteScalarFieldEnum = {
 exports.Prisma.InvoiceScalarFieldEnum = {
   id: 'id',
   number: 'number',
+  status: 'status',
   clientId: 'clientId',
   repairId: 'repairId',
   items: 'items',

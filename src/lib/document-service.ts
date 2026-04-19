@@ -56,6 +56,7 @@ export async function getDocumentPDF(type: 'quote' | 'invoice', id: string): Pro
       date: new Date(docData.createdAt),
       client: {
         name: docData.client.name,
+        clientType: docData.client.clientType,
         address: docData.client.address,
         zipCode: docData.client.zipCode,
         city: docData.client.city,
@@ -77,11 +78,13 @@ export async function getDocumentPDF(type: 'quote' | 'invoice', id: string): Pro
     }
 
     // Backend Validation
+    // On ne bloque la génération PDF que pour les factures EMISE.
+    // Pour les brouillons et les devis, on autorise la génération même si incomplète.
     const validation = validateInvoiceForIssuance(data)
-    if (!validation.isValid) {
+    if (!validation.isValid && type === 'invoice' && (docData as any).status === 'EMISE') {
       const errorMsg = validation.errors.map(e => e.message).join(' | ')
       console.error(`[DOC-SERVICE] Validation failed for ${type} ${id}: ${errorMsg}`)
-      throw new Error(`Conformité non respectée : ${errorMsg}`)
+      throw new Error(`Conformité non respectée pour émission : ${errorMsg}`)
     }
 
     // Generate the base PDF using jsPDF
