@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -479,10 +479,10 @@ export default function Dashboard() {
   }
 
   const selectedRepair = useMemo(() => {
-    if (!selectedRepairId) {
-      return null
-    }
-    return repairs.find((repair) => repair.id === selectedRepairId) ?? null
+    if (!selectedRepairId) return null;
+    const found = repairs.find((r) => r.id === selectedRepairId);
+    if (!found || found.status === 'ARCHIVED' || found.status === 'DELIVERED') return null;
+    return found;
   }, [repairs, selectedRepairId])
 
   const filteredRepairs = useMemo(() => {
