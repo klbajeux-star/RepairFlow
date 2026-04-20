@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Mail, MapPin, Phone, Plus, Search, Users, X } from 'lucide-react'
+import { Mail, MapPin, Phone, Plus, Search, Trash2, Users, X } from 'lucide-react'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { useConfirm } from '@/hooks/use-confirm'
 import { formatDate } from '@/lib/repair'
 
 interface Client {
@@ -32,6 +34,7 @@ const initialForm = {
 }
 
 export default function ClientsPage() {
+  const confirmDialog = useConfirm()
   const [clients, setClients] = useState<Client[]>([])
   const [showModal, setShowModal] = useState(false)
   const [editingClient, setEditingClient] = useState<Client | null>(null)
@@ -152,6 +155,7 @@ export default function ClientsPage() {
     )
   }, [clients, search])
 
+  async function deleteClient(id: string) { confirmDialog.confirm({ title: 'Supprimer le client', message: 'Voulez-vous vraiment supprimer ce client ? Cette action est irréversible.', type: 'danger', confirmLabel: 'Supprimer', onConfirm: async () => { try { setIsLoading(true); const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' }); if (res.ok) { setClients(clients.filter(c => c.id !== id)); } } catch (err) { console.error(err); } finally { setIsLoading(false); } } }); }
   const returningClients = clients.filter((client) => (client.repairCount ?? 0) > 0).length
 
   return (
@@ -193,6 +197,7 @@ export default function ClientsPage() {
           </p>
         </article>
       </section>
+      <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
 
       <section className="rounded-[2.5rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

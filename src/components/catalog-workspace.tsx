@@ -24,6 +24,8 @@ import {
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
+import { ConfirmDialog } from './confirm-dialog'
+import { useConfirm } from '@/hooks/use-confirm'
 
 type CatalogTab = 'models' | 'services' | 'parts'
 
@@ -160,6 +162,7 @@ function getTypeActiveColor(type: string) {
 }
 
 export function CatalogWorkspace() {
+  const confirmDialog = useConfirm()
   const router = useRouter()
   const searchParams = useSearchParams()
   const paramTab = searchParams.get('tab') as CatalogTab
@@ -293,29 +296,33 @@ export function CatalogWorkspace() {
   }
 
   async function handleDelete() {
-    if (!editingId || !confirm('Voulez-vous vraiment supprimer cet élément ?')) return
-    
-    try {
-      setDrawerError(null)
-      setIsSaving(true)
-      
-      const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : drawerType === 'part' ? '/api/parts' : drawerType === 'brand' ? '/api/brands' : '/api/types'
-      const res = await fetch(`${baseUrl}/${editingId}`, {
-        method: 'DELETE',
-      })
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || 'Erreur lors de la suppression.')
+    if (!editingId) return
+    confirmDialog.confirm({
+      title: "Supprimer l'élément",
+      message: 'Voulez-vous vraiment supprimer cet élément ? Cette action est irréversible.',
+      type: 'danger',
+      confirmLabel: 'Supprimer',
+      onConfirm: async () => {
+        try {
+          setDrawerError(null)
+          setIsSaving(true)
+          const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : drawerType === 'part' ? '/api/parts' : drawerType === 'brand' ? '/api/brands' : '/api/types'
+          const res = await fetch(`${baseUrl}/${editingId}`, {
+            method: 'DELETE',
+          })
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}))
+            throw new Error(data.error || 'Erreur lors de la suppression.')
+          }
+          await loadAllData()
+          setDrawerOpen(false)
+        } catch (err) {
+          setDrawerError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+        } finally {
+          setIsSaving(false)
+        }
       }
-
-      await loadAllData()
-      setDrawerOpen(false)
-    } catch (err) {
-      setDrawerError(err instanceof Error ? err.message : 'Une erreur est survenue.')
-    } finally {
-      setIsSaving(false)
-    }
+    })
   }
 
   async function handleSave() {
@@ -908,6 +915,7 @@ export function CatalogWorkspace() {
           )}
         </div>
       </SideDrawer>
+      <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
     </div>
   )
 }

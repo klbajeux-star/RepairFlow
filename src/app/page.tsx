@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -46,6 +46,8 @@ import {
   partStatuses,
 } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { useConfirm } from '@/hooks/use-confirm'
 import { generateIntakePDF } from '@/lib/pdf'
 
 type KanbanStatus = 'PENDING' | 'DIAGNOSIS' | 'IN_PROGRESS' | 'READY'
@@ -358,6 +360,7 @@ function getRepairSummary(repair: Repair) {
 }
 
 export default function Dashboard() {
+  const confirmDialog = useConfirm()
   const router = useRouter()
   const [repairs, setRepairs] = useState<Repair[]>([])
   const [quotes, setQuotes] = useState<Quote[]>([])
@@ -736,29 +739,33 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
   }
 
   async function deleteRepair(repairId: string) {
-    if (!confirm('Voulez-vous vraiment supprimer ce ticket ? Cette action est irréversible.')) {
-      return
-    }
+    confirmDialog.confirm({
+      title: 'Supprimer le ticket',
+      message: 'Voulez-vous vraiment supprimer ce ticket ? Cette action est irréversible.',
+      type: 'danger',
+      confirmLabel: 'Supprimer',
+      onConfirm: async () => {
+        try {
+          setIsLoading(true)
+          setError(null)
+          const res = await fetch(`/api/repairs/${repairId}`, {
+            method: 'DELETE',
+          })
 
-    try {
-      setIsLoading(true)
-      setError(null)
-      const res = await fetch(`/api/repairs/${repairId}`, {
-        method: 'DELETE',
-      })
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}))
+            throw new Error(data.error || 'Impossible de supprimer le ticket.')
+          }
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || 'Impossible de supprimer le ticket.')
+          setRepairs((current) => current.filter((r) => r.id !== repairId))
+          setSelectedRepairId(null)
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Une erreur est survenue.')
+        } finally {
+          setIsLoading(false)
+        }
       }
-
-      setRepairs((current) => current.filter((r) => r.id !== repairId))
-      setSelectedRepairId(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue.')
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   async function archiveRepair(repairId: string) {
@@ -1897,6 +1904,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
           )}
         </div>
       </SideDrawer>
+      <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
     </>
   )
 }

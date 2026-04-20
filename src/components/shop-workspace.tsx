@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
+import { ConfirmDialog } from './confirm-dialog'
+import { useConfirm } from '@/hooks/use-confirm'
 
 interface ShopProduct {
   id: string
@@ -57,6 +59,7 @@ const initialProductForm = {
 }
 
 export function ShopWorkspace() {
+  const confirmDialog = useConfirm()
   const [products, setProducts] = useState<ShopProduct[]>([])
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -146,18 +149,27 @@ export function ShopWorkspace() {
   }
 
   async function handleDelete() {
-    if (!editingId || !confirm('Supprimer ce produit de la boutique ?')) return
-    try {
-      setIsSaving(true)
-      const res = await fetch(`/api/shop/${editingId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Erreur suppression')
-      await loadProducts()
-      setDrawerOpen(false)
-    } catch (err) {
-      setDrawerError('Impossible de supprimer le produit.')
-    } finally {
-      setIsSaving(false)
-    }
+    if (!editingId) return
+
+    confirmDialog.confirm({
+      title: 'Supprimer le produit',
+      message: 'Voulez-vous vraiment supprimer ce produit de la boutique ? Cette action est irréversible.',
+      type: 'danger',
+      confirmLabel: 'Supprimer',
+      onConfirm: async () => {
+        try {
+          setIsSaving(true)
+          const res = await fetch(`/api/shop/${editingId}`, { method: 'DELETE' })
+          if (!res.ok) throw new Error('Erreur suppression')
+          await loadProducts()
+          setDrawerOpen(false)
+        } catch (err) {
+          setDrawerError('Impossible de supprimer le produit.')
+        } finally {
+          setIsSaving(false)
+        }
+      }
+    })
   }
 
   return (
@@ -365,6 +377,7 @@ export function ShopWorkspace() {
           </Field>
         </div>
       </SideDrawer>
+      <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
     </div>
   )
 }
