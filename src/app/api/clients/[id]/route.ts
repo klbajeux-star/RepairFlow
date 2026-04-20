@@ -41,3 +41,27 @@ export async function PATCH(
     return handleApiError(error, 'Impossible de modifier le client.')
   }
 }
+
+export async function DELETE(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params
+    const clientId = requireId(id, 'Le client')
+
+    // On vérifie d'abord s'il y a des réparations en cours ou des factures
+    // Pour simplifier ici, on autorise la suppression en cascade manuelle si nécessaire
+    // ou on laisse Prisma échouer si des contraintes existent.
+    // Dans cet ERP, on préfère supprimer proprement.
+
+    await prisma.client.delete({
+      where: { id: clientId },
+    })
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error('[DELETE CLIENT ERROR]', error)
+    return handleApiError(error, 'Impossible de supprimer le client. Vérifiez s\'il n\'a pas de factures ou de tickets liés.')
+  }
+}

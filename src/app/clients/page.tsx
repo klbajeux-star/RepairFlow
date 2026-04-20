@@ -137,7 +137,32 @@ export default function ClientsPage() {
     }
   }
 
-  async function deleteClient(id: string) { confirmDialog.confirm({ title: 'Supprimer le client', message: 'Voulez-vous vraiment supprimer ce client ? Cette action est irréversible.', type: 'danger', confirmLabel: 'Supprimer', onConfirm: async () => { try { setIsLoading(true); const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' }); if (res.ok) { setClients(clients.filter(c => c.id !== id)); } } catch (err) { console.error(err); } finally { setIsLoading(false); } } }); }
+  async function deleteClient(id: string) { 
+    confirmDialog.confirm({ 
+      title: 'Supprimer le client', 
+      message: 'Voulez-vous vraiment supprimer ce client ? Cette action est irréversible.', 
+      type: 'danger', 
+      confirmLabel: 'Supprimer', 
+      onConfirm: async () => { 
+        try { 
+          setIsLoading(true); 
+          setError(null);
+          const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' }); 
+          if (res.ok) { 
+            setClients(clients.filter(c => c.id !== id)); 
+          } else {
+            const data = await res.json().catch(() => ({}));
+            setError(data.error || 'Impossible de supprimer le client.');
+          }
+        } catch (err) { 
+          console.error(err); 
+          setError('Une erreur réseau est survenue.');
+        } finally { 
+          setIsLoading(false); 
+        } 
+      } 
+    }); 
+  }
   const returningClients = useMemo(() => {
     const query = search.toLowerCase()
     return clients.filter(
