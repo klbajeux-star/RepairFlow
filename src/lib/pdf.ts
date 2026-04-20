@@ -24,6 +24,7 @@ interface IntakeData {
     model: string
     imei: string
     unlockCode: string
+    unlockPattern: string
     condition: number
   }
   services: Service[]
@@ -96,7 +97,8 @@ export function generateIntakePDF(data: IntakeData) {
   doc.text(`IMEI/SN: ${data.device.imei || 'N/A'}`, margin + 85, y)
   y += 7
   doc.text(`Code: ${data.device.unlockCode || 'N/A'}`, margin, y)
-  doc.text(`État esthétique: ${data.device.condition}/5`, margin + 85, y)
+  doc.text(`Schéma: ${data.device.unlockPattern || 'AUCUN'}`, margin + 45, y)
+  doc.text(`État esthétique: ${data.device.condition}/5`, margin + 95, y)
   y += 12
 
   // Services

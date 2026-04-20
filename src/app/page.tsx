@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -48,6 +48,7 @@ import {
 import { SideDrawer } from '@/components/side-drawer'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { AddressAutocomplete } from '@/components/address-autocomplete'
+import { PatternLock } from '@/components/pattern-lock'
 import { useConfirm } from '@/hooks/use-confirm'
 import { generateIntakePDF } from '@/lib/pdf'
 
@@ -56,6 +57,48 @@ type QuickFlowMode = 'repair' | 'quote'
 type BoardDensity = 'compact' | 'detail'
 type WorkflowStep = 'client' | 'device' | 'services' | 'summary' | 'signature'
 
+
+
+
+function PatternVisualizer({ pattern }: { pattern: string }) {
+  if (!pattern || pattern === 'AUCUN') return null;
+  const nodes = pattern.split('-').map(Number);
+  const grid = [7, 8, 9, 4, 5, 6, 1, 2, 3];
+
+  return (
+    <div className="mt-3 rounded-2xl border border-blue-100/50 bg-blue-50/20 p-4">
+      <div className="grid grid-cols-3 gap-1.5 mx-auto w-fit">
+        {grid.map((num) => {
+          const isActive = nodes.includes(num);
+          const stepIndex = nodes.indexOf(num);
+          return (
+            <div 
+              key={num}
+              className={`relative flex h-8 w-8 items-center justify-center rounded-lg text-xs font-black transition-all ${
+                isActive 
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105 z-10' 
+                  : 'bg-white text-slate-300 border border-slate-100'
+              }`}
+            >
+              {num}
+              {isActive && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-[8px] font-black text-amber-950 ring-2 ring-white shadow-sm">
+                  {stepIndex + 1}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+        <p className="text-[10px] font-black text-blue-700 uppercase tracking-tight">
+          Séquence : {pattern.replace(/-/g, ' → ')}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 
 function SignaturePad({ onSign }: { onSign: (data: string) => void }) {
@@ -384,6 +427,7 @@ export default function Dashboard() {
     modelId: '',
     imei: '',
     unlockCode: '',
+    unlockPattern: '',
     condition: 5,
   })
   const [clientForm, setClientForm] = useState(initialClientForm)
@@ -587,6 +631,7 @@ ${quickFlowForm.notes}
 APPAREIL : ${deviceForm.model}
 IMEI : ${deviceForm.imei}
 CODE : ${deviceForm.unlockCode}
+SCHÉMA : ${deviceForm.unlockPattern || 'AUCUN'}
 ÉTAT : ${deviceForm.condition}/5
 SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
 `.trim()
@@ -616,6 +661,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
               model: deviceForm.model,
               imei: deviceForm.imei,
               unlockCode: deviceForm.unlockCode,
+              unlockPattern: deviceForm.unlockPattern,
               condition: deviceForm.condition,
             },
             services: selectedServices,
@@ -1289,6 +1335,10 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                         {selectedRepair.notes?.trim() || 'Aucune note enregistrée pour ce ticket.'}
                       </p>
                     </div>
+                    {(() => {
+                      const patternMatch = selectedRepair.notes?.match(/SCHÉMA : ([\d-]+)/);
+                      return patternMatch ? <PatternVisualizer pattern={patternMatch[1]} /> : null;
+                    })()}
                   </div>
                 </div>
 
@@ -1695,6 +1745,23 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                       className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
                     />
                   </Field>
+                </div>
+
+                <div className="rounded-3xl border border-slate-100 bg-slate-50 p-6 flex flex-col items-center">
+                  <label className="mb-4 block text-[11px] font-black uppercase tracking-widest text-slate-400">
+                    Schéma de déverrouillage (optionnel)
+                  </label>
+                  <PatternLock 
+                    onPatternComplete={(pattern) => setDeviceForm(prev => ({ ...prev, unlockPattern: pattern }))}
+                    width={220}
+                    height={220}
+                  />
+                  {deviceForm.unlockPattern && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+                      <p className="text-[10px] font-black uppercase text-blue-600 tracking-tighter">Schéma enregistré</p>
+                    </div>
+                  )}
                 </div>
 
                 <Field label={`ÉTAT cosmétique : ${deviceForm.condition}/5`}>
