@@ -85,7 +85,7 @@ export async function POST(request: Request) {
           },
         })
 
-        if (service.partId && service.part && service.part.stock > 0) {
+        if (service.partId && service.part) {
           await tx.part.update({
             where: { id: service.partId },
             data: { stock: { decrement: 1 } },
