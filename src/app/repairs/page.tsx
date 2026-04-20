@@ -39,6 +39,7 @@ import {
   repairStatuses,
 } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
+import { AddressAutocomplete } from '@/components/address-autocomplete'
 import { generateIntakePDF } from '@/lib/pdf'
 
 // --- Types ---

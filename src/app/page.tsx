@@ -47,6 +47,7 @@ import {
 } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { AddressAutocomplete } from '@/components/address-autocomplete'
 import { useConfirm } from '@/hooks/use-confirm'
 import { generateIntakePDF } from '@/lib/pdf'
 
@@ -1574,10 +1575,15 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                     </div>
 
                     <Field label="Adresse">
-                      <input 
-                        value={clientForm.address || ''} 
-                        onChange={e => setClientForm(p => ({ ...p, address: e.target.value }))}
-                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-300"
+                      <AddressAutocomplete
+                        value={clientForm.address || ''}
+                        onChange={val => setClientForm(p => ({ ...p, address: val }))}
+                        onSelect={addr => setClientForm(p => ({
+                          ...p,
+                          address: addr.street,
+                          zipCode: addr.zipCode,
+                          city: addr.city
+                        }))}
                         placeholder="123 rue de la Paix"
                       />
                     </Field>

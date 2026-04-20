@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Mail, MapPin, Phone, Plus, Search, Trash2, Users, X } from 'lucide-react'
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { AddressAutocomplete } from '@/components/address-autocomplete'
 import { useConfirm } from '@/hooks/use-confirm'
 import { formatDate } from '@/lib/repair'
 
@@ -122,202 +123,254 @@ export default function ClientsPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error ?? 'Impossible d’enregistrer le client.')
+        throw new Error(data.error ?? 'Une erreur est survenue.')
       }
 
-      setShowModal(false)
-      setEditingClient(null)
-      setFormData(initialForm)
       await fetchClients()
-    } catch (submitError) {
+      setShowModal(false)
+    } catch (saveError) {
       setError(
-        submitError instanceof Error
-          ? submitError.message
-          : 'Impossible d’enregistrer le client.'
+        saveError instanceof Error ? saveError.message : 'Une erreur est survenue.'
       )
     } finally {
       setIsSaving(false)
     }
   }
 
-  const filteredClients = useMemo(() => {
-    const query = search.trim().toLowerCase()
-
-    if (!query) {
-      return clients
-    }
-
-    return clients.filter((client) =>
-      [client.name, client.phone, client.email ?? '', client.city ?? '']
-        .join(' ')
-        .toLowerCase()
-        .includes(query)
+  async function deleteClient(id: string) { confirmDialog.confirm({ title: 'Supprimer le client', message: 'Voulez-vous vraiment supprimer ce client ? Cette action est irréversible.', type: 'danger', confirmLabel: 'Supprimer', onConfirm: async () => { try { setIsLoading(true); const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' }); if (res.ok) { setClients(clients.filter(c => c.id !== id)); } } catch (err) { console.error(err); } finally { setIsLoading(false); } } }); }
+  const returningClients = useMemo(() => {
+    const query = search.toLowerCase()
+    return clients.filter(
+      (client) =>
+        client.name.toLowerCase().includes(query) ||
+        client.phone.includes(query) ||
+        client.email?.toLowerCase().includes(query)
     )
   }, [clients, search])
 
-  async function deleteClient(id: string) { confirmDialog.confirm({ title: 'Supprimer le client', message: 'Voulez-vous vraiment supprimer ce client ? Cette action est irréversible.', type: 'danger', confirmLabel: 'Supprimer', onConfirm: async () => { try { setIsLoading(true); const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' }); if (res.ok) { setClients(clients.filter(c => c.id !== id)); } } catch (err) { console.error(err); } finally { setIsLoading(false); } } }); }
-  const returningClients = clients.filter((client) => (client.repairCount ?? 0) > 0).length
+  const stats = useMemo(() => {
+    return {
+      total: clients.length,
+      professionals: clients.filter((c) => c.clientType === 'Professionnel').length,
+      newThisMonth: clients.filter((c) => {
+        const date = new Date(c.createdAt)
+        const now = new Date()
+        return (
+          date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()
+        )
+      }).length,
+    }
+  }, [clients])
 
   return (
-    <div className="space-y-8 pb-8">
-      <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
-          <div className="inline-flex rounded-2xl bg-emerald-100 p-3 text-emerald-700 shadow-sm ring-1 ring-inset ring-emerald-200/50">
-            <Users className="h-6 w-6" />
-          </div>
-          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
-            Fichier clients
+    <div className="space-y-8">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+            Clients
+          </h1>
+          <p className="mt-2 font-medium text-slate-500">
+            Gérez votre base de données clients et leur historique
           </p>
-          <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-            {clients.length}
-          </p>
-        </article>
-
-        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
-          <div className="inline-flex rounded-2xl bg-blue-100 p-3 text-blue-700 shadow-sm ring-1 ring-inset ring-blue-200/50">
-            <Phone className="h-6 w-6" />
-          </div>
-          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
-            Clients récurrents
-          </p>
-          <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-            {returningClients}
-          </p>
-        </article>
-
-        <article className="rounded-[1.75rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
-          <div className="inline-flex rounded-2xl bg-violet-100 p-3 text-violet-700 shadow-sm ring-1 ring-inset ring-violet-200/50">
-            <MapPin className="h-6 w-6" />
-          </div>
-          <p className="mt-5 text-[0.7rem] font-black uppercase tracking-[0.26em] text-slate-400">
-            Zones desservies
-          </p>
-          <p className="mt-3 text-3xl font-black tracking-tight text-slate-950">
-            {new Set(clients.map(c => c.city).filter(Boolean)).size}
-          </p>
-        </article>
-      </section>
-      <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
-
-      <section className="rounded-[2.5rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative w-full max-w-md">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Rechercher par nom, téléphone, ville..."
-              className="w-full rounded-2xl border border-slate-200 bg-white/60 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-50/50"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={openCreateModal}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800"
-          >
-            <Plus className="h-4 w-4" />
-            Ajouter un client
-          </button>
         </div>
+        <button
+          onClick={openCreateModal}
+          className="flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white shadow-xl shadow-slate-950/20 transition hover:bg-slate-800 active:scale-95"
+        >
+          <Plus className="h-5 w-5" />
+          Nouveau Client
+        </button>
+      </div>
 
-        {error ? (
-          <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
-            {error}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="rounded-[2rem] border border-white bg-white/50 p-6 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-blue-50 p-3 text-blue-600">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-500">Total Clients</p>
+              <p className="text-2xl font-black text-slate-950">{stats.total}</p>
+            </div>
           </div>
-        ) : null}
+        </div>
+        <div className="rounded-[2rem] border border-white bg-white/50 p-6 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-emerald-50 p-3 text-emerald-600">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-500">Professionnels</p>
+              <p className="text-2xl font-black text-slate-950">
+                {stats.professionals}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-[2rem] border border-white bg-white/50 p-6 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-purple-50 p-3 text-purple-600">
+              <Plus className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-500">Ce mois-ci</p>
+              <p className="text-2xl font-black text-slate-950">
+                {stats.newThisMonth}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full text-left">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Rechercher un client par nom, tel ou email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-2xl border border-slate-200 bg-white px-12 py-4 outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-50"
+          />
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-[2.5rem] border border-white bg-white/50 shadow-sm backdrop-blur-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 text-[0.7rem] font-black uppercase tracking-[0.24em] text-slate-400">
-                <th className="px-4 py-4">Client</th>
-                <th className="px-4 py-4">Localisation</th>
-                <th className="px-4 py-4">Historique</th>
-                <th className="px-4 py-4">Créé le</th>
-                <th className="px-4 py-4 text-right">Action</th>
+              <tr className="border-b border-slate-100 bg-slate-50/50">
+                <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">
+                  Client
+                </th>
+                <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">
+                  Contact
+                </th>
+                <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">
+                  Localisation
+                </th>
+                <th className="px-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400">
+                  Tickets
+                </th>
+                <th className="px-6 py-5 text-right text-[11px] font-black uppercase tracking-widest text-slate-400">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/20">
-              {!isLoading && filteredClients.length > 0 ? (
-                filteredClients.map((client) => (
-                  <tr key={client.id} className="group hover:bg-white/40 transition-colors">
-                    <td className="px-4 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 font-black text-emerald-700 uppercase">
-                          {client.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="font-black text-slate-950">{client.name}</p>
-                          <p className="text-sm text-slate-500">
-                            {client.phone}
-                          </p>
-                        </div>
+            <tbody className="divide-y divide-slate-100">
+              {returningClients.map((client) => (
+                <tr
+                  key={client.id}
+                  className="group transition hover:bg-white"
+                >
+                  <td className="px-6 py-5">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 font-black text-slate-600 transition group-hover:bg-emerald-50 group-hover:text-emerald-600">
+                        {client.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                       </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="space-y-1 text-sm text-slate-600">
-                        <p className="font-bold">{client.city || 'N/A'}</p>
-                        <p className="text-xs text-slate-400">{client.email || 'Aucun email'}</p>
+                      <div>
+                        <p className="font-bold text-slate-950">{client.name}</p>
+                        <span className={`inline-flex items-center rounded-lg px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+                          client.clientType === 'Professionnel' 
+                            ? 'bg-blue-50 text-blue-600' 
+                            : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          {client.clientType}
+                        </span>
                       </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-700">
-                        {client.repairCount ?? 0} réparation(s)
+                    </div>
+                  </td>
+                  <td className="px-6 py-5">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
+                        <Phone className="h-3.5 w-3.5 text-slate-400" />
+                        {client.phone}
+                      </div>
+                      {client.email && (
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
+                          <Mail className="h-3.5 w-3.5" />
+                          {client.email}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-5">
+                    {client.city ? (
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
+                        <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                        {client.city} {client.zipCode && `(${client.zipCode})`}
+                      </div>
+                    ) : (
+                      <span className="text-xs font-medium text-slate-300 italic">Non renseigné</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-5">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-600">
+                        {client.repairCount ?? 0}
                       </span>
-                    </td>
-                    <td className="px-4 py-4 text-sm font-medium text-slate-600">
-                      {formatDate(client.createdAt)}
-                    </td>
-                    <td className="px-4 py-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => openEditModal(client)}
-                        className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                      >
-                        Modifier
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="px-4 py-16 text-center text-sm text-slate-500">
-                    {isLoading
-                      ? 'Chargement des clients...'
-                      : 'Aucun client ne correspond à la recherche.'}
+                    </div>
+                  </td>
+                  <td className="px-6 py-5 text-right">
+                    <button
+                      onClick={() => openEditModal(client)}
+                      className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                    >
+                      Modifier
+                    </button>
+                    <button onClick={() => deleteClient(client.id)} className="ml-2 rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-600 transition hover:border-rose-200 hover:bg-rose-100 active:scale-95"><Trash2 className="h-4 w-4" /></button>
                   </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
+          {returningClients.length === 0 && (
+            <div className="py-20 text-center">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-slate-50 text-slate-300">
+                <Search className="h-10 w-10" />
+              </div>
+              <h3 className="mt-6 text-xl font-black tracking-tight text-slate-950">Aucun client trouvé</h3>
+              <p className="mt-2 font-medium text-slate-500">Essayez d'ajuster votre recherche ou créez un nouveau client.</p>
+            </div>
+          )}
         </div>
-      </section>
+      </div>
+
+      <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
 
       {showModal ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm overflow-y-auto">
-          <div className="w-full max-w-2xl my-8 rounded-[2rem] border border-white/60 bg-white p-8 shadow-2xl shadow-slate-900/15">
-            <div className="flex items-start justify-between gap-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div
+            className="absolute inset-0 bg-slate-950/20 backdrop-blur-md"
+            onClick={() => setShowModal(false)}
+          />
+          <div className="relative w-full max-w-2xl animate-in fade-in zoom-in duration-300 rounded-[3rem] border border-white bg-white p-8 shadow-2xl">
+            <div className="mb-8 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.26em] text-emerald-600">
-                  Fiche client détaillée
-                </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-                  {editingClient ? 'Modifier le client' : 'Nouveau client'}
+                <h2 className="text-3xl font-black tracking-tight text-slate-950">
+                  {editingClient ? 'Modifier le client' : 'Nouveau Client'}
                 </h2>
+                <p className="mt-1 font-medium text-slate-500">
+                  Remplissez les informations essentielles du client
+                </p>
               </div>
               <button
-                type="button"
                 onClick={() => setShowModal(false)}
-                className="rounded-2xl bg-slate-100 p-3 text-slate-500 transition hover:bg-slate-200"
+                className="rounded-2xl bg-slate-100 p-3 text-slate-400 transition hover:bg-slate-200 hover:text-slate-600"
               >
-                <X className="h-5 w-5" />
+                <X className="h-6 w-6" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            {error ? (
+              <div className="mb-6 rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-600 border border-rose-100">
+                {error}
+              </div>
+            ) : null}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2 sm:col-span-1">
+                <div>
                   <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
                     Prénom
                   </label>
@@ -328,7 +381,7 @@ export default function ClientsPage() {
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
                   />
                 </div>
-                <div className="col-span-2 sm:col-span-1">
+                <div>
                   <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
                     Nom
                   </label>
@@ -342,18 +395,19 @@ export default function ClientsPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2 sm:col-span-1">
+                <div>
                   <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
                     Téléphone
                   </label>
                   <input
                     required
+                    type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
                   />
                 </div>
-                <div className="col-span-2 sm:col-span-1">
+                <div>
                   <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
                     Type de client
                   </label>
@@ -384,10 +438,15 @@ export default function ClientsPage() {
                 <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-slate-400">
                   Adresse
                 </label>
-                <input
+                <AddressAutocomplete
                   value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-emerald-300 focus:bg-white"
+                  onChange={(val) => setFormData({ ...formData, address: val })}
+                  onSelect={(addr) => setFormData({
+                    ...formData,
+                    address: addr.street,
+                    zipCode: addr.zipCode,
+                    city: addr.city
+                  })}
                 />
               </div>
 
