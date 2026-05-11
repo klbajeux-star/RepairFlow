@@ -112,6 +112,39 @@ export function getPartStatusStyle(status: string) {
   return partStatusStyles[status as PartStatus] ?? partStatusStyles.IN_STOCK
 }
 
+
+export const partReservationStatuses = [
+  'RESERVED',
+  'TO_ORDER',
+  'ORDERED',
+  'NONE',
+] as const
+
+export type PartReservationStatus = (typeof partReservationStatuses)[number]
+
+export const partReservationStatusLabels: Record<PartReservationStatus, string> = {
+  RESERVED: 'Réservé',
+  TO_ORDER: 'À commander',
+  ORDERED: 'Commandé',
+  NONE: 'Sans pièce',
+}
+
+export const partReservationStatusStyles: Record<PartReservationStatus, string> = {
+  RESERVED: 'bg-emerald-500',
+  TO_ORDER: 'bg-rose-500',
+  ORDERED: 'bg-amber-500',
+  NONE: 'bg-slate-300',
+}
+
+export function getPartReservationStatusLabel(status: string) {
+  return partReservationStatusLabels[status as PartReservationStatus] ?? status
+}
+
+export function getPartReservationStatusStyle(status: string) {
+  return partReservationStatusStyles[status as PartReservationStatus] ?? partReservationStatusStyles.NONE
+}
+
+
 export function getTicketReference(repair: { id: string; createdAt: string | Date }) {
   const createdAt = new Date(repair.createdAt)
   const dateFragment = `${String(createdAt.getFullYear()).slice(-2)}${String(

@@ -457,6 +457,7 @@ function RepairsContent() {
           model: deviceForm.model,
           imei: deviceForm.imei,
           unlockCode: deviceForm.unlockCode,
+          unlockPattern: '',
           condition: deviceForm.condition,
         },
         services: selectedServicesList.map(s => ({

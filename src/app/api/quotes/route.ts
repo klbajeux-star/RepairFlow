@@ -9,6 +9,7 @@ import {
 } from '@/lib/api-utils'
 import { validateInvoiceForIssuance } from '@/lib/invoice-validation'
 import { DocumentData } from '@/lib/pdf-generator'
+import { getCurrentUserId } from '@/lib/session'
 
 async function getNextDocSequence() {
   const year = new Date().getFullYear()
@@ -83,6 +84,7 @@ export async function POST(request: Request) {
       unit: item.unit || 'C62'
     }))
 
+    const userId = await getCurrentUserId()
     const quote = await prisma.quote.create({
       data: {
         number,
@@ -96,6 +98,7 @@ export async function POST(request: Request) {
         notes: optionalString(json.notes),
         validUntil: json.validUntil ? new Date(json.validUntil) : null,
         paymentMethod: optionalString(json.paymentMethod),
+        createdById: userId,
       },
       include: {
         client: true,

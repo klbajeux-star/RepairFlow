@@ -14,6 +14,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model User
+ * 
+ */
+export type User = $Result.DefaultSelection<Prisma.$UserPayload>
+/**
  * Model Client
  * 
  */
@@ -86,8 +91,8 @@ export type WorkshopSettings = $Result.DefaultSelection<Prisma.$WorkshopSettings
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Clients
- * const clients = await prisma.client.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  *
  * 
@@ -107,8 +112,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Clients
-   * const clients = await prisma.client.findMany()
+   * // Fetch zero or more Users
+   * const users = await prisma.user.findMany()
    * ```
    *
    * 
@@ -202,6 +207,16 @@ export class PrismaClient<
   $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
 
       /**
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Users
+    * const users = await prisma.user.findMany()
+    * ```
+    */
+  get user(): Prisma.UserDelegate<ExtArgs>;
+
+  /**
    * `prisma.client`: Exposes CRUD operations for the **Client** model.
     * Example usage:
     * ```ts
@@ -800,6 +815,7 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    User: 'User',
     Client: 'Client',
     Quote: 'Quote',
     Invoice: 'Invoice',
@@ -829,10 +845,72 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'client' | 'quote' | 'invoice' | 'deviceType' | 'deviceBrand' | 'deviceModel' | 'part' | 'service' | 'repair' | 'repairService' | 'repairLog' | 'shopProduct' | 'workshopSettings'
+      modelProps: 'user' | 'client' | 'quote' | 'invoice' | 'deviceType' | 'deviceBrand' | 'deviceModel' | 'part' | 'service' | 'repair' | 'repairService' | 'repairLog' | 'shopProduct' | 'workshopSettings'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
+      User: {
+        payload: Prisma.$UserPayload<ExtArgs>
+        fields: Prisma.UserFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findFirst: {
+            args: Prisma.UserFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findMany: {
+            args: Prisma.UserFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          create: {
+            args: Prisma.UserCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          delete: {
+            args: Prisma.UserDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          update: {
+            args: Prisma.UserUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.UserUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          aggregate: {
+            args: Prisma.UserAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateUser>
+          }
+          groupBy: {
+            args: Prisma.UserGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<UserGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserCountArgs<ExtArgs>,
+            result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
       Client: {
         payload: Prisma.$ClientPayload<ExtArgs>
         fields: Prisma.ClientFieldRefs
@@ -1794,6 +1872,80 @@ export namespace Prisma {
 
 
   /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    createdRepairs: number
+    updatedRepairs: number
+    createdInvoices: number
+    createdQuotes: number
+    repairLogs: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdRepairs?: boolean | UserCountOutputTypeCountCreatedRepairsArgs
+    updatedRepairs?: boolean | UserCountOutputTypeCountUpdatedRepairsArgs
+    createdInvoices?: boolean | UserCountOutputTypeCountCreatedInvoicesArgs
+    createdQuotes?: boolean | UserCountOutputTypeCountCreatedQuotesArgs
+    repairLogs?: boolean | UserCountOutputTypeCountRepairLogsArgs
+  }
+
+  // Custom InputTypes
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedRepairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RepairWhereInput
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUpdatedRepairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RepairWhereInput
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvoiceWhereInput
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedQuotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuoteWhereInput
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRepairLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RepairLogWhereInput
+  }
+
+
+
+  /**
    * Count Type ClientCountOutputType
    */
 
@@ -2094,6 +2246,1067 @@ export namespace Prisma {
   /**
    * Models
    */
+
+  /**
+   * Model User
+   */
+
+  export type AggregateUser = {
+    _count: UserCountAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    pinHash: string | null
+    role: string | null
+    isActive: boolean | null
+    color: string | null
+    lastLoginAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    pinHash: string | null
+    role: string | null
+    isActive: boolean | null
+    color: string | null
+    lastLoginAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserCountAggregateOutputType = {
+    id: number
+    name: number
+    pinHash: number
+    role: number
+    isActive: number
+    color: number
+    lastLoginAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserMinAggregateInputType = {
+    id?: true
+    name?: true
+    pinHash?: true
+    role?: true
+    isActive?: true
+    color?: true
+    lastLoginAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserMaxAggregateInputType = {
+    id?: true
+    name?: true
+    pinHash?: true
+    role?: true
+    isActive?: true
+    color?: true
+    lastLoginAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserCountAggregateInputType = {
+    id?: true
+    name?: true
+    pinHash?: true
+    role?: true
+    isActive?: true
+    color?: true
+    lastLoginAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which User to aggregate.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Users
+    **/
+    _count?: true | UserCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type GetUserAggregateType<T extends UserAggregateArgs> = {
+        [P in keyof T & keyof AggregateUser]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUser[P]>
+      : GetScalarType<T[P], AggregateUser[P]>
+  }
+
+
+
+
+  export type UserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithAggregationInput | UserOrderByWithAggregationInput[]
+    by: UserScalarFieldEnum[] | UserScalarFieldEnum
+    having?: UserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserCountAggregateInputType | true
+    _min?: UserMinAggregateInputType
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type UserGroupByOutputType = {
+    id: string
+    name: string
+    pinHash: string
+    role: string
+    isActive: boolean
+    color: string
+    lastLoginAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UserCountAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserGroupByOutputType[P]>
+            : GetScalarType<T[P], UserGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    pinHash?: boolean
+    role?: boolean
+    isActive?: boolean
+    color?: boolean
+    lastLoginAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdRepairs?: boolean | User$createdRepairsArgs<ExtArgs>
+    updatedRepairs?: boolean | User$updatedRepairsArgs<ExtArgs>
+    createdInvoices?: boolean | User$createdInvoicesArgs<ExtArgs>
+    createdQuotes?: boolean | User$createdQuotesArgs<ExtArgs>
+    repairLogs?: boolean | User$repairLogsArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectScalar = {
+    id?: boolean
+    name?: boolean
+    pinHash?: boolean
+    role?: boolean
+    isActive?: boolean
+    color?: boolean
+    lastLoginAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdRepairs?: boolean | User$createdRepairsArgs<ExtArgs>
+    updatedRepairs?: boolean | User$updatedRepairsArgs<ExtArgs>
+    createdInvoices?: boolean | User$createdInvoicesArgs<ExtArgs>
+    createdQuotes?: boolean | User$createdQuotesArgs<ExtArgs>
+    repairLogs?: boolean | User$repairLogsArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+
+  export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "User"
+    objects: {
+      createdRepairs: Prisma.$RepairPayload<ExtArgs>[]
+      updatedRepairs: Prisma.$RepairPayload<ExtArgs>[]
+      createdInvoices: Prisma.$InvoicePayload<ExtArgs>[]
+      createdQuotes: Prisma.$QuotePayload<ExtArgs>[]
+      repairLogs: Prisma.$RepairLogPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      pinHash: string
+      role: string
+      isActive: boolean
+      color: string
+      lastLoginAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["user"]>
+    composites: {}
+  }
+
+
+  type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = $Result.GetResult<Prisma.$UserPayload, S>
+
+  type UserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<UserFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: UserCountAggregateInputType | true
+    }
+
+  export interface UserDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['User'], meta: { name: 'User' } }
+    /**
+     * Find zero or one User that matches the filter.
+     * @param {UserFindUniqueArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends UserFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, UserFindUniqueArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one User that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, UserFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first User that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends UserFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, UserFindFirstArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first User that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends UserFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, UserFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more Users that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Users
+     * const users = await prisma.user.findMany()
+     * 
+     * // Get first 10 Users
+     * const users = await prisma.user.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends UserFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, UserFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a User.
+     * @param {UserCreateArgs} args - Arguments to create a User.
+     * @example
+     * // Create one User
+     * const User = await prisma.user.create({
+     *   data: {
+     *     // ... data to create a User
+     *   }
+     * })
+     * 
+    **/
+    create<T extends UserCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, UserCreateArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Delete a User.
+     * @param {UserDeleteArgs} args - Arguments to delete one User.
+     * @example
+     * // Delete one User
+     * const User = await prisma.user.delete({
+     *   where: {
+     *     // ... filter to delete one User
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends UserDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, UserDeleteArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one User.
+     * @param {UserUpdateArgs} args - Arguments to update one User.
+     * @example
+     * // Update one User
+     * const user = await prisma.user.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends UserUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, UserUpdateArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more Users.
+     * @param {UserDeleteManyArgs} args - Arguments to filter Users to delete.
+     * @example
+     * // Delete a few Users
+     * const { count } = await prisma.user.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends UserDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, UserDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Users
+     * const user = await prisma.user.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends UserUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, UserUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one User.
+     * @param {UserUpsertArgs} args - Arguments to update or create a User.
+     * @example
+     * // Update or create a User
+     * const user = await prisma.user.upsert({
+     *   create: {
+     *     // ... data to create a User
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the User we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends UserUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, UserUpsertArgs<ExtArgs>>
+    ): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCountArgs} args - Arguments to filter Users to count.
+     * @example
+     * // Count the number of Users
+     * const count = await prisma.user.count({
+     *   where: {
+     *     // ... the filter for the Users we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserCountArgs>(
+      args?: Subset<T, UserCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserAggregateArgs>(args: Subset<T, UserAggregateArgs>): Prisma.PrismaPromise<GetUserAggregateType<T>>
+
+    /**
+     * Group by User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserGroupByArgs['orderBy'] }
+        : { orderBy?: UserGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the User model
+   */
+  readonly fields: UserFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for User.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+    createdRepairs<T extends User$createdRepairsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdRepairsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    updatedRepairs<T extends User$updatedRepairsArgs<ExtArgs> = {}>(args?: Subset<T, User$updatedRepairsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    createdInvoices<T extends User$createdInvoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$createdInvoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    createdQuotes<T extends User$createdQuotesArgs<ExtArgs> = {}>(args?: Subset<T, User$createdQuotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    repairLogs<T extends User$repairLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$repairLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairLogPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the User model
+   */ 
+  interface UserFieldRefs {
+    readonly id: FieldRef<"User", 'String'>
+    readonly name: FieldRef<"User", 'String'>
+    readonly pinHash: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'String'>
+    readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly color: FieldRef<"User", 'String'>
+    readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+
+  /**
+   * User findUnique
+   */
+  export type UserFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+
+  /**
+   * User findUniqueOrThrow
+   */
+  export type UserFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+
+  /**
+   * User findFirst
+   */
+  export type UserFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+
+  /**
+   * User findFirstOrThrow
+   */
+  export type UserFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+
+  /**
+   * User findMany
+   */
+  export type UserFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which Users to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+
+  /**
+   * User create
+   */
+  export type UserCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to create a User.
+     */
+    data: XOR<UserCreateInput, UserUncheckedCreateInput>
+  }
+
+
+  /**
+   * User update
+   */
+  export type UserUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to update a User.
+     */
+    data: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+    /**
+     * Choose, which User to update.
+     */
+    where: UserWhereUniqueInput
+  }
+
+
+  /**
+   * User updateMany
+   */
+  export type UserUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Users.
+     */
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
+    /**
+     * Filter which Users to update
+     */
+    where?: UserWhereInput
+  }
+
+
+  /**
+   * User upsert
+   */
+  export type UserUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The filter to search for the User to update in case it exists.
+     */
+    where: UserWhereUniqueInput
+    /**
+     * In case the User found by the `where` argument doesn't exist, create a new User with this data.
+     */
+    create: XOR<UserCreateInput, UserUncheckedCreateInput>
+    /**
+     * In case the User was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+  }
+
+
+  /**
+   * User delete
+   */
+  export type UserDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter which User to delete.
+     */
+    where: UserWhereUniqueInput
+  }
+
+
+  /**
+   * User deleteMany
+   */
+  export type UserDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Users to delete
+     */
+    where?: UserWhereInput
+  }
+
+
+  /**
+   * User.createdRepairs
+   */
+  export type User$createdRepairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Repair
+     */
+    select?: RepairSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: RepairInclude<ExtArgs> | null
+    where?: RepairWhereInput
+    orderBy?: RepairOrderByWithRelationInput | RepairOrderByWithRelationInput[]
+    cursor?: RepairWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RepairScalarFieldEnum | RepairScalarFieldEnum[]
+  }
+
+
+  /**
+   * User.updatedRepairs
+   */
+  export type User$updatedRepairsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Repair
+     */
+    select?: RepairSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: RepairInclude<ExtArgs> | null
+    where?: RepairWhereInput
+    orderBy?: RepairOrderByWithRelationInput | RepairOrderByWithRelationInput[]
+    cursor?: RepairWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RepairScalarFieldEnum | RepairScalarFieldEnum[]
+  }
+
+
+  /**
+   * User.createdInvoices
+   */
+  export type User$createdInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    where?: InvoiceWhereInput
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    cursor?: InvoiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+
+  /**
+   * User.createdQuotes
+   */
+  export type User$createdQuotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Quote
+     */
+    select?: QuoteSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: QuoteInclude<ExtArgs> | null
+    where?: QuoteWhereInput
+    orderBy?: QuoteOrderByWithRelationInput | QuoteOrderByWithRelationInput[]
+    cursor?: QuoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuoteScalarFieldEnum | QuoteScalarFieldEnum[]
+  }
+
+
+  /**
+   * User.repairLogs
+   */
+  export type User$repairLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RepairLog
+     */
+    select?: RepairLogSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: RepairLogInclude<ExtArgs> | null
+    where?: RepairLogWhereInput
+    orderBy?: RepairLogOrderByWithRelationInput | RepairLogOrderByWithRelationInput[]
+    cursor?: RepairLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RepairLogScalarFieldEnum | RepairLogScalarFieldEnum[]
+  }
+
+
+  /**
+   * User without action
+   */
+  export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+  }
+
+
 
   /**
    * Model Client
@@ -3186,6 +4399,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     taxDetails: string | null
+    createdById: string | null
   }
 
   export type QuoteMaxAggregateOutputType = {
@@ -3204,6 +4418,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     taxDetails: string | null
+    createdById: string | null
   }
 
   export type QuoteCountAggregateOutputType = {
@@ -3222,6 +4437,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     taxDetails: number
+    createdById: number
     _all: number
   }
 
@@ -3252,6 +4468,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
+    createdById?: true
   }
 
   export type QuoteMaxAggregateInputType = {
@@ -3270,6 +4487,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
+    createdById?: true
   }
 
   export type QuoteCountAggregateInputType = {
@@ -3288,6 +4506,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
+    createdById?: true
     _all?: true
   }
 
@@ -3393,6 +4612,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     taxDetails: string | null
+    createdById: string | null
     _count: QuoteCountAggregateOutputType | null
     _avg: QuoteAvgAggregateOutputType | null
     _sum: QuoteSumAggregateOutputType | null
@@ -3430,9 +4650,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     taxDetails?: boolean
+    createdById?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Quote$repairArgs<ExtArgs>
     invoice?: boolean | Quote$invoiceArgs<ExtArgs>
+    createdBy?: boolean | Quote$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["quote"]>
 
   export type QuoteSelectScalar = {
@@ -3451,12 +4673,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     taxDetails?: boolean
+    createdById?: boolean
   }
 
   export type QuoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Quote$repairArgs<ExtArgs>
     invoice?: boolean | Quote$invoiceArgs<ExtArgs>
+    createdBy?: boolean | Quote$createdByArgs<ExtArgs>
   }
 
 
@@ -3466,6 +4690,7 @@ export namespace Prisma {
       client: Prisma.$ClientPayload<ExtArgs>
       repair: Prisma.$RepairPayload<ExtArgs> | null
       invoice: Prisma.$InvoicePayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3483,6 +4708,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       taxDetails: string | null
+      createdById: string | null
     }, ExtArgs["result"]["quote"]>
     composites: {}
   }
@@ -3838,6 +5064,8 @@ export namespace Prisma {
 
     invoice<T extends Quote$invoiceArgs<ExtArgs> = {}>(args?: Subset<T, Quote$invoiceArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
+    createdBy<T extends Quote$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Quote$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3881,6 +5109,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Quote", 'DateTime'>
     readonly updatedAt: FieldRef<"Quote", 'DateTime'>
     readonly taxDetails: FieldRef<"Quote", 'String'>
+    readonly createdById: FieldRef<"Quote", 'String'>
   }
     
 
@@ -4213,6 +5442,22 @@ export namespace Prisma {
 
 
   /**
+   * Quote.createdBy
+   */
+  export type Quote$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+
+  /**
    * Quote without action
    */
   export type QuoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4266,6 +5511,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     taxDetails: string | null
+    createdById: string | null
   }
 
   export type InvoiceMaxAggregateOutputType = {
@@ -4284,6 +5530,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     taxDetails: string | null
+    createdById: string | null
   }
 
   export type InvoiceCountAggregateOutputType = {
@@ -4302,6 +5549,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     taxDetails: number
+    createdById: number
     _all: number
   }
 
@@ -4332,6 +5580,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
+    createdById?: true
   }
 
   export type InvoiceMaxAggregateInputType = {
@@ -4350,6 +5599,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
+    createdById?: true
   }
 
   export type InvoiceCountAggregateInputType = {
@@ -4368,6 +5618,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     taxDetails?: true
+    createdById?: true
     _all?: true
   }
 
@@ -4473,6 +5724,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     taxDetails: string | null
+    createdById: string | null
     _count: InvoiceCountAggregateOutputType | null
     _avg: InvoiceAvgAggregateOutputType | null
     _sum: InvoiceSumAggregateOutputType | null
@@ -4510,9 +5762,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     taxDetails?: boolean
+    createdById?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Invoice$repairArgs<ExtArgs>
     quote?: boolean | Invoice$quoteArgs<ExtArgs>
+    createdBy?: boolean | Invoice$createdByArgs<ExtArgs>
   }, ExtArgs["result"]["invoice"]>
 
   export type InvoiceSelectScalar = {
@@ -4531,12 +5785,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     taxDetails?: boolean
+    createdById?: boolean
   }
 
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Invoice$repairArgs<ExtArgs>
     quote?: boolean | Invoice$quoteArgs<ExtArgs>
+    createdBy?: boolean | Invoice$createdByArgs<ExtArgs>
   }
 
 
@@ -4546,6 +5802,7 @@ export namespace Prisma {
       client: Prisma.$ClientPayload<ExtArgs>
       repair: Prisma.$RepairPayload<ExtArgs> | null
       quote: Prisma.$QuotePayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4563,6 +5820,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       taxDetails: string | null
+      createdById: string | null
     }, ExtArgs["result"]["invoice"]>
     composites: {}
   }
@@ -4918,6 +6176,8 @@ export namespace Prisma {
 
     quote<T extends Invoice$quoteArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$quoteArgs<ExtArgs>>): Prisma__QuoteClient<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
+    createdBy<T extends Invoice$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4961,6 +6221,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Invoice", 'DateTime'>
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
     readonly taxDetails: FieldRef<"Invoice", 'String'>
+    readonly createdById: FieldRef<"Invoice", 'String'>
   }
     
 
@@ -5289,6 +6550,22 @@ export namespace Prisma {
      */
     include?: QuoteInclude<ExtArgs> | null
     where?: QuoteWhereInput
+  }
+
+
+  /**
+   * Invoice.createdBy
+   */
+  export type Invoice$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
 
@@ -8067,6 +9344,7 @@ export namespace Prisma {
     sellingPrice: number | null
     vatRate: number | null
     stock: number | null
+    reservedQuantity: number | null
     minStock: number | null
   }
 
@@ -8075,6 +9353,7 @@ export namespace Prisma {
     sellingPrice: number | null
     vatRate: number | null
     stock: number | null
+    reservedQuantity: number | null
     minStock: number | null
   }
 
@@ -8086,6 +9365,7 @@ export namespace Prisma {
     sellingPrice: number | null
     vatRate: number | null
     stock: number | null
+    reservedQuantity: number | null
     minStock: number | null
     supplier: string | null
     supplierRef: string | null
@@ -8104,6 +9384,7 @@ export namespace Prisma {
     sellingPrice: number | null
     vatRate: number | null
     stock: number | null
+    reservedQuantity: number | null
     minStock: number | null
     supplier: string | null
     supplierRef: string | null
@@ -8122,6 +9403,7 @@ export namespace Prisma {
     sellingPrice: number
     vatRate: number
     stock: number
+    reservedQuantity: number
     minStock: number
     supplier: number
     supplierRef: number
@@ -8139,6 +9421,7 @@ export namespace Prisma {
     sellingPrice?: true
     vatRate?: true
     stock?: true
+    reservedQuantity?: true
     minStock?: true
   }
 
@@ -8147,6 +9430,7 @@ export namespace Prisma {
     sellingPrice?: true
     vatRate?: true
     stock?: true
+    reservedQuantity?: true
     minStock?: true
   }
 
@@ -8158,6 +9442,7 @@ export namespace Prisma {
     sellingPrice?: true
     vatRate?: true
     stock?: true
+    reservedQuantity?: true
     minStock?: true
     supplier?: true
     supplierRef?: true
@@ -8176,6 +9461,7 @@ export namespace Prisma {
     sellingPrice?: true
     vatRate?: true
     stock?: true
+    reservedQuantity?: true
     minStock?: true
     supplier?: true
     supplierRef?: true
@@ -8194,6 +9480,7 @@ export namespace Prisma {
     sellingPrice?: true
     vatRate?: true
     stock?: true
+    reservedQuantity?: true
     minStock?: true
     supplier?: true
     supplierRef?: true
@@ -8299,6 +9586,7 @@ export namespace Prisma {
     sellingPrice: number | null
     vatRate: number
     stock: number
+    reservedQuantity: number
     minStock: number
     supplier: string | null
     supplierRef: string | null
@@ -8336,6 +9624,7 @@ export namespace Prisma {
     sellingPrice?: boolean
     vatRate?: boolean
     stock?: boolean
+    reservedQuantity?: boolean
     minStock?: boolean
     supplier?: boolean
     supplierRef?: boolean
@@ -8357,6 +9646,7 @@ export namespace Prisma {
     sellingPrice?: boolean
     vatRate?: boolean
     stock?: boolean
+    reservedQuantity?: boolean
     minStock?: boolean
     supplier?: boolean
     supplierRef?: boolean
@@ -8388,6 +9678,7 @@ export namespace Prisma {
       sellingPrice: number | null
       vatRate: number
       stock: number
+      reservedQuantity: number
       minStock: number
       supplier: string | null
       supplierRef: string | null
@@ -8784,6 +10075,7 @@ export namespace Prisma {
     readonly sellingPrice: FieldRef<"Part", 'Float'>
     readonly vatRate: FieldRef<"Part", 'Float'>
     readonly stock: FieldRef<"Part", 'Int'>
+    readonly reservedQuantity: FieldRef<"Part", 'Int'>
     readonly minStock: FieldRef<"Part", 'Int'>
     readonly supplier: FieldRef<"Part", 'String'>
     readonly supplierRef: FieldRef<"Part", 'String'>
@@ -10213,31 +11505,34 @@ export namespace Prisma {
   export type RepairMinAggregateOutputType = {
     id: string | null
     status: string | null
-    partStatus: string | null
     clientId: string | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    createdById: string | null
+    updatedById: string | null
   }
 
   export type RepairMaxAggregateOutputType = {
     id: string | null
     status: string | null
-    partStatus: string | null
     clientId: string | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    createdById: string | null
+    updatedById: string | null
   }
 
   export type RepairCountAggregateOutputType = {
     id: number
     status: number
-    partStatus: number
     clientId: number
     notes: number
     createdAt: number
     updatedAt: number
+    createdById: number
+    updatedById: number
     _all: number
   }
 
@@ -10245,31 +11540,34 @@ export namespace Prisma {
   export type RepairMinAggregateInputType = {
     id?: true
     status?: true
-    partStatus?: true
     clientId?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
+    createdById?: true
+    updatedById?: true
   }
 
   export type RepairMaxAggregateInputType = {
     id?: true
     status?: true
-    partStatus?: true
     clientId?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
+    createdById?: true
+    updatedById?: true
   }
 
   export type RepairCountAggregateInputType = {
     id?: true
     status?: true
-    partStatus?: true
     clientId?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
+    createdById?: true
+    updatedById?: true
     _all?: true
   }
 
@@ -10348,11 +11646,12 @@ export namespace Prisma {
   export type RepairGroupByOutputType = {
     id: string
     status: string
-    partStatus: string
     clientId: string
     notes: string | null
     createdAt: Date
     updatedAt: Date
+    createdById: string | null
+    updatedById: string | null
     _count: RepairCountAggregateOutputType | null
     _min: RepairMinAggregateOutputType | null
     _max: RepairMaxAggregateOutputType | null
@@ -10375,27 +11674,31 @@ export namespace Prisma {
   export type RepairSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
-    partStatus?: boolean
     clientId?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    createdById?: boolean
+    updatedById?: boolean
     invoices?: boolean | Repair$invoicesArgs<ExtArgs>
     quotes?: boolean | Repair$quotesArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     logs?: boolean | Repair$logsArgs<ExtArgs>
     services?: boolean | Repair$servicesArgs<ExtArgs>
+    createdBy?: boolean | Repair$createdByArgs<ExtArgs>
+    updatedBy?: boolean | Repair$updatedByArgs<ExtArgs>
     _count?: boolean | RepairCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repair"]>
 
   export type RepairSelectScalar = {
     id?: boolean
     status?: boolean
-    partStatus?: boolean
     clientId?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    createdById?: boolean
+    updatedById?: boolean
   }
 
   export type RepairInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10404,6 +11707,8 @@ export namespace Prisma {
     client?: boolean | ClientDefaultArgs<ExtArgs>
     logs?: boolean | Repair$logsArgs<ExtArgs>
     services?: boolean | Repair$servicesArgs<ExtArgs>
+    createdBy?: boolean | Repair$createdByArgs<ExtArgs>
+    updatedBy?: boolean | Repair$updatedByArgs<ExtArgs>
     _count?: boolean | RepairCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -10416,15 +11721,18 @@ export namespace Prisma {
       client: Prisma.$ClientPayload<ExtArgs>
       logs: Prisma.$RepairLogPayload<ExtArgs>[]
       services: Prisma.$RepairServicePayload<ExtArgs>[]
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+      updatedBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       status: string
-      partStatus: string
       clientId: string
       notes: string | null
       createdAt: Date
       updatedAt: Date
+      createdById: string | null
+      updatedById: string | null
     }, ExtArgs["result"]["repair"]>
     composites: {}
   }
@@ -10784,6 +12092,10 @@ export namespace Prisma {
 
     services<T extends Repair$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairServicePayload<ExtArgs>, T, 'findMany'> | Null>;
 
+    createdBy<T extends Repair$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Repair$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
+    updatedBy<T extends Repair$updatedByArgs<ExtArgs> = {}>(args?: Subset<T, Repair$updatedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10814,11 +12126,12 @@ export namespace Prisma {
   interface RepairFieldRefs {
     readonly id: FieldRef<"Repair", 'String'>
     readonly status: FieldRef<"Repair", 'String'>
-    readonly partStatus: FieldRef<"Repair", 'String'>
     readonly clientId: FieldRef<"Repair", 'String'>
     readonly notes: FieldRef<"Repair", 'String'>
     readonly createdAt: FieldRef<"Repair", 'DateTime'>
     readonly updatedAt: FieldRef<"Repair", 'DateTime'>
+    readonly createdById: FieldRef<"Repair", 'String'>
+    readonly updatedById: FieldRef<"Repair", 'String'>
   }
     
 
@@ -11203,6 +12516,38 @@ export namespace Prisma {
 
 
   /**
+   * Repair.createdBy
+   */
+  export type Repair$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+
+  /**
+   * Repair.updatedBy
+   */
+  export type Repair$updatedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+
+  /**
    * Repair without action
    */
   export type RepairDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11249,6 +12594,7 @@ export namespace Prisma {
     quantity: number | null
     priceAtTime: number | null
     vatRate: number | null
+    partStatus: string | null
   }
 
   export type RepairServiceMaxAggregateOutputType = {
@@ -11258,6 +12604,7 @@ export namespace Prisma {
     quantity: number | null
     priceAtTime: number | null
     vatRate: number | null
+    partStatus: string | null
   }
 
   export type RepairServiceCountAggregateOutputType = {
@@ -11267,6 +12614,7 @@ export namespace Prisma {
     quantity: number
     priceAtTime: number
     vatRate: number
+    partStatus: number
     _all: number
   }
 
@@ -11290,6 +12638,7 @@ export namespace Prisma {
     quantity?: true
     priceAtTime?: true
     vatRate?: true
+    partStatus?: true
   }
 
   export type RepairServiceMaxAggregateInputType = {
@@ -11299,6 +12648,7 @@ export namespace Prisma {
     quantity?: true
     priceAtTime?: true
     vatRate?: true
+    partStatus?: true
   }
 
   export type RepairServiceCountAggregateInputType = {
@@ -11308,6 +12658,7 @@ export namespace Prisma {
     quantity?: true
     priceAtTime?: true
     vatRate?: true
+    partStatus?: true
     _all?: true
   }
 
@@ -11404,6 +12755,7 @@ export namespace Prisma {
     quantity: number
     priceAtTime: number
     vatRate: number
+    partStatus: string | null
     _count: RepairServiceCountAggregateOutputType | null
     _avg: RepairServiceAvgAggregateOutputType | null
     _sum: RepairServiceSumAggregateOutputType | null
@@ -11432,6 +12784,7 @@ export namespace Prisma {
     quantity?: boolean
     priceAtTime?: boolean
     vatRate?: boolean
+    partStatus?: boolean
     repair?: boolean | RepairDefaultArgs<ExtArgs>
     service?: boolean | ServiceDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["repairService"]>
@@ -11443,6 +12796,7 @@ export namespace Prisma {
     quantity?: boolean
     priceAtTime?: boolean
     vatRate?: boolean
+    partStatus?: boolean
   }
 
   export type RepairServiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11464,6 +12818,7 @@ export namespace Prisma {
       quantity: number
       priceAtTime: number
       vatRate: number
+      partStatus: string | null
     }, ExtArgs["result"]["repairService"]>
     composites: {}
   }
@@ -11851,6 +13206,7 @@ export namespace Prisma {
     readonly quantity: FieldRef<"RepairService", 'Int'>
     readonly priceAtTime: FieldRef<"RepairService", 'Float'>
     readonly vatRate: FieldRef<"RepairService", 'Float'>
+    readonly partStatus: FieldRef<"RepairService", 'String'>
   }
     
 
@@ -12181,6 +13537,7 @@ export namespace Prisma {
     repairId: string | null
     status: string | null
     comment: string | null
+    userId: string | null
     createdAt: Date | null
   }
 
@@ -12189,6 +13546,7 @@ export namespace Prisma {
     repairId: string | null
     status: string | null
     comment: string | null
+    userId: string | null
     createdAt: Date | null
   }
 
@@ -12197,6 +13555,7 @@ export namespace Prisma {
     repairId: number
     status: number
     comment: number
+    userId: number
     createdAt: number
     _all: number
   }
@@ -12207,6 +13566,7 @@ export namespace Prisma {
     repairId?: true
     status?: true
     comment?: true
+    userId?: true
     createdAt?: true
   }
 
@@ -12215,6 +13575,7 @@ export namespace Prisma {
     repairId?: true
     status?: true
     comment?: true
+    userId?: true
     createdAt?: true
   }
 
@@ -12223,6 +13584,7 @@ export namespace Prisma {
     repairId?: true
     status?: true
     comment?: true
+    userId?: true
     createdAt?: true
     _all?: true
   }
@@ -12304,6 +13666,7 @@ export namespace Prisma {
     repairId: string
     status: string
     comment: string | null
+    userId: string | null
     createdAt: Date
     _count: RepairLogCountAggregateOutputType | null
     _min: RepairLogMinAggregateOutputType | null
@@ -12329,8 +13692,10 @@ export namespace Prisma {
     repairId?: boolean
     status?: boolean
     comment?: boolean
+    userId?: boolean
     createdAt?: boolean
     repair?: boolean | RepairDefaultArgs<ExtArgs>
+    user?: boolean | RepairLog$userArgs<ExtArgs>
   }, ExtArgs["result"]["repairLog"]>
 
   export type RepairLogSelectScalar = {
@@ -12338,11 +13703,13 @@ export namespace Prisma {
     repairId?: boolean
     status?: boolean
     comment?: boolean
+    userId?: boolean
     createdAt?: boolean
   }
 
   export type RepairLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     repair?: boolean | RepairDefaultArgs<ExtArgs>
+    user?: boolean | RepairLog$userArgs<ExtArgs>
   }
 
 
@@ -12350,12 +13717,14 @@ export namespace Prisma {
     name: "RepairLog"
     objects: {
       repair: Prisma.$RepairPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       repairId: string
       status: string
       comment: string | null
+      userId: string | null
       createdAt: Date
     }, ExtArgs["result"]["repairLog"]>
     composites: {}
@@ -12708,6 +14077,8 @@ export namespace Prisma {
 
     repair<T extends RepairDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RepairDefaultArgs<ExtArgs>>): Prisma__RepairClient<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
+    user<T extends RepairLog$userArgs<ExtArgs> = {}>(args?: Subset<T, RepairLog$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12740,6 +14111,7 @@ export namespace Prisma {
     readonly repairId: FieldRef<"RepairLog", 'String'>
     readonly status: FieldRef<"RepairLog", 'String'>
     readonly comment: FieldRef<"RepairLog", 'String'>
+    readonly userId: FieldRef<"RepairLog", 'String'>
     readonly createdAt: FieldRef<"RepairLog", 'DateTime'>
   }
     
@@ -13037,6 +14409,22 @@ export namespace Prisma {
      * Filter which RepairLogs to delete
      */
     where?: RepairLogWhereInput
+  }
+
+
+  /**
+   * RepairLog.user
+   */
+  export type RepairLog$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
 
@@ -15032,6 +16420,21 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+  export const UserScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    pinHash: 'pinHash',
+    role: 'role',
+    isActive: 'isActive',
+    color: 'color',
+    lastLoginAt: 'lastLoginAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
   export const ClientScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -15066,7 +16469,8 @@ export namespace Prisma {
     invoiceId: 'invoiceId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    taxDetails: 'taxDetails'
+    taxDetails: 'taxDetails',
+    createdById: 'createdById'
   };
 
   export type QuoteScalarFieldEnum = (typeof QuoteScalarFieldEnum)[keyof typeof QuoteScalarFieldEnum]
@@ -15087,7 +16491,8 @@ export namespace Prisma {
     paymentMethod: 'paymentMethod',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    taxDetails: 'taxDetails'
+    taxDetails: 'taxDetails',
+    createdById: 'createdById'
   };
 
   export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
@@ -15131,6 +16536,7 @@ export namespace Prisma {
     sellingPrice: 'sellingPrice',
     vatRate: 'vatRate',
     stock: 'stock',
+    reservedQuantity: 'reservedQuantity',
     minStock: 'minStock',
     supplier: 'supplier',
     supplierRef: 'supplierRef',
@@ -15163,11 +16569,12 @@ export namespace Prisma {
   export const RepairScalarFieldEnum: {
     id: 'id',
     status: 'status',
-    partStatus: 'partStatus',
     clientId: 'clientId',
     notes: 'notes',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    createdById: 'createdById',
+    updatedById: 'updatedById'
   };
 
   export type RepairScalarFieldEnum = (typeof RepairScalarFieldEnum)[keyof typeof RepairScalarFieldEnum]
@@ -15179,7 +16586,8 @@ export namespace Prisma {
     serviceId: 'serviceId',
     quantity: 'quantity',
     priceAtTime: 'priceAtTime',
-    vatRate: 'vatRate'
+    vatRate: 'vatRate',
+    partStatus: 'partStatus'
   };
 
   export type RepairServiceScalarFieldEnum = (typeof RepairServiceScalarFieldEnum)[keyof typeof RepairServiceScalarFieldEnum]
@@ -15190,6 +16598,7 @@ export namespace Prisma {
     repairId: 'repairId',
     status: 'status',
     comment: 'comment',
+    userId: 'userId',
     createdAt: 'createdAt'
   };
 
@@ -15268,6 +16677,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -15282,13 +16698,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -15297,6 +16706,93 @@ export namespace Prisma {
    * Deep Input Types
    */
 
+
+  export type UserWhereInput = {
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    id?: StringFilter<"User"> | string
+    name?: StringFilter<"User"> | string
+    pinHash?: StringFilter<"User"> | string
+    role?: StringFilter<"User"> | string
+    isActive?: BoolFilter<"User"> | boolean
+    color?: StringFilter<"User"> | string
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    createdRepairs?: RepairListRelationFilter
+    updatedRepairs?: RepairListRelationFilter
+    createdInvoices?: InvoiceListRelationFilter
+    createdQuotes?: QuoteListRelationFilter
+    repairLogs?: RepairLogListRelationFilter
+  }
+
+  export type UserOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    pinHash?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    color?: SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdRepairs?: RepairOrderByRelationAggregateInput
+    updatedRepairs?: RepairOrderByRelationAggregateInput
+    createdInvoices?: InvoiceOrderByRelationAggregateInput
+    createdQuotes?: QuoteOrderByRelationAggregateInput
+    repairLogs?: RepairLogOrderByRelationAggregateInput
+  }
+
+  export type UserWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    name?: StringFilter<"User"> | string
+    pinHash?: StringFilter<"User"> | string
+    role?: StringFilter<"User"> | string
+    isActive?: BoolFilter<"User"> | boolean
+    color?: StringFilter<"User"> | string
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    createdRepairs?: RepairListRelationFilter
+    updatedRepairs?: RepairListRelationFilter
+    createdInvoices?: InvoiceListRelationFilter
+    createdQuotes?: QuoteListRelationFilter
+    repairLogs?: RepairLogListRelationFilter
+  }, "id">
+
+  export type UserOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    pinHash?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    color?: SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserCountOrderByAggregateInput
+    _max?: UserMaxOrderByAggregateInput
+    _min?: UserMinOrderByAggregateInput
+  }
+
+  export type UserScalarWhereWithAggregatesInput = {
+    AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    OR?: UserScalarWhereWithAggregatesInput[]
+    NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"User"> | string
+    name?: StringWithAggregatesFilter<"User"> | string
+    pinHash?: StringWithAggregatesFilter<"User"> | string
+    role?: StringWithAggregatesFilter<"User"> | string
+    isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    color?: StringWithAggregatesFilter<"User"> | string
+    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
 
   export type ClientWhereInput = {
     AND?: ClientWhereInput | ClientWhereInput[]
@@ -15418,9 +16914,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     taxDetails?: StringNullableFilter<"Quote"> | string | null
+    createdById?: StringNullableFilter<"Quote"> | string | null
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     invoice?: XOR<InvoiceNullableRelationFilter, InvoiceWhereInput> | null
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
 
   export type QuoteOrderByWithRelationInput = {
@@ -15439,9 +16937,11 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
     client?: ClientOrderByWithRelationInput
     repair?: RepairOrderByWithRelationInput
     invoice?: InvoiceOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type QuoteWhereUniqueInput = Prisma.AtLeast<{
@@ -15463,9 +16963,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     taxDetails?: StringNullableFilter<"Quote"> | string | null
+    createdById?: StringNullableFilter<"Quote"> | string | null
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     invoice?: XOR<InvoiceNullableRelationFilter, InvoiceWhereInput> | null
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "id" | "number" | "invoiceId">
 
   export type QuoteOrderByWithAggregationInput = {
@@ -15484,6 +16986,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
     _count?: QuoteCountOrderByAggregateInput
     _avg?: QuoteAvgOrderByAggregateInput
     _max?: QuoteMaxOrderByAggregateInput
@@ -15510,6 +17013,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     taxDetails?: StringNullableWithAggregatesFilter<"Quote"> | string | null
+    createdById?: StringNullableWithAggregatesFilter<"Quote"> | string | null
   }
 
   export type InvoiceWhereInput = {
@@ -15531,9 +17035,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
+    createdById?: StringNullableFilter<"Invoice"> | string | null
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     quote?: XOR<QuoteNullableRelationFilter, QuoteWhereInput> | null
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
 
   export type InvoiceOrderByWithRelationInput = {
@@ -15552,9 +17058,11 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
     client?: ClientOrderByWithRelationInput
     repair?: RepairOrderByWithRelationInput
     quote?: QuoteOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
@@ -15576,9 +17084,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
+    createdById?: StringNullableFilter<"Invoice"> | string | null
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     quote?: XOR<QuoteNullableRelationFilter, QuoteWhereInput> | null
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "id" | "number">
 
   export type InvoiceOrderByWithAggregationInput = {
@@ -15597,6 +17107,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
     _count?: InvoiceCountOrderByAggregateInput
     _avg?: InvoiceAvgOrderByAggregateInput
     _max?: InvoiceMaxOrderByAggregateInput
@@ -15623,6 +17134,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
+    createdById?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
   }
 
   export type DeviceTypeWhereInput = {
@@ -15796,6 +17308,7 @@ export namespace Prisma {
     sellingPrice?: FloatNullableFilter<"Part"> | number | null
     vatRate?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
+    reservedQuantity?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
     supplier?: StringNullableFilter<"Part"> | string | null
     supplierRef?: StringNullableFilter<"Part"> | string | null
@@ -15816,6 +17329,7 @@ export namespace Prisma {
     sellingPrice?: SortOrderInput | SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrderInput | SortOrder
     supplierRef?: SortOrderInput | SortOrder
@@ -15839,6 +17353,7 @@ export namespace Prisma {
     sellingPrice?: FloatNullableFilter<"Part"> | number | null
     vatRate?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
+    reservedQuantity?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
     supplier?: StringNullableFilter<"Part"> | string | null
     supplierRef?: StringNullableFilter<"Part"> | string | null
@@ -15859,6 +17374,7 @@ export namespace Prisma {
     sellingPrice?: SortOrderInput | SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrderInput | SortOrder
     supplierRef?: SortOrderInput | SortOrder
@@ -15885,6 +17401,7 @@ export namespace Prisma {
     sellingPrice?: FloatNullableWithAggregatesFilter<"Part"> | number | null
     vatRate?: FloatWithAggregatesFilter<"Part"> | number
     stock?: IntWithAggregatesFilter<"Part"> | number
+    reservedQuantity?: IntWithAggregatesFilter<"Part"> | number
     minStock?: IntWithAggregatesFilter<"Part"> | number
     supplier?: StringNullableWithAggregatesFilter<"Part"> | string | null
     supplierRef?: StringNullableWithAggregatesFilter<"Part"> | string | null
@@ -15989,31 +17506,37 @@ export namespace Prisma {
     NOT?: RepairWhereInput | RepairWhereInput[]
     id?: StringFilter<"Repair"> | string
     status?: StringFilter<"Repair"> | string
-    partStatus?: StringFilter<"Repair"> | string
     clientId?: StringFilter<"Repair"> | string
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
     updatedAt?: DateTimeFilter<"Repair"> | Date | string
+    createdById?: StringNullableFilter<"Repair"> | string | null
+    updatedById?: StringNullableFilter<"Repair"> | string | null
     invoices?: InvoiceListRelationFilter
     quotes?: QuoteListRelationFilter
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     logs?: RepairLogListRelationFilter
     services?: RepairServiceListRelationFilter
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    updatedBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
 
   export type RepairOrderByWithRelationInput = {
     id?: SortOrder
     status?: SortOrder
-    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    updatedById?: SortOrderInput | SortOrder
     invoices?: InvoiceOrderByRelationAggregateInput
     quotes?: QuoteOrderByRelationAggregateInput
     client?: ClientOrderByWithRelationInput
     logs?: RepairLogOrderByRelationAggregateInput
     services?: RepairServiceOrderByRelationAggregateInput
+    createdBy?: UserOrderByWithRelationInput
+    updatedBy?: UserOrderByWithRelationInput
   }
 
   export type RepairWhereUniqueInput = Prisma.AtLeast<{
@@ -16022,26 +17545,30 @@ export namespace Prisma {
     OR?: RepairWhereInput[]
     NOT?: RepairWhereInput | RepairWhereInput[]
     status?: StringFilter<"Repair"> | string
-    partStatus?: StringFilter<"Repair"> | string
     clientId?: StringFilter<"Repair"> | string
     notes?: StringNullableFilter<"Repair"> | string | null
     createdAt?: DateTimeFilter<"Repair"> | Date | string
     updatedAt?: DateTimeFilter<"Repair"> | Date | string
+    createdById?: StringNullableFilter<"Repair"> | string | null
+    updatedById?: StringNullableFilter<"Repair"> | string | null
     invoices?: InvoiceListRelationFilter
     quotes?: QuoteListRelationFilter
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     logs?: RepairLogListRelationFilter
     services?: RepairServiceListRelationFilter
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    updatedBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type RepairOrderByWithAggregationInput = {
     id?: SortOrder
     status?: SortOrder
-    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    updatedById?: SortOrderInput | SortOrder
     _count?: RepairCountOrderByAggregateInput
     _max?: RepairMaxOrderByAggregateInput
     _min?: RepairMinOrderByAggregateInput
@@ -16053,11 +17580,12 @@ export namespace Prisma {
     NOT?: RepairScalarWhereWithAggregatesInput | RepairScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Repair"> | string
     status?: StringWithAggregatesFilter<"Repair"> | string
-    partStatus?: StringWithAggregatesFilter<"Repair"> | string
     clientId?: StringWithAggregatesFilter<"Repair"> | string
     notes?: StringNullableWithAggregatesFilter<"Repair"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Repair"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Repair"> | Date | string
+    createdById?: StringNullableWithAggregatesFilter<"Repair"> | string | null
+    updatedById?: StringNullableWithAggregatesFilter<"Repair"> | string | null
   }
 
   export type RepairServiceWhereInput = {
@@ -16070,6 +17598,7 @@ export namespace Prisma {
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
     vatRate?: FloatFilter<"RepairService"> | number
+    partStatus?: StringNullableFilter<"RepairService"> | string | null
     repair?: XOR<RepairRelationFilter, RepairWhereInput>
     service?: XOR<ServiceRelationFilter, ServiceWhereInput>
   }
@@ -16081,6 +17610,7 @@ export namespace Prisma {
     quantity?: SortOrder
     priceAtTime?: SortOrder
     vatRate?: SortOrder
+    partStatus?: SortOrderInput | SortOrder
     repair?: RepairOrderByWithRelationInput
     service?: ServiceOrderByWithRelationInput
   }
@@ -16095,6 +17625,7 @@ export namespace Prisma {
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
     vatRate?: FloatFilter<"RepairService"> | number
+    partStatus?: StringNullableFilter<"RepairService"> | string | null
     repair?: XOR<RepairRelationFilter, RepairWhereInput>
     service?: XOR<ServiceRelationFilter, ServiceWhereInput>
   }, "id">
@@ -16106,6 +17637,7 @@ export namespace Prisma {
     quantity?: SortOrder
     priceAtTime?: SortOrder
     vatRate?: SortOrder
+    partStatus?: SortOrderInput | SortOrder
     _count?: RepairServiceCountOrderByAggregateInput
     _avg?: RepairServiceAvgOrderByAggregateInput
     _max?: RepairServiceMaxOrderByAggregateInput
@@ -16123,6 +17655,7 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"RepairService"> | number
     priceAtTime?: FloatWithAggregatesFilter<"RepairService"> | number
     vatRate?: FloatWithAggregatesFilter<"RepairService"> | number
+    partStatus?: StringNullableWithAggregatesFilter<"RepairService"> | string | null
   }
 
   export type RepairLogWhereInput = {
@@ -16133,8 +17666,10 @@ export namespace Prisma {
     repairId?: StringFilter<"RepairLog"> | string
     status?: StringFilter<"RepairLog"> | string
     comment?: StringNullableFilter<"RepairLog"> | string | null
+    userId?: StringNullableFilter<"RepairLog"> | string | null
     createdAt?: DateTimeFilter<"RepairLog"> | Date | string
     repair?: XOR<RepairRelationFilter, RepairWhereInput>
+    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
 
   export type RepairLogOrderByWithRelationInput = {
@@ -16142,8 +17677,10 @@ export namespace Prisma {
     repairId?: SortOrder
     status?: SortOrder
     comment?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     repair?: RepairOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type RepairLogWhereUniqueInput = Prisma.AtLeast<{
@@ -16154,8 +17691,10 @@ export namespace Prisma {
     repairId?: StringFilter<"RepairLog"> | string
     status?: StringFilter<"RepairLog"> | string
     comment?: StringNullableFilter<"RepairLog"> | string | null
+    userId?: StringNullableFilter<"RepairLog"> | string | null
     createdAt?: DateTimeFilter<"RepairLog"> | Date | string
     repair?: XOR<RepairRelationFilter, RepairWhereInput>
+    user?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type RepairLogOrderByWithAggregationInput = {
@@ -16163,6 +17702,7 @@ export namespace Prisma {
     repairId?: SortOrder
     status?: SortOrder
     comment?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: RepairLogCountOrderByAggregateInput
     _max?: RepairLogMaxOrderByAggregateInput
@@ -16177,6 +17717,7 @@ export namespace Prisma {
     repairId?: StringWithAggregatesFilter<"RepairLog"> | string
     status?: StringWithAggregatesFilter<"RepairLog"> | string
     comment?: StringNullableWithAggregatesFilter<"RepairLog"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"RepairLog"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"RepairLog"> | Date | string
   }
 
@@ -16391,6 +17932,98 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"WorkshopSettings"> | Date | string
   }
 
+  export type UserCreateInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairUncheckedCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUncheckedUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ClientCreateInput = {
     id?: string
     name: string
@@ -16515,6 +18148,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutQuotesInput
     repair?: RepairCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
   }
 
   export type QuoteUncheckedCreateInput = {
@@ -16533,6 +18167,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
   }
 
   export type QuoteUpdateInput = {
@@ -16551,6 +18186,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     repair?: RepairUpdateOneWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
   }
 
   export type QuoteUncheckedUpdateInput = {
@@ -16569,6 +18205,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUpdateManyMutationInput = {
@@ -16602,6 +18239,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InvoiceCreateInput = {
@@ -16621,6 +18259,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutInvoicesInput
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
+    createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
   }
 
   export type InvoiceUncheckedCreateInput = {
@@ -16639,6 +18278,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -16659,6 +18299,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateInput = {
@@ -16677,6 +18318,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -16712,6 +18354,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeviceTypeCreateInput = {
@@ -16862,6 +18505,7 @@ export namespace Prisma {
     sellingPrice?: number | null
     vatRate?: number
     stock?: number
+    reservedQuantity?: number
     minStock?: number
     supplier?: string | null
     supplierRef?: string | null
@@ -16881,6 +18525,7 @@ export namespace Prisma {
     sellingPrice?: number | null
     vatRate?: number
     stock?: number
+    reservedQuantity?: number
     minStock?: number
     supplier?: string | null
     supplierRef?: string | null
@@ -16900,6 +18545,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16919,6 +18565,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16938,6 +18585,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16955,6 +18603,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17048,7 +18697,6 @@ export namespace Prisma {
   export type RepairCreateInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17057,16 +18705,19 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
   export type RepairUncheckedCreateInput = {
     id?: string
     status?: string
-    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
@@ -17076,7 +18727,6 @@ export namespace Prisma {
   export type RepairUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17085,16 +18735,19 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
   export type RepairUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
@@ -17104,7 +18757,6 @@ export namespace Prisma {
   export type RepairUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17113,11 +18765,12 @@ export namespace Prisma {
   export type RepairUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairServiceCreateInput = {
@@ -17125,6 +18778,7 @@ export namespace Prisma {
     quantity?: number
     priceAtTime: number
     vatRate?: number
+    partStatus?: string | null
     repair: RepairCreateNestedOneWithoutServicesInput
     service: ServiceCreateNestedOneWithoutRepairsInput
   }
@@ -17136,6 +18790,7 @@ export namespace Prisma {
     quantity?: number
     priceAtTime: number
     vatRate?: number
+    partStatus?: string | null
   }
 
   export type RepairServiceUpdateInput = {
@@ -17143,6 +18798,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneRequiredWithoutServicesNestedInput
     service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
   }
@@ -17154,6 +18810,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairServiceUpdateManyMutationInput = {
@@ -17161,6 +18818,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairServiceUncheckedUpdateManyInput = {
@@ -17170,6 +18828,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairLogCreateInput = {
@@ -17178,6 +18837,7 @@ export namespace Prisma {
     comment?: string | null
     createdAt?: Date | string
     repair: RepairCreateNestedOneWithoutLogsInput
+    user?: UserCreateNestedOneWithoutRepairLogsInput
   }
 
   export type RepairLogUncheckedCreateInput = {
@@ -17185,6 +18845,7 @@ export namespace Prisma {
     repairId: string
     status: string
     comment?: string | null
+    userId?: string | null
     createdAt?: Date | string
   }
 
@@ -17194,6 +18855,7 @@ export namespace Prisma {
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repair?: RepairUpdateOneRequiredWithoutLogsNestedInput
+    user?: UserUpdateOneWithoutRepairLogsNestedInput
   }
 
   export type RepairLogUncheckedUpdateInput = {
@@ -17201,6 +18863,7 @@ export namespace Prisma {
     repairId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -17216,6 +18879,7 @@ export namespace Prisma {
     repairId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -17455,18 +19119,20 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -17478,6 +19144,12 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type RepairListRelationFilter = {
+    every?: RepairWhereInput
+    some?: RepairWhereInput
+    none?: RepairWhereInput
   }
 
   export type InvoiceListRelationFilter = {
@@ -17492,15 +19164,19 @@ export namespace Prisma {
     none?: QuoteWhereInput
   }
 
-  export type RepairListRelationFilter = {
-    every?: RepairWhereInput
-    some?: RepairWhereInput
-    none?: RepairWhereInput
+  export type RepairLogListRelationFilter = {
+    every?: RepairLogWhereInput
+    some?: RepairLogWhereInput
+    none?: RepairLogWhereInput
   }
 
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type RepairOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type InvoiceOrderByRelationAggregateInput = {
@@ -17511,8 +19187,111 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type RepairOrderByRelationAggregateInput = {
+  export type RepairLogOrderByRelationAggregateInput = {
     _count?: SortOrder
+  }
+
+  export type UserCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    pinHash?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    color?: SortOrder
+    lastLoginAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    pinHash?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    color?: SortOrder
+    lastLoginAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    pinHash?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    color?: SortOrder
+    lastLoginAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type ClientCountOrderByAggregateInput = {
@@ -17563,23 +19342,6 @@ export namespace Prisma {
     vatNumber?: SortOrder
   }
 
-  export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | null
@@ -17597,20 +19359,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
@@ -17620,17 +19368,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type ClientRelationFilter = {
@@ -17646,6 +19383,11 @@ export namespace Prisma {
   export type InvoiceNullableRelationFilter = {
     is?: InvoiceWhereInput | null
     isNot?: InvoiceWhereInput | null
+  }
+
+  export type UserNullableRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
   }
 
   export type QuoteCountOrderByAggregateInput = {
@@ -17664,6 +19406,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
+    createdById?: SortOrder
   }
 
   export type QuoteAvgOrderByAggregateInput = {
@@ -17687,6 +19430,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
+    createdById?: SortOrder
   }
 
   export type QuoteMinOrderByAggregateInput = {
@@ -17705,6 +19449,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
+    createdById?: SortOrder
   }
 
   export type QuoteSumOrderByAggregateInput = {
@@ -17728,25 +19473,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type QuoteNullableRelationFilter = {
     is?: QuoteWhereInput | null
     isNot?: QuoteWhereInput | null
@@ -17768,6 +19494,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
+    createdById?: SortOrder
   }
 
   export type InvoiceAvgOrderByAggregateInput = {
@@ -17791,6 +19518,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
+    createdById?: SortOrder
   }
 
   export type InvoiceMinOrderByAggregateInput = {
@@ -17809,19 +19537,12 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     taxDetails?: SortOrder
+    createdById?: SortOrder
   }
 
   export type InvoiceSumOrderByAggregateInput = {
     totalHT?: SortOrder
     totalTTC?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DeviceModelListRelationFilter = {
@@ -17967,6 +19688,7 @@ export namespace Prisma {
     sellingPrice?: SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
     supplierRef?: SortOrder
@@ -17982,6 +19704,7 @@ export namespace Prisma {
     sellingPrice?: SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
   }
 
@@ -17993,6 +19716,7 @@ export namespace Prisma {
     sellingPrice?: SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
     supplierRef?: SortOrder
@@ -18011,6 +19735,7 @@ export namespace Prisma {
     sellingPrice?: SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
     supplier?: SortOrder
     supplierRef?: SortOrder
@@ -18026,6 +19751,7 @@ export namespace Prisma {
     sellingPrice?: SortOrder
     vatRate?: SortOrder
     stock?: SortOrder
+    reservedQuantity?: SortOrder
     minStock?: SortOrder
   }
 
@@ -18129,44 +19855,37 @@ export namespace Prisma {
     duration?: SortOrder
   }
 
-  export type RepairLogListRelationFilter = {
-    every?: RepairLogWhereInput
-    some?: RepairLogWhereInput
-    none?: RepairLogWhereInput
-  }
-
-  export type RepairLogOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type RepairCountOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
-    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    createdById?: SortOrder
+    updatedById?: SortOrder
   }
 
   export type RepairMaxOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
-    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    createdById?: SortOrder
+    updatedById?: SortOrder
   }
 
   export type RepairMinOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
-    partStatus?: SortOrder
     clientId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    createdById?: SortOrder
+    updatedById?: SortOrder
   }
 
   export type RepairRelationFilter = {
@@ -18186,6 +19905,7 @@ export namespace Prisma {
     quantity?: SortOrder
     priceAtTime?: SortOrder
     vatRate?: SortOrder
+    partStatus?: SortOrder
   }
 
   export type RepairServiceAvgOrderByAggregateInput = {
@@ -18201,6 +19921,7 @@ export namespace Prisma {
     quantity?: SortOrder
     priceAtTime?: SortOrder
     vatRate?: SortOrder
+    partStatus?: SortOrder
   }
 
   export type RepairServiceMinOrderByAggregateInput = {
@@ -18210,6 +19931,7 @@ export namespace Prisma {
     quantity?: SortOrder
     priceAtTime?: SortOrder
     vatRate?: SortOrder
+    partStatus?: SortOrder
   }
 
   export type RepairServiceSumOrderByAggregateInput = {
@@ -18223,6 +19945,7 @@ export namespace Prisma {
     repairId?: SortOrder
     status?: SortOrder
     comment?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18231,6 +19954,7 @@ export namespace Prisma {
     repairId?: SortOrder
     status?: SortOrder
     comment?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18239,6 +19963,7 @@ export namespace Prisma {
     repairId?: SortOrder
     status?: SortOrder
     comment?: SortOrder
+    userId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -18369,6 +20094,212 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type RepairCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<RepairCreateWithoutCreatedByInput, RepairUncheckedCreateWithoutCreatedByInput> | RepairCreateWithoutCreatedByInput[] | RepairUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutCreatedByInput | RepairCreateOrConnectWithoutCreatedByInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+  }
+
+  export type RepairCreateNestedManyWithoutUpdatedByInput = {
+    create?: XOR<RepairCreateWithoutUpdatedByInput, RepairUncheckedCreateWithoutUpdatedByInput> | RepairCreateWithoutUpdatedByInput[] | RepairUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutUpdatedByInput | RepairCreateOrConnectWithoutUpdatedByInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+  }
+
+  export type InvoiceCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<InvoiceCreateWithoutCreatedByInput, InvoiceUncheckedCreateWithoutCreatedByInput> | InvoiceCreateWithoutCreatedByInput[] | InvoiceUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCreatedByInput | InvoiceCreateOrConnectWithoutCreatedByInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type QuoteCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<QuoteCreateWithoutCreatedByInput, QuoteUncheckedCreateWithoutCreatedByInput> | QuoteCreateWithoutCreatedByInput[] | QuoteUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutCreatedByInput | QuoteCreateOrConnectWithoutCreatedByInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+  }
+
+  export type RepairLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<RepairLogCreateWithoutUserInput, RepairLogUncheckedCreateWithoutUserInput> | RepairLogCreateWithoutUserInput[] | RepairLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RepairLogCreateOrConnectWithoutUserInput | RepairLogCreateOrConnectWithoutUserInput[]
+    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+  }
+
+  export type RepairUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<RepairCreateWithoutCreatedByInput, RepairUncheckedCreateWithoutCreatedByInput> | RepairCreateWithoutCreatedByInput[] | RepairUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutCreatedByInput | RepairCreateOrConnectWithoutCreatedByInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+  }
+
+  export type RepairUncheckedCreateNestedManyWithoutUpdatedByInput = {
+    create?: XOR<RepairCreateWithoutUpdatedByInput, RepairUncheckedCreateWithoutUpdatedByInput> | RepairCreateWithoutUpdatedByInput[] | RepairUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutUpdatedByInput | RepairCreateOrConnectWithoutUpdatedByInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+  }
+
+  export type InvoiceUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<InvoiceCreateWithoutCreatedByInput, InvoiceUncheckedCreateWithoutCreatedByInput> | InvoiceCreateWithoutCreatedByInput[] | InvoiceUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCreatedByInput | InvoiceCreateOrConnectWithoutCreatedByInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type QuoteUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<QuoteCreateWithoutCreatedByInput, QuoteUncheckedCreateWithoutCreatedByInput> | QuoteCreateWithoutCreatedByInput[] | QuoteUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutCreatedByInput | QuoteCreateOrConnectWithoutCreatedByInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+  }
+
+  export type RepairLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RepairLogCreateWithoutUserInput, RepairLogUncheckedCreateWithoutUserInput> | RepairLogCreateWithoutUserInput[] | RepairLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RepairLogCreateOrConnectWithoutUserInput | RepairLogCreateOrConnectWithoutUserInput[]
+    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+  }
+
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type RepairUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<RepairCreateWithoutCreatedByInput, RepairUncheckedCreateWithoutCreatedByInput> | RepairCreateWithoutCreatedByInput[] | RepairUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutCreatedByInput | RepairCreateOrConnectWithoutCreatedByInput[]
+    upsert?: RepairUpsertWithWhereUniqueWithoutCreatedByInput | RepairUpsertWithWhereUniqueWithoutCreatedByInput[]
+    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    update?: RepairUpdateWithWhereUniqueWithoutCreatedByInput | RepairUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: RepairUpdateManyWithWhereWithoutCreatedByInput | RepairUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
+  }
+
+  export type RepairUpdateManyWithoutUpdatedByNestedInput = {
+    create?: XOR<RepairCreateWithoutUpdatedByInput, RepairUncheckedCreateWithoutUpdatedByInput> | RepairCreateWithoutUpdatedByInput[] | RepairUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutUpdatedByInput | RepairCreateOrConnectWithoutUpdatedByInput[]
+    upsert?: RepairUpsertWithWhereUniqueWithoutUpdatedByInput | RepairUpsertWithWhereUniqueWithoutUpdatedByInput[]
+    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    update?: RepairUpdateWithWhereUniqueWithoutUpdatedByInput | RepairUpdateWithWhereUniqueWithoutUpdatedByInput[]
+    updateMany?: RepairUpdateManyWithWhereWithoutUpdatedByInput | RepairUpdateManyWithWhereWithoutUpdatedByInput[]
+    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
+  }
+
+  export type InvoiceUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<InvoiceCreateWithoutCreatedByInput, InvoiceUncheckedCreateWithoutCreatedByInput> | InvoiceCreateWithoutCreatedByInput[] | InvoiceUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCreatedByInput | InvoiceCreateOrConnectWithoutCreatedByInput[]
+    upsert?: InvoiceUpsertWithWhereUniqueWithoutCreatedByInput | InvoiceUpsertWithWhereUniqueWithoutCreatedByInput[]
+    set?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    disconnect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    delete?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    update?: InvoiceUpdateWithWhereUniqueWithoutCreatedByInput | InvoiceUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: InvoiceUpdateManyWithWhereWithoutCreatedByInput | InvoiceUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type QuoteUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<QuoteCreateWithoutCreatedByInput, QuoteUncheckedCreateWithoutCreatedByInput> | QuoteCreateWithoutCreatedByInput[] | QuoteUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutCreatedByInput | QuoteCreateOrConnectWithoutCreatedByInput[]
+    upsert?: QuoteUpsertWithWhereUniqueWithoutCreatedByInput | QuoteUpsertWithWhereUniqueWithoutCreatedByInput[]
+    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    update?: QuoteUpdateWithWhereUniqueWithoutCreatedByInput | QuoteUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: QuoteUpdateManyWithWhereWithoutCreatedByInput | QuoteUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  }
+
+  export type RepairLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RepairLogCreateWithoutUserInput, RepairLogUncheckedCreateWithoutUserInput> | RepairLogCreateWithoutUserInput[] | RepairLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RepairLogCreateOrConnectWithoutUserInput | RepairLogCreateOrConnectWithoutUserInput[]
+    upsert?: RepairLogUpsertWithWhereUniqueWithoutUserInput | RepairLogUpsertWithWhereUniqueWithoutUserInput[]
+    set?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    disconnect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    delete?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    update?: RepairLogUpdateWithWhereUniqueWithoutUserInput | RepairLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RepairLogUpdateManyWithWhereWithoutUserInput | RepairLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
+  }
+
+  export type RepairUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<RepairCreateWithoutCreatedByInput, RepairUncheckedCreateWithoutCreatedByInput> | RepairCreateWithoutCreatedByInput[] | RepairUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutCreatedByInput | RepairCreateOrConnectWithoutCreatedByInput[]
+    upsert?: RepairUpsertWithWhereUniqueWithoutCreatedByInput | RepairUpsertWithWhereUniqueWithoutCreatedByInput[]
+    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    update?: RepairUpdateWithWhereUniqueWithoutCreatedByInput | RepairUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: RepairUpdateManyWithWhereWithoutCreatedByInput | RepairUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
+  }
+
+  export type RepairUncheckedUpdateManyWithoutUpdatedByNestedInput = {
+    create?: XOR<RepairCreateWithoutUpdatedByInput, RepairUncheckedCreateWithoutUpdatedByInput> | RepairCreateWithoutUpdatedByInput[] | RepairUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: RepairCreateOrConnectWithoutUpdatedByInput | RepairCreateOrConnectWithoutUpdatedByInput[]
+    upsert?: RepairUpsertWithWhereUniqueWithoutUpdatedByInput | RepairUpsertWithWhereUniqueWithoutUpdatedByInput[]
+    set?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    disconnect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    delete?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
+    update?: RepairUpdateWithWhereUniqueWithoutUpdatedByInput | RepairUpdateWithWhereUniqueWithoutUpdatedByInput[]
+    updateMany?: RepairUpdateManyWithWhereWithoutUpdatedByInput | RepairUpdateManyWithWhereWithoutUpdatedByInput[]
+    deleteMany?: RepairScalarWhereInput | RepairScalarWhereInput[]
+  }
+
+  export type InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<InvoiceCreateWithoutCreatedByInput, InvoiceUncheckedCreateWithoutCreatedByInput> | InvoiceCreateWithoutCreatedByInput[] | InvoiceUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCreatedByInput | InvoiceCreateOrConnectWithoutCreatedByInput[]
+    upsert?: InvoiceUpsertWithWhereUniqueWithoutCreatedByInput | InvoiceUpsertWithWhereUniqueWithoutCreatedByInput[]
+    set?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    disconnect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    delete?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    update?: InvoiceUpdateWithWhereUniqueWithoutCreatedByInput | InvoiceUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: InvoiceUpdateManyWithWhereWithoutCreatedByInput | InvoiceUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type QuoteUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<QuoteCreateWithoutCreatedByInput, QuoteUncheckedCreateWithoutCreatedByInput> | QuoteCreateWithoutCreatedByInput[] | QuoteUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: QuoteCreateOrConnectWithoutCreatedByInput | QuoteCreateOrConnectWithoutCreatedByInput[]
+    upsert?: QuoteUpsertWithWhereUniqueWithoutCreatedByInput | QuoteUpsertWithWhereUniqueWithoutCreatedByInput[]
+    set?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    disconnect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    delete?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    connect?: QuoteWhereUniqueInput | QuoteWhereUniqueInput[]
+    update?: QuoteUpdateWithWhereUniqueWithoutCreatedByInput | QuoteUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: QuoteUpdateManyWithWhereWithoutCreatedByInput | QuoteUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+  }
+
+  export type RepairLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RepairLogCreateWithoutUserInput, RepairLogUncheckedCreateWithoutUserInput> | RepairLogCreateWithoutUserInput[] | RepairLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RepairLogCreateOrConnectWithoutUserInput | RepairLogCreateOrConnectWithoutUserInput[]
+    upsert?: RepairLogUpsertWithWhereUniqueWithoutUserInput | RepairLogUpsertWithWhereUniqueWithoutUserInput[]
+    set?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    disconnect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    delete?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    connect?: RepairLogWhereUniqueInput | RepairLogWhereUniqueInput[]
+    update?: RepairLogUpdateWithWhereUniqueWithoutUserInput | RepairLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RepairLogUpdateManyWithWhereWithoutUserInput | RepairLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
+  }
+
   export type InvoiceCreateNestedManyWithoutClientInput = {
     create?: XOR<InvoiceCreateWithoutClientInput, InvoiceUncheckedCreateWithoutClientInput> | InvoiceCreateWithoutClientInput[] | InvoiceUncheckedCreateWithoutClientInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutClientInput | InvoiceCreateOrConnectWithoutClientInput[]
@@ -18405,16 +20336,8 @@ export namespace Prisma {
     connect?: RepairWhereUniqueInput | RepairWhereUniqueInput[]
   }
 
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type InvoiceUpdateManyWithoutClientNestedInput = {
@@ -18513,16 +20436,18 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutCreatedQuotesInput = {
+    create?: XOR<UserCreateWithoutCreatedQuotesInput, UserUncheckedCreateWithoutCreatedQuotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedQuotesInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type ClientUpdateOneRequiredWithoutQuotesNestedInput = {
@@ -18553,6 +20478,16 @@ export namespace Prisma {
     update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutQuoteInput, InvoiceUpdateWithoutQuoteInput>, InvoiceUncheckedUpdateWithoutQuoteInput>
   }
 
+  export type UserUpdateOneWithoutCreatedQuotesNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedQuotesInput, UserUncheckedCreateWithoutCreatedQuotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedQuotesInput
+    upsert?: UserUpsertWithoutCreatedQuotesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedQuotesInput, UserUpdateWithoutCreatedQuotesInput>, UserUncheckedUpdateWithoutCreatedQuotesInput>
+  }
+
   export type ClientCreateNestedOneWithoutInvoicesInput = {
     create?: XOR<ClientCreateWithoutInvoicesInput, ClientUncheckedCreateWithoutInvoicesInput>
     connectOrCreate?: ClientCreateOrConnectWithoutInvoicesInput
@@ -18571,14 +20506,16 @@ export namespace Prisma {
     connect?: QuoteWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutCreatedInvoicesInput = {
+    create?: XOR<UserCreateWithoutCreatedInvoicesInput, UserUncheckedCreateWithoutCreatedInvoicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedInvoicesInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type QuoteUncheckedCreateNestedOneWithoutInvoiceInput = {
     create?: XOR<QuoteCreateWithoutInvoiceInput, QuoteUncheckedCreateWithoutInvoiceInput>
     connectOrCreate?: QuoteCreateOrConnectWithoutInvoiceInput
     connect?: QuoteWhereUniqueInput
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type ClientUpdateOneRequiredWithoutInvoicesNestedInput = {
@@ -18607,6 +20544,16 @@ export namespace Prisma {
     delete?: QuoteWhereInput | boolean
     connect?: QuoteWhereUniqueInput
     update?: XOR<XOR<QuoteUpdateToOneWithWhereWithoutInvoiceInput, QuoteUpdateWithoutInvoiceInput>, QuoteUncheckedUpdateWithoutInvoiceInput>
+  }
+
+  export type UserUpdateOneWithoutCreatedInvoicesNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedInvoicesInput, UserUncheckedCreateWithoutCreatedInvoicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedInvoicesInput
+    upsert?: UserUpsertWithoutCreatedInvoicesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedInvoicesInput, UserUpdateWithoutCreatedInvoicesInput>, UserUncheckedUpdateWithoutCreatedInvoicesInput>
   }
 
   export type QuoteUncheckedUpdateOneWithoutInvoiceNestedInput = {
@@ -18969,6 +20916,18 @@ export namespace Prisma {
     connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
   }
 
+  export type UserCreateNestedOneWithoutCreatedRepairsInput = {
+    create?: XOR<UserCreateWithoutCreatedRepairsInput, UserUncheckedCreateWithoutCreatedRepairsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedRepairsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutUpdatedRepairsInput = {
+    create?: XOR<UserCreateWithoutUpdatedRepairsInput, UserUncheckedCreateWithoutUpdatedRepairsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUpdatedRepairsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type InvoiceUncheckedCreateNestedManyWithoutRepairInput = {
     create?: XOR<InvoiceCreateWithoutRepairInput, InvoiceUncheckedCreateWithoutRepairInput> | InvoiceCreateWithoutRepairInput[] | InvoiceUncheckedCreateWithoutRepairInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutRepairInput | InvoiceCreateOrConnectWithoutRepairInput[]
@@ -19051,6 +21010,26 @@ export namespace Prisma {
     update?: RepairServiceUpdateWithWhereUniqueWithoutRepairInput | RepairServiceUpdateWithWhereUniqueWithoutRepairInput[]
     updateMany?: RepairServiceUpdateManyWithWhereWithoutRepairInput | RepairServiceUpdateManyWithWhereWithoutRepairInput[]
     deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutCreatedRepairsNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedRepairsInput, UserUncheckedCreateWithoutCreatedRepairsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedRepairsInput
+    upsert?: UserUpsertWithoutCreatedRepairsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedRepairsInput, UserUpdateWithoutCreatedRepairsInput>, UserUncheckedUpdateWithoutCreatedRepairsInput>
+  }
+
+  export type UserUpdateOneWithoutUpdatedRepairsNestedInput = {
+    create?: XOR<UserCreateWithoutUpdatedRepairsInput, UserUncheckedCreateWithoutUpdatedRepairsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUpdatedRepairsInput
+    upsert?: UserUpsertWithoutUpdatedRepairsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUpdatedRepairsInput, UserUpdateWithoutUpdatedRepairsInput>, UserUncheckedUpdateWithoutUpdatedRepairsInput>
   }
 
   export type InvoiceUncheckedUpdateManyWithoutRepairNestedInput = {
@@ -19139,12 +21118,28 @@ export namespace Prisma {
     connect?: RepairWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutRepairLogsInput = {
+    create?: XOR<UserCreateWithoutRepairLogsInput, UserUncheckedCreateWithoutRepairLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRepairLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type RepairUpdateOneRequiredWithoutLogsNestedInput = {
     create?: XOR<RepairCreateWithoutLogsInput, RepairUncheckedCreateWithoutLogsInput>
     connectOrCreate?: RepairCreateOrConnectWithoutLogsInput
     upsert?: RepairUpsertWithoutLogsInput
     connect?: RepairWhereUniqueInput
     update?: XOR<XOR<RepairUpdateToOneWithWhereWithoutLogsInput, RepairUpdateWithoutLogsInput>, RepairUncheckedUpdateWithoutLogsInput>
+  }
+
+  export type UserUpdateOneWithoutRepairLogsNestedInput = {
+    create?: XOR<UserCreateWithoutRepairLogsInput, UserUncheckedCreateWithoutRepairLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRepairLogsInput
+    upsert?: UserUpsertWithoutRepairLogsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRepairLogsInput, UserUpdateWithoutRepairLogsInput>, UserUncheckedUpdateWithoutRepairLogsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -19161,18 +21156,20 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -19214,21 +21211,26 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
@@ -19256,6 +21258,37 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
@@ -19265,17 +21298,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -19292,33 +21314,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -19364,6 +21359,327 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type RepairCreateWithoutCreatedByInput = {
+    id?: string
+    status?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
+  }
+
+  export type RepairUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    status?: string
+    clientId: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    updatedById?: string | null
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairCreateOrConnectWithoutCreatedByInput = {
+    where: RepairWhereUniqueInput
+    create: XOR<RepairCreateWithoutCreatedByInput, RepairUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type RepairCreateWithoutUpdatedByInput = {
+    id?: string
+    status?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+  }
+
+  export type RepairUncheckedCreateWithoutUpdatedByInput = {
+    id?: string
+    status?: string
+    clientId: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: string | null
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairCreateOrConnectWithoutUpdatedByInput = {
+    where: RepairWhereUniqueInput
+    create: XOR<RepairCreateWithoutUpdatedByInput, RepairUncheckedCreateWithoutUpdatedByInput>
+  }
+
+  export type InvoiceCreateWithoutCreatedByInput = {
+    id?: string
+    number: string
+    status?: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    client: ClientCreateNestedOneWithoutInvoicesInput
+    repair?: RepairCreateNestedOneWithoutInvoicesInput
+    quote?: QuoteCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    number: string
+    status?: string
+    clientId: string
+    repairId?: string | null
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    paid?: boolean
+    dueDate?: Date | string | null
+    paymentMethod?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceCreateOrConnectWithoutCreatedByInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutCreatedByInput, InvoiceUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type QuoteCreateWithoutCreatedByInput = {
+    id?: string
+    number: string
+    status?: string
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    validUntil?: Date | string | null
+    paymentMethod?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+    client: ClientCreateNestedOneWithoutQuotesInput
+    repair?: RepairCreateNestedOneWithoutQuotesInput
+    invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+  }
+
+  export type QuoteUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    number: string
+    status?: string
+    clientId: string
+    repairId?: string | null
+    items: string
+    totalHT: number
+    totalTTC: number
+    notes?: string | null
+    validUntil?: Date | string | null
+    paymentMethod?: string | null
+    invoiceId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    taxDetails?: string | null
+  }
+
+  export type QuoteCreateOrConnectWithoutCreatedByInput = {
+    where: QuoteWhereUniqueInput
+    create: XOR<QuoteCreateWithoutCreatedByInput, QuoteUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type RepairLogCreateWithoutUserInput = {
+    id?: string
+    status: string
+    comment?: string | null
+    createdAt?: Date | string
+    repair: RepairCreateNestedOneWithoutLogsInput
+  }
+
+  export type RepairLogUncheckedCreateWithoutUserInput = {
+    id?: string
+    repairId: string
+    status: string
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RepairLogCreateOrConnectWithoutUserInput = {
+    where: RepairLogWhereUniqueInput
+    create: XOR<RepairLogCreateWithoutUserInput, RepairLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type RepairUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: RepairWhereUniqueInput
+    update: XOR<RepairUpdateWithoutCreatedByInput, RepairUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<RepairCreateWithoutCreatedByInput, RepairUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type RepairUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: RepairWhereUniqueInput
+    data: XOR<RepairUpdateWithoutCreatedByInput, RepairUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type RepairUpdateManyWithWhereWithoutCreatedByInput = {
+    where: RepairScalarWhereInput
+    data: XOR<RepairUpdateManyMutationInput, RepairUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type RepairScalarWhereInput = {
+    AND?: RepairScalarWhereInput | RepairScalarWhereInput[]
+    OR?: RepairScalarWhereInput[]
+    NOT?: RepairScalarWhereInput | RepairScalarWhereInput[]
+    id?: StringFilter<"Repair"> | string
+    status?: StringFilter<"Repair"> | string
+    clientId?: StringFilter<"Repair"> | string
+    notes?: StringNullableFilter<"Repair"> | string | null
+    createdAt?: DateTimeFilter<"Repair"> | Date | string
+    updatedAt?: DateTimeFilter<"Repair"> | Date | string
+    createdById?: StringNullableFilter<"Repair"> | string | null
+    updatedById?: StringNullableFilter<"Repair"> | string | null
+  }
+
+  export type RepairUpsertWithWhereUniqueWithoutUpdatedByInput = {
+    where: RepairWhereUniqueInput
+    update: XOR<RepairUpdateWithoutUpdatedByInput, RepairUncheckedUpdateWithoutUpdatedByInput>
+    create: XOR<RepairCreateWithoutUpdatedByInput, RepairUncheckedCreateWithoutUpdatedByInput>
+  }
+
+  export type RepairUpdateWithWhereUniqueWithoutUpdatedByInput = {
+    where: RepairWhereUniqueInput
+    data: XOR<RepairUpdateWithoutUpdatedByInput, RepairUncheckedUpdateWithoutUpdatedByInput>
+  }
+
+  export type RepairUpdateManyWithWhereWithoutUpdatedByInput = {
+    where: RepairScalarWhereInput
+    data: XOR<RepairUpdateManyMutationInput, RepairUncheckedUpdateManyWithoutUpdatedByInput>
+  }
+
+  export type InvoiceUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: InvoiceWhereUniqueInput
+    update: XOR<InvoiceUpdateWithoutCreatedByInput, InvoiceUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<InvoiceCreateWithoutCreatedByInput, InvoiceUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type InvoiceUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: InvoiceWhereUniqueInput
+    data: XOR<InvoiceUpdateWithoutCreatedByInput, InvoiceUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type InvoiceUpdateManyWithWhereWithoutCreatedByInput = {
+    where: InvoiceScalarWhereInput
+    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type InvoiceScalarWhereInput = {
+    AND?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+    OR?: InvoiceScalarWhereInput[]
+    NOT?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+    id?: StringFilter<"Invoice"> | string
+    number?: StringFilter<"Invoice"> | string
+    status?: StringFilter<"Invoice"> | string
+    clientId?: StringFilter<"Invoice"> | string
+    repairId?: StringNullableFilter<"Invoice"> | string | null
+    items?: StringFilter<"Invoice"> | string
+    totalHT?: FloatFilter<"Invoice"> | number
+    totalTTC?: FloatFilter<"Invoice"> | number
+    notes?: StringNullableFilter<"Invoice"> | string | null
+    paid?: BoolFilter<"Invoice"> | boolean
+    dueDate?: DateTimeNullableFilter<"Invoice"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Invoice"> | string | null
+    createdAt?: DateTimeFilter<"Invoice"> | Date | string
+    updatedAt?: DateTimeFilter<"Invoice"> | Date | string
+    taxDetails?: StringNullableFilter<"Invoice"> | string | null
+    createdById?: StringNullableFilter<"Invoice"> | string | null
+  }
+
+  export type QuoteUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: QuoteWhereUniqueInput
+    update: XOR<QuoteUpdateWithoutCreatedByInput, QuoteUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<QuoteCreateWithoutCreatedByInput, QuoteUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type QuoteUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: QuoteWhereUniqueInput
+    data: XOR<QuoteUpdateWithoutCreatedByInput, QuoteUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type QuoteUpdateManyWithWhereWithoutCreatedByInput = {
+    where: QuoteScalarWhereInput
+    data: XOR<QuoteUpdateManyMutationInput, QuoteUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type QuoteScalarWhereInput = {
+    AND?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+    OR?: QuoteScalarWhereInput[]
+    NOT?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
+    id?: StringFilter<"Quote"> | string
+    number?: StringFilter<"Quote"> | string
+    status?: StringFilter<"Quote"> | string
+    clientId?: StringFilter<"Quote"> | string
+    repairId?: StringNullableFilter<"Quote"> | string | null
+    items?: StringFilter<"Quote"> | string
+    totalHT?: FloatFilter<"Quote"> | number
+    totalTTC?: FloatFilter<"Quote"> | number
+    notes?: StringNullableFilter<"Quote"> | string | null
+    validUntil?: DateTimeNullableFilter<"Quote"> | Date | string | null
+    paymentMethod?: StringNullableFilter<"Quote"> | string | null
+    invoiceId?: StringNullableFilter<"Quote"> | string | null
+    createdAt?: DateTimeFilter<"Quote"> | Date | string
+    updatedAt?: DateTimeFilter<"Quote"> | Date | string
+    taxDetails?: StringNullableFilter<"Quote"> | string | null
+    createdById?: StringNullableFilter<"Quote"> | string | null
+  }
+
+  export type RepairLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: RepairLogWhereUniqueInput
+    update: XOR<RepairLogUpdateWithoutUserInput, RepairLogUncheckedUpdateWithoutUserInput>
+    create: XOR<RepairLogCreateWithoutUserInput, RepairLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type RepairLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: RepairLogWhereUniqueInput
+    data: XOR<RepairLogUpdateWithoutUserInput, RepairLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RepairLogUpdateManyWithWhereWithoutUserInput = {
+    where: RepairLogScalarWhereInput
+    data: XOR<RepairLogUpdateManyMutationInput, RepairLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RepairLogScalarWhereInput = {
+    AND?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
+    OR?: RepairLogScalarWhereInput[]
+    NOT?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
+    id?: StringFilter<"RepairLog"> | string
+    repairId?: StringFilter<"RepairLog"> | string
+    status?: StringFilter<"RepairLog"> | string
+    comment?: StringNullableFilter<"RepairLog"> | string | null
+    userId?: StringNullableFilter<"RepairLog"> | string | null
+    createdAt?: DateTimeFilter<"RepairLog"> | Date | string
+  }
+
   export type InvoiceCreateWithoutClientInput = {
     id?: string
     number: string
@@ -19380,6 +21696,7 @@ export namespace Prisma {
     taxDetails?: string | null
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
+    createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
   }
 
   export type InvoiceUncheckedCreateWithoutClientInput = {
@@ -19397,6 +21714,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -19420,6 +21738,7 @@ export namespace Prisma {
     taxDetails?: string | null
     repair?: RepairCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
   }
 
   export type QuoteUncheckedCreateWithoutClientInput = {
@@ -19437,6 +21756,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
   }
 
   export type QuoteCreateOrConnectWithoutClientInput = {
@@ -19447,7 +21767,6 @@ export namespace Prisma {
   export type RepairCreateWithoutClientInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19455,15 +21774,18 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutRepairInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
   export type RepairUncheckedCreateWithoutClientInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
@@ -19491,27 +21813,6 @@ export namespace Prisma {
     data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutClientInput>
   }
 
-  export type InvoiceScalarWhereInput = {
-    AND?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
-    OR?: InvoiceScalarWhereInput[]
-    NOT?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
-    id?: StringFilter<"Invoice"> | string
-    number?: StringFilter<"Invoice"> | string
-    status?: StringFilter<"Invoice"> | string
-    clientId?: StringFilter<"Invoice"> | string
-    repairId?: StringNullableFilter<"Invoice"> | string | null
-    items?: StringFilter<"Invoice"> | string
-    totalHT?: FloatFilter<"Invoice"> | number
-    totalTTC?: FloatFilter<"Invoice"> | number
-    notes?: StringNullableFilter<"Invoice"> | string | null
-    paid?: BoolFilter<"Invoice"> | boolean
-    dueDate?: DateTimeNullableFilter<"Invoice"> | Date | string | null
-    paymentMethod?: StringNullableFilter<"Invoice"> | string | null
-    createdAt?: DateTimeFilter<"Invoice"> | Date | string
-    updatedAt?: DateTimeFilter<"Invoice"> | Date | string
-    taxDetails?: StringNullableFilter<"Invoice"> | string | null
-  }
-
   export type QuoteUpsertWithWhereUniqueWithoutClientInput = {
     where: QuoteWhereUniqueInput
     update: XOR<QuoteUpdateWithoutClientInput, QuoteUncheckedUpdateWithoutClientInput>
@@ -19528,27 +21829,6 @@ export namespace Prisma {
     data: XOR<QuoteUpdateManyMutationInput, QuoteUncheckedUpdateManyWithoutClientInput>
   }
 
-  export type QuoteScalarWhereInput = {
-    AND?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
-    OR?: QuoteScalarWhereInput[]
-    NOT?: QuoteScalarWhereInput | QuoteScalarWhereInput[]
-    id?: StringFilter<"Quote"> | string
-    number?: StringFilter<"Quote"> | string
-    status?: StringFilter<"Quote"> | string
-    clientId?: StringFilter<"Quote"> | string
-    repairId?: StringNullableFilter<"Quote"> | string | null
-    items?: StringFilter<"Quote"> | string
-    totalHT?: FloatFilter<"Quote"> | number
-    totalTTC?: FloatFilter<"Quote"> | number
-    notes?: StringNullableFilter<"Quote"> | string | null
-    validUntil?: DateTimeNullableFilter<"Quote"> | Date | string | null
-    paymentMethod?: StringNullableFilter<"Quote"> | string | null
-    invoiceId?: StringNullableFilter<"Quote"> | string | null
-    createdAt?: DateTimeFilter<"Quote"> | Date | string
-    updatedAt?: DateTimeFilter<"Quote"> | Date | string
-    taxDetails?: StringNullableFilter<"Quote"> | string | null
-  }
-
   export type RepairUpsertWithWhereUniqueWithoutClientInput = {
     where: RepairWhereUniqueInput
     update: XOR<RepairUpdateWithoutClientInput, RepairUncheckedUpdateWithoutClientInput>
@@ -19563,19 +21843,6 @@ export namespace Prisma {
   export type RepairUpdateManyWithWhereWithoutClientInput = {
     where: RepairScalarWhereInput
     data: XOR<RepairUpdateManyMutationInput, RepairUncheckedUpdateManyWithoutClientInput>
-  }
-
-  export type RepairScalarWhereInput = {
-    AND?: RepairScalarWhereInput | RepairScalarWhereInput[]
-    OR?: RepairScalarWhereInput[]
-    NOT?: RepairScalarWhereInput | RepairScalarWhereInput[]
-    id?: StringFilter<"Repair"> | string
-    status?: StringFilter<"Repair"> | string
-    partStatus?: StringFilter<"Repair"> | string
-    clientId?: StringFilter<"Repair"> | string
-    notes?: StringNullableFilter<"Repair"> | string | null
-    createdAt?: DateTimeFilter<"Repair"> | Date | string
-    updatedAt?: DateTimeFilter<"Repair"> | Date | string
   }
 
   export type ClientCreateWithoutQuotesInput = {
@@ -19622,7 +21889,6 @@ export namespace Prisma {
   export type RepairCreateWithoutQuotesInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19630,16 +21896,19 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
   export type RepairUncheckedCreateWithoutQuotesInput = {
     id?: string
     status?: string
-    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
@@ -19666,6 +21935,7 @@ export namespace Prisma {
     taxDetails?: string | null
     client: ClientCreateNestedOneWithoutInvoicesInput
     repair?: RepairCreateNestedOneWithoutInvoicesInput
+    createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
   }
 
   export type InvoiceUncheckedCreateWithoutQuoteInput = {
@@ -19684,11 +21954,49 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
   }
 
   export type InvoiceCreateOrConnectWithoutQuoteInput = {
     where: InvoiceWhereUniqueInput
     create: XOR<InvoiceCreateWithoutQuoteInput, InvoiceUncheckedCreateWithoutQuoteInput>
+  }
+
+  export type UserCreateWithoutCreatedQuotesInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedQuotesInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairUncheckedCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedQuotesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedQuotesInput, UserUncheckedCreateWithoutCreatedQuotesInput>
   }
 
   export type ClientUpsertWithoutQuotesInput = {
@@ -19752,7 +22060,6 @@ export namespace Prisma {
   export type RepairUpdateWithoutQuotesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19760,16 +22067,19 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
   export type RepairUncheckedUpdateWithoutQuotesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
@@ -19802,6 +22112,7 @@ export namespace Prisma {
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutQuoteInput = {
@@ -19820,6 +22131,50 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserUpsertWithoutCreatedQuotesInput = {
+    update: XOR<UserUpdateWithoutCreatedQuotesInput, UserUncheckedUpdateWithoutCreatedQuotesInput>
+    create: XOR<UserCreateWithoutCreatedQuotesInput, UserUncheckedCreateWithoutCreatedQuotesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedQuotesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedQuotesInput, UserUncheckedUpdateWithoutCreatedQuotesInput>
+  }
+
+  export type UserUpdateWithoutCreatedQuotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedQuotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUncheckedUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClientCreateWithoutInvoicesInput = {
@@ -19866,7 +22221,6 @@ export namespace Prisma {
   export type RepairCreateWithoutInvoicesInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19874,16 +22228,19 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
   export type RepairUncheckedCreateWithoutInvoicesInput = {
     id?: string
     status?: string
-    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
@@ -19909,6 +22266,7 @@ export namespace Prisma {
     taxDetails?: string | null
     client: ClientCreateNestedOneWithoutQuotesInput
     repair?: RepairCreateNestedOneWithoutQuotesInput
+    createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
   }
 
   export type QuoteUncheckedCreateWithoutInvoiceInput = {
@@ -19926,11 +22284,49 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
   }
 
   export type QuoteCreateOrConnectWithoutInvoiceInput = {
     where: QuoteWhereUniqueInput
     create: XOR<QuoteCreateWithoutInvoiceInput, QuoteUncheckedCreateWithoutInvoiceInput>
+  }
+
+  export type UserCreateWithoutCreatedInvoicesInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairCreateNestedManyWithoutUpdatedByInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedInvoicesInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairUncheckedCreateNestedManyWithoutUpdatedByInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedInvoicesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedInvoicesInput, UserUncheckedCreateWithoutCreatedInvoicesInput>
   }
 
   export type ClientUpsertWithoutInvoicesInput = {
@@ -19994,7 +22390,6 @@ export namespace Prisma {
   export type RepairUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20002,16 +22397,19 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
   export type RepairUncheckedUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
@@ -20043,6 +22441,7 @@ export namespace Prisma {
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     repair?: RepairUpdateOneWithoutQuotesNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
   }
 
   export type QuoteUncheckedUpdateWithoutInvoiceInput = {
@@ -20060,6 +22459,50 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserUpsertWithoutCreatedInvoicesInput = {
+    update: XOR<UserUpdateWithoutCreatedInvoicesInput, UserUncheckedUpdateWithoutCreatedInvoicesInput>
+    create: XOR<UserCreateWithoutCreatedInvoicesInput, UserUncheckedCreateWithoutCreatedInvoicesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedInvoicesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedInvoicesInput, UserUncheckedUpdateWithoutCreatedInvoicesInput>
+  }
+
+  export type UserUpdateWithoutCreatedInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUpdateManyWithoutUpdatedByNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUncheckedUpdateManyWithoutUpdatedByNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type DeviceModelCreateWithoutTypeInput = {
@@ -20198,6 +22641,7 @@ export namespace Prisma {
     sellingPrice?: number | null
     vatRate?: number
     stock?: number
+    reservedQuantity?: number
     minStock?: number
     supplier?: string | null
     supplierRef?: string | null
@@ -20216,6 +22660,7 @@ export namespace Prisma {
     sellingPrice?: number | null
     vatRate?: number
     stock?: number
+    reservedQuantity?: number
     minStock?: number
     supplier?: string | null
     supplierRef?: string | null
@@ -20335,6 +22780,7 @@ export namespace Prisma {
     sellingPrice?: FloatNullableFilter<"Part"> | number | null
     vatRate?: FloatFilter<"Part"> | number
     stock?: IntFilter<"Part"> | number
+    reservedQuantity?: IntFilter<"Part"> | number
     minStock?: IntFilter<"Part"> | number
     supplier?: StringNullableFilter<"Part"> | string | null
     supplierRef?: StringNullableFilter<"Part"> | string | null
@@ -20485,6 +22931,7 @@ export namespace Prisma {
     quantity?: number
     priceAtTime: number
     vatRate?: number
+    partStatus?: string | null
     repair: RepairCreateNestedOneWithoutServicesInput
   }
 
@@ -20494,6 +22941,7 @@ export namespace Prisma {
     quantity?: number
     priceAtTime: number
     vatRate?: number
+    partStatus?: string | null
   }
 
   export type RepairServiceCreateOrConnectWithoutServiceInput = {
@@ -20509,6 +22957,7 @@ export namespace Prisma {
     sellingPrice?: number | null
     vatRate?: number
     stock?: number
+    reservedQuantity?: number
     minStock?: number
     supplier?: string | null
     supplierRef?: string | null
@@ -20527,6 +22976,7 @@ export namespace Prisma {
     sellingPrice?: number | null
     vatRate?: number
     stock?: number
+    reservedQuantity?: number
     minStock?: number
     supplier?: string | null
     supplierRef?: string | null
@@ -20593,6 +23043,7 @@ export namespace Prisma {
     quantity?: IntFilter<"RepairService"> | number
     priceAtTime?: FloatFilter<"RepairService"> | number
     vatRate?: FloatFilter<"RepairService"> | number
+    partStatus?: StringNullableFilter<"RepairService"> | string | null
   }
 
   export type PartUpsertWithoutServicesInput = {
@@ -20614,6 +23065,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20632,6 +23084,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20689,6 +23142,7 @@ export namespace Prisma {
     taxDetails?: string | null
     client: ClientCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
+    createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
   }
 
   export type InvoiceUncheckedCreateWithoutRepairInput = {
@@ -20706,6 +23160,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -20729,6 +23184,7 @@ export namespace Prisma {
     taxDetails?: string | null
     client: ClientCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
+    createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
   }
 
   export type QuoteUncheckedCreateWithoutRepairInput = {
@@ -20746,6 +23202,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    createdById?: string | null
   }
 
   export type QuoteCreateOrConnectWithoutRepairInput = {
@@ -20799,12 +23256,14 @@ export namespace Prisma {
     status: string
     comment?: string | null
     createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutRepairLogsInput
   }
 
   export type RepairLogUncheckedCreateWithoutRepairInput = {
     id?: string
     status: string
     comment?: string | null
+    userId?: string | null
     createdAt?: Date | string
   }
 
@@ -20818,6 +23277,7 @@ export namespace Prisma {
     quantity?: number
     priceAtTime: number
     vatRate?: number
+    partStatus?: string | null
     service: ServiceCreateNestedOneWithoutRepairsInput
   }
 
@@ -20827,11 +23287,86 @@ export namespace Prisma {
     quantity?: number
     priceAtTime: number
     vatRate?: number
+    partStatus?: string | null
   }
 
   export type RepairServiceCreateOrConnectWithoutRepairInput = {
     where: RepairServiceWhereUniqueInput
     create: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput>
+  }
+
+  export type UserCreateWithoutCreatedRepairsInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    updatedRepairs?: RepairCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedRepairsInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    updatedRepairs?: RepairUncheckedCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedRepairsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedRepairsInput, UserUncheckedCreateWithoutCreatedRepairsInput>
+  }
+
+  export type UserCreateWithoutUpdatedRepairsInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairCreateNestedManyWithoutCreatedByInput
+    createdInvoices?: InvoiceCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutUpdatedRepairsInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairUncheckedCreateNestedManyWithoutCreatedByInput
+    createdInvoices?: InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    repairLogs?: RepairLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUpdatedRepairsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUpdatedRepairsInput, UserUncheckedCreateWithoutUpdatedRepairsInput>
   }
 
   export type InvoiceUpsertWithWhereUniqueWithoutRepairInput = {
@@ -20929,17 +23464,6 @@ export namespace Prisma {
     data: XOR<RepairLogUpdateManyMutationInput, RepairLogUncheckedUpdateManyWithoutRepairInput>
   }
 
-  export type RepairLogScalarWhereInput = {
-    AND?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
-    OR?: RepairLogScalarWhereInput[]
-    NOT?: RepairLogScalarWhereInput | RepairLogScalarWhereInput[]
-    id?: StringFilter<"RepairLog"> | string
-    repairId?: StringFilter<"RepairLog"> | string
-    status?: StringFilter<"RepairLog"> | string
-    comment?: StringNullableFilter<"RepairLog"> | string | null
-    createdAt?: DateTimeFilter<"RepairLog"> | Date | string
-  }
-
   export type RepairServiceUpsertWithWhereUniqueWithoutRepairInput = {
     where: RepairServiceWhereUniqueInput
     update: XOR<RepairServiceUpdateWithoutRepairInput, RepairServiceUncheckedUpdateWithoutRepairInput>
@@ -20956,10 +23480,95 @@ export namespace Prisma {
     data: XOR<RepairServiceUpdateManyMutationInput, RepairServiceUncheckedUpdateManyWithoutRepairInput>
   }
 
+  export type UserUpsertWithoutCreatedRepairsInput = {
+    update: XOR<UserUpdateWithoutCreatedRepairsInput, UserUncheckedUpdateWithoutCreatedRepairsInput>
+    create: XOR<UserCreateWithoutCreatedRepairsInput, UserUncheckedCreateWithoutCreatedRepairsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedRepairsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedRepairsInput, UserUncheckedUpdateWithoutCreatedRepairsInput>
+  }
+
+  export type UserUpdateWithoutCreatedRepairsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedRepairs?: RepairUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedRepairsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedRepairs?: RepairUncheckedUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutUpdatedRepairsInput = {
+    update: XOR<UserUpdateWithoutUpdatedRepairsInput, UserUncheckedUpdateWithoutUpdatedRepairsInput>
+    create: XOR<UserCreateWithoutUpdatedRepairsInput, UserUncheckedCreateWithoutUpdatedRepairsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUpdatedRepairsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUpdatedRepairsInput, UserUncheckedUpdateWithoutUpdatedRepairsInput>
+  }
+
+  export type UserUpdateWithoutUpdatedRepairsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUpdateManyWithoutCreatedByNestedInput
+    createdInvoices?: InvoiceUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUpdatedRepairsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdInvoices?: InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    repairLogs?: RepairLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type RepairCreateWithoutServicesInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20967,16 +23576,19 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutRepairInput
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
   export type RepairUncheckedCreateWithoutServicesInput = {
     id?: string
     status?: string
-    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
@@ -21032,7 +23644,6 @@ export namespace Prisma {
   export type RepairUpdateWithoutServicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21040,16 +23651,19 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutRepairNestedInput
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
   export type RepairUncheckedUpdateWithoutServicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
@@ -21095,7 +23709,6 @@ export namespace Prisma {
   export type RepairCreateWithoutLogsInput = {
     id?: string
     status?: string
-    partStatus?: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21103,16 +23716,19 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutRepairInput
     client: ClientCreateNestedOneWithoutRepairsInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
   export type RepairUncheckedCreateWithoutLogsInput = {
     id?: string
     status?: string
-    partStatus?: string
     clientId: string
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
@@ -21121,6 +23737,43 @@ export namespace Prisma {
   export type RepairCreateOrConnectWithoutLogsInput = {
     where: RepairWhereUniqueInput
     create: XOR<RepairCreateWithoutLogsInput, RepairUncheckedCreateWithoutLogsInput>
+  }
+
+  export type UserCreateWithoutRepairLogsInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutRepairLogsInput = {
+    id?: string
+    name: string
+    pinHash: string
+    role?: string
+    isActive?: boolean
+    color?: string
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdRepairs?: RepairUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedRepairs?: RepairUncheckedCreateNestedManyWithoutUpdatedByInput
+    createdInvoices?: InvoiceUncheckedCreateNestedManyWithoutCreatedByInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutRepairLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRepairLogsInput, UserUncheckedCreateWithoutRepairLogsInput>
   }
 
   export type RepairUpsertWithoutLogsInput = {
@@ -21137,7 +23790,6 @@ export namespace Prisma {
   export type RepairUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21145,19 +23797,275 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutRepairNestedInput
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
   export type RepairUncheckedUpdateWithoutLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+  }
+
+  export type UserUpsertWithoutRepairLogsInput = {
+    update: XOR<UserUpdateWithoutRepairLogsInput, UserUncheckedUpdateWithoutRepairLogsInput>
+    create: XOR<UserCreateWithoutRepairLogsInput, UserUncheckedCreateWithoutRepairLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRepairLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRepairLogsInput, UserUncheckedUpdateWithoutRepairLogsInput>
+  }
+
+  export type UserUpdateWithoutRepairLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRepairLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    pinHash?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    color?: StringFieldUpdateOperationsInput | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdRepairs?: RepairUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedRepairs?: RepairUncheckedUpdateManyWithoutUpdatedByNestedInput
+    createdInvoices?: InvoiceUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type RepairUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RepairUpdateWithoutUpdatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutUpdatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+  }
+
+  export type RepairUncheckedUpdateManyWithoutUpdatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InvoiceUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
+    repair?: RepairUpdateOneWithoutInvoicesNestedInput
+    quote?: QuoteUpdateOneWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    paid?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QuoteUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
+    repair?: RepairUpdateOneWithoutQuotesNestedInput
+    invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+  }
+
+  export type QuoteUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QuoteUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: StringFieldUpdateOperationsInput | string
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    totalTTC?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RepairLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    repair?: RepairUpdateOneRequiredWithoutLogsNestedInput
+  }
+
+  export type RepairLogUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    repairId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RepairLogUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    repairId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InvoiceUpdateWithoutClientInput = {
@@ -21176,6 +24084,7 @@ export namespace Prisma {
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutClientInput = {
@@ -21193,6 +24102,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -21211,6 +24121,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUpdateWithoutClientInput = {
@@ -21228,6 +24139,7 @@ export namespace Prisma {
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
   }
 
   export type QuoteUncheckedUpdateWithoutClientInput = {
@@ -21245,6 +24157,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUncheckedUpdateManyWithoutClientInput = {
@@ -21262,12 +24175,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21275,15 +24188,18 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
   export type RepairUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
@@ -21293,10 +24209,11 @@ export namespace Prisma {
   export type RepairUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
-    partStatus?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeviceModelUpdateWithoutTypeInput = {
@@ -21363,6 +24280,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21381,6 +24299,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21399,6 +24318,7 @@ export namespace Prisma {
     sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     vatRate?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
     minStock?: IntFieldUpdateOperationsInput | number
     supplier?: NullableStringFieldUpdateOperationsInput | string | null
     supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21489,6 +24409,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
     repair?: RepairUpdateOneRequiredWithoutServicesNestedInput
   }
 
@@ -21498,6 +24419,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairServiceUncheckedUpdateManyWithoutServiceInput = {
@@ -21506,6 +24428,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type InvoiceUpdateWithoutRepairInput = {
@@ -21524,6 +24447,7 @@ export namespace Prisma {
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutRepairInput = {
@@ -21541,6 +24465,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -21559,6 +24484,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUpdateWithoutRepairInput = {
@@ -21576,6 +24502,7 @@ export namespace Prisma {
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
   }
 
   export type QuoteUncheckedUpdateWithoutRepairInput = {
@@ -21593,6 +24520,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUncheckedUpdateManyWithoutRepairInput = {
@@ -21610,6 +24538,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairLogUpdateWithoutRepairInput = {
@@ -21617,12 +24546,14 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutRepairLogsNestedInput
   }
 
   export type RepairLogUncheckedUpdateWithoutRepairInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21630,6 +24561,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21638,6 +24570,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
     service?: ServiceUpdateOneRequiredWithoutRepairsNestedInput
   }
 
@@ -21647,6 +24580,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepairServiceUncheckedUpdateManyWithoutRepairInput = {
@@ -21655,6 +24589,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     priceAtTime?: FloatFieldUpdateOperationsInput | number
     vatRate?: FloatFieldUpdateOperationsInput | number
+    partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
@@ -21662,6 +24597,10 @@ export namespace Prisma {
   /**
    * Aliases for legacy arg types
    */
+    /**
+     * @deprecated Use UserCountOutputTypeDefaultArgs instead
+     */
+    export type UserCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ClientCountOutputTypeDefaultArgs instead
      */
@@ -21690,6 +24629,10 @@ export namespace Prisma {
      * @deprecated Use RepairCountOutputTypeDefaultArgs instead
      */
     export type RepairCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = RepairCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use UserDefaultArgs instead
+     */
+    export type UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserDefaultArgs<ExtArgs>
     /**
      * @deprecated Use ClientDefaultArgs instead
      */

@@ -116,6 +116,18 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  pinHash: 'pinHash',
+  role: 'role',
+  isActive: 'isActive',
+  color: 'color',
+  lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -147,7 +159,8 @@ exports.Prisma.QuoteScalarFieldEnum = {
   invoiceId: 'invoiceId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  taxDetails: 'taxDetails'
+  taxDetails: 'taxDetails',
+  createdById: 'createdById'
 };
 
 exports.Prisma.InvoiceScalarFieldEnum = {
@@ -165,7 +178,8 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   paymentMethod: 'paymentMethod',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  taxDetails: 'taxDetails'
+  taxDetails: 'taxDetails',
+  createdById: 'createdById'
 };
 
 exports.Prisma.DeviceTypeScalarFieldEnum = {
@@ -197,6 +211,7 @@ exports.Prisma.PartScalarFieldEnum = {
   sellingPrice: 'sellingPrice',
   vatRate: 'vatRate',
   stock: 'stock',
+  reservedQuantity: 'reservedQuantity',
   minStock: 'minStock',
   supplier: 'supplier',
   supplierRef: 'supplierRef',
@@ -223,11 +238,12 @@ exports.Prisma.ServiceScalarFieldEnum = {
 exports.Prisma.RepairScalarFieldEnum = {
   id: 'id',
   status: 'status',
-  partStatus: 'partStatus',
   clientId: 'clientId',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  createdById: 'createdById',
+  updatedById: 'updatedById'
 };
 
 exports.Prisma.RepairServiceScalarFieldEnum = {
@@ -236,7 +252,8 @@ exports.Prisma.RepairServiceScalarFieldEnum = {
   serviceId: 'serviceId',
   quantity: 'quantity',
   priceAtTime: 'priceAtTime',
-  vatRate: 'vatRate'
+  vatRate: 'vatRate',
+  partStatus: 'partStatus'
 };
 
 exports.Prisma.RepairLogScalarFieldEnum = {
@@ -244,6 +261,7 @@ exports.Prisma.RepairLogScalarFieldEnum = {
   repairId: 'repairId',
   status: 'status',
   comment: 'comment',
+  userId: 'userId',
   createdAt: 'createdAt'
 };
 
@@ -296,6 +314,7 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
+  User: 'User',
   Client: 'Client',
   Quote: 'Quote',
   Invoice: 'Invoice',

@@ -59,6 +59,7 @@ interface Part {
   sku: string
   costPrice: number
   stock: number
+  reservedQuantity?: number
   minStock: number
   quality?: string | null // ORIGINAL | COMPATIBLE
   supplier?: string | null
@@ -623,7 +624,12 @@ export function CatalogWorkspace() {
                         <p className="text-[10px] font-bold text-slate-400 uppercase">{p.sku}</p>
                         <div className="mt-1 flex items-center gap-1.5">
                           <div className={`h-1.5 w-1.5 rounded-full ${p.stock <= p.minStock ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
-                          <span className="text-xs font-bold text-slate-600">{p.stock} en stock</span>
+                          <span className="text-xs font-bold text-slate-600">
+                            {p.stock} en stock
+                            {(p.reservedQuantity ?? 0) > 0 && (
+                              <span className="ml-1.5 text-blue-500">({p.reservedQuantity} réservés)</span>
+                            )}
+                          </span>
                         </div>
                       </td>
                       <td className="px-8 py-5 text-sm font-black text-slate-600">

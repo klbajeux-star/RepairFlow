@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
+import { UserMenu } from '@/components/user-menu'
 import {
   BarChart3,
   CalendarClock,
@@ -99,7 +100,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.11),_transparent_34%),linear-gradient(180deg,_#f8fbff_0%,_#eef4fb_100%)] text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-white/60 bg-white/40 backdrop-blur-md shadow-[0_4px_20px_rgb(0,0,0,0.02)] print:hidden">
+      <header className="sticky top-0 z-50 border-b border-white/60 bg-white/40 backdrop-blur-md shadow-[0_4px_20px_rgb(0,0,0,0.02)] print:hidden">
         <div className="mx-auto flex w-full max-w-[1600px] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex min-w-fit items-center gap-3">
             <div className="rounded-2xl bg-blue-600 p-3 text-white shadow-lg shadow-blue-600/10">
@@ -135,8 +136,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="ml-auto hidden items-center gap-3 xl:flex">
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/40 px-4 py-2 ring-1 ring-white/60 backdrop-blur-sm">
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden xl:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/40 px-4 py-2 ring-1 ring-white/60 backdrop-blur-sm">
               <div className="rounded-xl bg-white/60 p-2 text-slate-500 shadow-sm ring-1 ring-white/60">
                 <CalendarClock className="h-4 w-4" />
               </div>
@@ -147,6 +148,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <p className="text-sm font-semibold capitalize text-slate-700">{currentDate}</p>
               </div>
             </div>
+            <UserMenu />
           </div>
         </div>
 

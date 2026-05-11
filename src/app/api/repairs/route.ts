@@ -7,6 +7,9 @@ import {
   requireId,
 } from '@/lib/api-utils'
 
+import { reservePartForRepair } from '@/lib/inventory-reservation'
+import { getCurrentUserId } from '@/lib/session'
+
 export async function GET() {
   try {
     const repairs = await prisma.repair.findMany({
@@ -34,6 +37,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const userId = await getCurrentUserId()
     const json = await request.json()
 
     const clientId = requireId(json.clientId, 'Le client')
@@ -54,26 +58,25 @@ export async function POST(request: Request) {
       throw new ApiError('Au moins un forfait sélectionné est introuvable.')
     }
 
-    // Determine initial part status based on stock if not provided
-    let partStatus = json.partStatus || 'IN_STOCK'
-    const hasOutOfStockParts = services.some(s => s.part && s.part.stock < 1)
-    
-    if (hasOutOfStockParts && !json.partStatus) {
-      partStatus = 'TO_ORDER'
-    }
-
     const repair = await prisma.$transaction(async (tx) => {
       const newRepair = await tx.repair.create({
         data: {
           clientId,
           notes,
           status: 'PENDING',
-          partStatus,
+          createdById: userId,
+          updatedById: userId,
         },
       })
 
       for (const service of services) {
         const totalPrice = service.suggestedPrice || (service.laborCost + (service.part?.costPrice ?? 0))
+        
+        // Determine individual part status
+        let linePartStatus = 'IN_STOCK'
+        if (service.part && service.part.stock < 1) {
+          linePartStatus = 'TO_ORDER'
+        }
 
         await tx.repairService.create({
           data: {
@@ -82,14 +85,13 @@ export async function POST(request: Request) {
             priceAtTime: totalPrice,
             vatRate: (service as any).vatRate ?? 20,
             quantity: 1,
+            partStatus: linePartStatus,
           },
         })
 
         if (service.partId && service.part) {
-          await tx.part.update({
-            where: { id: service.partId },
-            data: { stock: { decrement: 1 } },
-          })
+          // Réservation virtuelle immédiate
+          await reservePartForRepair(tx, service.partId, 1)
         }
       }
 
@@ -98,6 +100,7 @@ export async function POST(request: Request) {
           repairId: newRepair.id,
           status: 'PENDING',
           comment: 'Ticket créé à la réception atelier.',
+          userId,
         },
       })
 

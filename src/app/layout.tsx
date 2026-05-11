@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { AppShell } from '@/components/app-shell'
+import { NextAuthProvider } from '@/components/session-provider'
 
 export const metadata: Metadata = {
   title: 'RepairFlow Atelier',
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="min-h-screen antialiased" style={{ zoom: '0.93' }}>
-        <AppShell>
-          {children}
-        </AppShell>
+        <NextAuthProvider>
+          <AppShell>
+            {children}
+          </AppShell>
+        </NextAuthProvider>
       </body>
     </html>
   )

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
+  AlertCircle,
   AlertTriangle,
   Archive,
   ArrowLeft,
@@ -36,6 +37,8 @@ import {
 import {
   formatCurrency,
   formatDate,
+  getPartReservationStatusLabel,
+  getPartReservationStatusStyle,
   getPartStatusLabel,
   getPartStatusStyle,
   getRepairStatusLabel,
@@ -858,7 +861,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
     setClientSearch('')
     setShowModelSuggestions(false)
     setSignatureData('')
-    setDeviceForm({ model: '', modelId: '', imei: '', unlockCode: '', condition: 5 })
+    setDeviceForm({ model: '', modelId: '', imei: '', unlockCode: '', unlockPattern: '', condition: 5 })
     setError(null)
   }
 
@@ -1508,6 +1511,13 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             }
             total={5}
           />
+
+          {error && (
+            <div className="flex items-center gap-3 rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-600 ring-1 ring-inset ring-rose-200">
+              <AlertCircle className="h-5 w-5 shrink-0" />
+              {error}
+            </div>
+          )}
 
           {workflowStep === 'client' && (
             <div className="space-y-6">
@@ -2159,6 +2169,7 @@ function Field({
     </label>
   )
 }
+
 
 
 
