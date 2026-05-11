@@ -15,6 +15,7 @@ import {
   PencilLine,
   Plus,
   Search,
+  FileDown,
   Smartphone,
   Tablet,
   Tag,
@@ -188,6 +189,7 @@ export function CatalogWorkspace() {
       .slice(0, 5)
   }, [models, modelSearch])
   const [isSaving, setIsSaving] = useState(false)
+  const [valuation, setValuation] = useState<{ totalValue: number; totalItems: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [drawerError, setDrawerError] = useState<string | null>(null)
 
@@ -209,7 +211,18 @@ export function CatalogWorkspace() {
 
   useEffect(() => {
     void loadAllData()
+    void fetchValuation()
   }, [])
+
+  async function fetchValuation() {
+    try {
+      const res = await fetch('/api/inventory/valuation')
+      const data = await res.json()
+      setValuation(data.summary)
+    } catch (e) {
+      console.error('Failed to fetch valuation:', e)
+    }
+  }
 
   async function loadAllData() {
     try {
@@ -242,7 +255,12 @@ export function CatalogWorkspace() {
     }
   }
 
+  const handleExportInventory = () => {
+    window.open('/api/inventory/valuation?export=true', '_blank')
+  }
+
   const filteredModels = useMemo(() => {
+
     return models.filter(m => {
       const matchSearch = m.name.toLowerCase().includes(search.toLowerCase()) || 
                           m.brand.name.toLowerCase().includes(search.toLowerCase())
@@ -477,42 +495,68 @@ export function CatalogWorkspace() {
 
       {/* Main Content */}
       <main className="flex flex-1 flex-col gap-8 overflow-hidden">
-        <header className="flex items-center justify-between">
-          <nav className="flex items-center gap-2 rounded-[2rem] border border-white/60 bg-white/40 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
-            <button 
-              onClick={() => setActiveTab('models')}
-              className={`flex items-center gap-2 rounded-[1.75rem] px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'models' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
-            >
-              <LayoutGrid className="h-4 w-4" />
-              Modèles
-              <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'models' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{models.length}</span>
-            </button>
-            <button 
-              onClick={() => setActiveTab('services')}
-              className={`flex items-center gap-2 rounded-[1.75rem] px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'services' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
-            >
-              <Wrench className="h-4 w-4" />
-              Services
-              <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'services' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{services.length}</span>
-            </button>
-            <button 
-              onClick={() => setActiveTab('parts')}
-              className={`flex items-center gap-2 rounded-[1.75rem] px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'parts' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
-            >
-              <Package className="h-4 w-4" />
-              Pièces
-              <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'parts' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{parts.length}</span>
-            </button>
-          </nav>
+        <header className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4 lg:gap-6">
+            <nav className="flex items-center gap-2 rounded-[2rem] border border-white/60 bg-white/40 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
+              <button 
+                onClick={() => setActiveTab('models')}
+                className={`flex items-center gap-2 rounded-[1.75rem] px-4 lg:px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'models' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
+              >
+                <LayoutGrid className="h-4 w-4" />
+                <span className="hidden sm:inline">Modèles</span>
+                <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'models' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{models.length}</span>
+              </button>
+              <button 
+                onClick={() => setActiveTab('services')}
+                className={`flex items-center gap-2 rounded-[1.75rem] px-4 lg:px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'services' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
+              >
+                <Wrench className="h-4 w-4" />
+                <span className="hidden sm:inline">Services</span>
+                <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'services' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{services.length}</span>
+              </button>
+              <button 
+                onClick={() => setActiveTab('parts')}
+                className={`flex items-center gap-2 rounded-[1.75rem] px-4 lg:px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'parts' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
+              >
+                <Package className="h-4 w-4" />
+                <span className="hidden sm:inline">Pièces</span>
+                <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'parts' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{parts.length}</span>
+              </button>
+            </nav>
 
-          <button 
-            onClick={() => openDrawer(activeTab === 'models' ? 'model' : activeTab === 'services' ? 'service' : 'part')}
-            className="flex items-center gap-3 rounded-[2rem] bg-slate-950 px-8 py-4 text-sm font-black text-white shadow-xl shadow-slate-950/20 transition hover:scale-105 active:scale-95"
-          >
-            <Plus className="h-5 w-5" />
-            Nouveau {activeTab === 'models' ? 'modèle' : activeTab === 'services' ? 'forfait' : 'produit'}
-          </button>
+            {activeTab === 'parts' && valuation && (
+              <div className="flex items-center gap-4 rounded-3xl border border-white/60 bg-white/40 px-5 py-2 shadow-sm backdrop-blur-sm">
+                <div className="flex flex-col">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Valeur Stock HT</p>
+                  <p className="text-base font-black text-slate-950">{formatCurrency(valuation.totalValue)}</p>
+                </div>
+                <div className="hidden sm:block h-8 w-px bg-slate-200" />
+                <div className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                  <Tag className="h-4 w-4" />
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={handleExportInventory}
+              title="Export Inventaire Excel"
+              className="flex h-12 items-center justify-center gap-2 rounded-[1.5rem] border border-emerald-200 bg-emerald-50 px-5 text-xs font-black uppercase tracking-widest text-emerald-700 transition hover:bg-emerald-100 shadow-sm"
+            >
+              <FileDown className="h-4 w-4" />
+              <span className="hidden xl:inline">Export</span>
+            </button>
+            <button 
+              onClick={() => openDrawer(activeTab === 'models' ? 'model' : activeTab === 'services' ? 'service' : 'part')}
+              className="flex h-12 items-center gap-3 rounded-[1.5rem] bg-slate-950 px-6 text-[11px] font-black text-white shadow-xl shadow-slate-950/20 transition hover:scale-105 active:scale-95 whitespace-nowrap"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="uppercase tracking-widest">Nouveau {activeTab === 'models' ? 'modèle' : activeTab === 'services' ? 'forfait' : 'produit'}</span>
+            </button>
+          </div>
         </header>
+
 
         {/* List Content */}
         <main>

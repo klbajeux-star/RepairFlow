@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf'
+import { embedFacturX } from './facturx-service'
 
 export interface InvoiceLine {
   name: string
@@ -306,3 +307,22 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     throw err
   }
 }
+
+/**
+ * Generate a PDF and embed Factur-X XML if it's an invoice.
+ */
+export async function generateDocumentPDF(data: DocumentData): Promise<Uint8Array> {
+  const basePdf = await generatePDF(data)
+  
+  if (data.type === 'invoice') {
+    try {
+      return await embedFacturX(basePdf, data)
+    } catch (err) {
+      console.error('Factur-X Embedding Error, falling back to standard PDF:', err)
+      return basePdf
+    }
+  }
+  
+  return basePdf
+}
+
