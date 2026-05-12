@@ -92,10 +92,13 @@ model Invoice {
 }
 
 model DeviceType {
-  id        String        @id @default(cuid())
-  name      String        @unique
-  createdAt DateTime      @default(now())
-  models    DeviceModel[]
+  id                 String        @id @default(cuid())
+  name               String        @unique
+  defaultExtraCosts  Float         @default(0)
+  defaultCoefficient Float         @default(2.0)
+  minMarginRate      Float         @default(30)
+  createdAt          DateTime      @default(now())
+  models             DeviceModel[]
 }
 
 model DeviceBrand {
@@ -145,7 +148,9 @@ model Service {
   id             String          @id @default(cuid())
   name           String
   laborCost      Float
+  extraCosts     Float           @default(0)
   suggestedPrice Float           @default(0)
+  isAutoPricing  Boolean         @default(false)
   vatRate        Float           @default(20)
   duration       Int             @default(30)
   partId         String?

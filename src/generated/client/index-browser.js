@@ -185,6 +185,9 @@ exports.Prisma.InvoiceScalarFieldEnum = {
 exports.Prisma.DeviceTypeScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  defaultExtraCosts: 'defaultExtraCosts',
+  defaultCoefficient: 'defaultCoefficient',
+  minMarginRate: 'minMarginRate',
   createdAt: 'createdAt'
 };
 
@@ -226,7 +229,9 @@ exports.Prisma.ServiceScalarFieldEnum = {
   id: 'id',
   name: 'name',
   laborCost: 'laborCost',
+  extraCosts: 'extraCosts',
   suggestedPrice: 'suggestedPrice',
+  isAutoPricing: 'isAutoPricing',
   vatRate: 'vatRate',
   duration: 'duration',
   partId: 'partId',

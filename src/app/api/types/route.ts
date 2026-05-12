@@ -24,6 +24,9 @@ export async function POST(request: Request) {
     const type = await prisma.deviceType.create({
       data: {
         name: requireString(json.name, 'Le nom du type', { maxLength: 50 }),
+        defaultExtraCosts: json.defaultExtraCosts !== undefined ? Number(json.defaultExtraCosts) : 0,
+        defaultCoefficient: json.defaultCoefficient !== undefined ? Number(json.defaultCoefficient) : 2.0,
+        minMarginRate: json.minMarginRate !== undefined ? Number(json.minMarginRate) : 30,
       },
     })
 

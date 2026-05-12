@@ -26,7 +26,9 @@ export async function PATCH(
       data: {
         name: json.name !== undefined ? requireString(json.name, 'Nom') : undefined,
         laborCost: json.laborCost !== undefined ? requireNumber(json.laborCost, "Main d'oeuvre") : undefined,
+        extraCosts: json.extraCosts !== undefined ? requireNumber(json.extraCosts, "Frais annexes") : undefined,
         suggestedPrice: json.suggestedPrice !== undefined ? requireNumber(json.suggestedPrice, "Prix vente") : undefined,
+        isAutoPricing: json.isAutoPricing !== undefined ? Boolean(json.isAutoPricing) : undefined,
         duration: json.duration !== undefined ? requireInteger(json.duration, "Durée") : undefined,
         partId: json.partId !== undefined ? ( (typeof json.partId === 'string' && json.partId.trim()) ? json.partId : null ) : undefined,
         modelId: json.modelId !== undefined ? ( (typeof json.modelId === 'string' && json.modelId.trim()) ? json.modelId : null ) : undefined,

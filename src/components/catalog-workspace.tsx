@@ -16,6 +16,7 @@ import {
   Plus,
   Search,
   FileDown,
+  RefreshCw,
   Smartphone,
   Tablet,
   Tag,
@@ -95,7 +96,9 @@ const initialModelForm = {
 const initialServiceForm = {
   name: '',
   laborCost: '',
+  extraCosts: '0',
   suggestedPrice: '',
+  isAutoPricing: false,
   duration: '30',
   partId: '',
   modelId: '',
@@ -203,7 +206,12 @@ export function CatalogWorkspace() {
   const [serviceForm, setServiceForm] = useState(initialServiceForm)
   const [partForm, setPartForm] = useState(initialPartForm)
   const [brandForm, setBrandForm] = useState({ name: '' })
-  const [typeForm, setTypeForm] = useState({ name: '' })
+  const [typeForm, setTypeForm] = useState({ 
+    name: '',
+    defaultExtraCosts: '0',
+    defaultCoefficient: '2.0',
+    minMarginRate: '30'
+  })
 
   // Filter states
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
@@ -255,9 +263,82 @@ export function CatalogWorkspace() {
     }
   }
 
+  const typeCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    if (activeTab === 'models') {
+      models.forEach(m => { counts[m.typeId] = (counts[m.typeId] || 0) + 1 })
+    } else if (activeTab === 'services') {
+      services.forEach(s => { if (s.model) counts[s.model.typeId] = (counts[s.model.typeId] || 0) + 1 })
+    } else {
+      parts.forEach(p => { if (p.model) counts[p.model.typeId] = (counts[p.model.typeId] || 0) + 1 })
+    }
+    return counts
+  }, [activeTab, models, services, parts])
+
+  const brandCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    if (activeTab === 'models') {
+      models.forEach(m => { counts[m.brandId] = (counts[m.brandId] || 0) + 1 })
+    } else if (activeTab === 'services') {
+      services.forEach(s => { if (s.model) counts[s.model.brandId] = (counts[s.model.brandId] || 0) + 1 })
+    } else {
+      parts.forEach(p => { if (p.model) counts[p.model.brandId] = (counts[p.model.brandId] || 0) + 1 })
+    }
+    return counts
+  }, [activeTab, models, services, parts])
+
   const handleExportInventory = () => {
     window.open('/api/inventory/valuation?export=true', '_blank')
   }
+
+  const generateSKU = () => {
+    if (!partForm.name) return
+    const prefix = partForm.name.substring(0, 3).toUpperCase()
+    const modelPrefix = modelSearch ? modelSearch.substring(0, 3).toUpperCase() : 'GEN'
+    const random = Math.floor(1000 + Math.random() * 9000)
+    setPartForm({ ...partForm, sku: `${prefix}-${modelPrefix}-${random}` })
+  }
+
+  const serviceMargin = useMemo(() => {
+    const price = parseFloat(serviceForm.suggestedPrice) || 0
+    const labor = parseFloat(serviceForm.laborCost) || 0
+    const extra = parseFloat(serviceForm.extraCosts) || 0
+    
+    // Try to find part cost if linked
+    let partCost = 0
+    if (serviceForm.partId) {
+      const linkedPart = parts.find(p => p.id === serviceForm.partId)
+      if (linkedPart) partCost = linkedPart.costPrice
+    }
+    
+    const totalCostHT = labor + extra + partCost
+    const saleHT = price / 1.2
+    const margin = saleHT - totalCostHT
+    const percent = saleHT > 0 ? (margin / saleHT) * 100 : 0
+
+    // Get min margin from type
+    let minMargin = 30
+    if (serviceForm.modelId) {
+      const model = models.find(m => m.id === serviceForm.modelId)
+      if (model) {
+        const type = types.find(t => t.id === model.typeId)
+        if (type) minMargin = type.minMarginRate
+      }
+    }
+
+    let status: 'very_profitable' | 'profitable' | 'watch' | 'low' = 'low'
+    if (percent >= minMargin + 15) status = 'very_profitable'
+    else if (percent >= minMargin) status = 'profitable'
+    else if (percent >= minMargin - 10) status = 'watch'
+    else status = 'low'
+
+    return {
+      value: margin,
+      percent,
+      status,
+      minMargin
+    }
+  }, [serviceForm, parts, models, types])
 
   const filteredModels = useMemo(() => {
 
@@ -306,10 +387,25 @@ export function CatalogWorkspace() {
     }
     
     if (type === 'model') setModelForm(item ? { name: item.name, modelReference: item.modelReference || '', brandId: item.brandId, typeId: item.typeId } : initialModelForm)
-    if (type === 'service') setServiceForm(item ? { name: item.name, laborCost: item.laborCost.toString(), suggestedPrice: item.suggestedPrice?.toString() || '', duration: item.duration?.toString() || '30', partId: item.partId || '', modelId: item.modelId || '', description: item.description || '' } : initialServiceForm)
+    if (type === 'service') setServiceForm(item ? { 
+      name: item.name, 
+      laborCost: item.laborCost.toString(), 
+      extraCosts: (item.extraCosts || 0).toString(),
+      suggestedPrice: item.suggestedPrice?.toString() || '', 
+      isAutoPricing: !!item.isAutoPricing,
+      duration: item.duration?.toString() || '30', 
+      partId: item.partId || '', 
+      modelId: item.modelId || '', 
+      description: item.description || '' 
+    } : initialServiceForm)
     if (type === 'part') setPartForm(item ? { name: item.name, sku: item.sku, costPrice: item.costPrice.toString(), stock: item.stock.toString(), minStock: item.minStock?.toString() || '0', quality: item.quality || 'ORIGINAL', supplier: item.supplier || '', supplierRef: item.supplierRef || '', location: item.location || '', modelId: item.modelId || '', description: item.description || '', createLinkedService: false } : initialPartForm)
     if (type === 'brand') setBrandForm(item ? { name: item.name } : { name: '' })
-    if (type === 'type') setTypeForm(item ? { name: item.name } : { name: '' })
+    if (type === 'type') setTypeForm(item ? { 
+      name: item.name,
+      defaultExtraCosts: (item.defaultExtraCosts || 0).toString(),
+      defaultCoefficient: (item.defaultCoefficient || 2.0).toString(),
+      minMarginRate: (item.minMarginRate || 30).toString()
+    } : { name: '', defaultExtraCosts: '0', defaultCoefficient: '2.0', minMarginRate: '30' })
     
     setDrawerOpen(true)
   }
@@ -374,9 +470,10 @@ export function CatalogWorkspace() {
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify({
               name: `Remplacement ${partForm.name}`,
-              laborCost: 30,
-              suggestedPrice: (parseFloat(partForm.costPrice) || 0) + 60,
-              partId: savedItem.id,
+               laborCost: 30,
+               suggestedPrice: (parseFloat(partForm.costPrice) || 0) + 60,
+               duration: 30,
+               partId: savedItem.id,
               modelId: partForm.modelId,
               description: `Service généré automatiquement.`
            })
@@ -431,15 +528,23 @@ export function CatalogWorkspace() {
                 className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-all ${!selectedTypeId ? 'bg-slate-950 text-white shadow-lg' : 'bg-white/60 text-slate-600 hover:bg-white shadow-sm'}`}
               >
                 Toutes les catégories
+                <span className={`rounded-lg px-2 py-0.5 text-[10px] ${!selectedTypeId ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                  {activeTab === 'models' ? models.length : activeTab === 'services' ? services.length : parts.length}
+                </span>
               </button>
               {types.map(t => (
                 <div key={t.id} className="group relative">
                   <button 
                     onClick={() => setSelectedTypeId(t.id)}
-                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all ring-1 ring-inset ${selectedTypeId === t.id ? getTypeActiveColor(t.name) : getTypeColor(t.name) + ' hover:opacity-80'}`}
+                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-all ring-1 ring-inset ${selectedTypeId === t.id ? getTypeActiveColor(t.name) : getTypeColor(t.name) + ' hover:opacity-80'}`}
                   >
-                    <TypeIcon type={t.name} className="h-4 w-4" />
-                    {t.name}
+                    <div className="flex items-center gap-3">
+                      <TypeIcon type={t.name} className="h-4 w-4" />
+                      {t.name}
+                    </div>
+                    <span className={`rounded-lg px-2 py-0.5 text-[10px] ${selectedTypeId === t.id ? 'bg-black/20 text-white' : 'bg-white/40 text-slate-500'}`}>
+                      {typeCounts[t.id] || 0}
+                    </span>
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); openDrawer('type', t); }}
@@ -470,6 +575,9 @@ export function CatalogWorkspace() {
                 className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${!selectedBrandId ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-600 hover:bg-white/80'}`}
               >
                 Toutes
+                <span className={`rounded-lg px-2 py-0.5 text-[10px] ${!selectedBrandId ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                  {activeTab === 'models' ? models.length : activeTab === 'services' ? services.length : parts.length}
+                </span>
               </button>
               {brands.map(b => (
                 <div key={b.id} className="group relative">
@@ -478,6 +586,9 @@ export function CatalogWorkspace() {
                     className={`flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${selectedBrandId === b.id ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-600 hover:bg-white/80'}`}
                   >
                     {b.name}
+                    <span className={`rounded-lg px-2 py-0.5 text-[10px] ${selectedBrandId === b.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                      {brandCounts[b.id] || 0}
+                    </span>
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); openDrawer('brand', b); }}
@@ -650,7 +761,18 @@ export function CatalogWorkspace() {
                         )}
                       </td>
                       <td className="px-8 py-5">
-                        <p className="font-black text-emerald-600">{formatCurrency(s.suggestedPrice)}</p>
+                        <div className="flex flex-col gap-1">
+                          <p className="font-black text-emerald-600">{formatCurrency(s.suggestedPrice)}</p>
+                          {s.laborCost > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <div className={`h-1.5 w-1.5 rounded-full ${
+                                (s.suggestedPrice / 1.2 - s.laborCost - (s.extraCosts || 0)) / (s.suggestedPrice / 1.2) * 100 > 30 
+                                ? 'bg-emerald-500' : 'bg-amber-500'
+                              }`} />
+                              <span className="text-[9px] font-bold text-slate-400 uppercase">Marge OK</span>
+                            </div>
+                          )}
+                        </div>
                       </td>
                       <td className="px-8 py-5 text-right">
                         <button onClick={() => openDrawer('service', s)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
@@ -665,15 +787,37 @@ export function CatalogWorkspace() {
                         <span className="inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[9px] font-black text-slate-500 uppercase">{p.quality || 'N/A'}</span>
                       </td>
                       <td className="px-8 py-5">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase">{p.sku}</p>
-                        <div className="mt-1 flex items-center gap-1.5">
-                          <div className={`h-1.5 w-1.5 rounded-full ${p.stock <= p.minStock ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
-                          <span className="text-xs font-bold text-slate-600">
-                            {p.stock} en stock
-                            {(p.reservedQuantity ?? 0) > 0 && (
-                              <span className="ml-1.5 text-blue-500">({p.reservedQuantity} réservés)</span>
-                            )}
-                          </span>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{p.sku}</p>
+                        <div className="mt-2 flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2">
+                            <div className={`h-2 w-2 rounded-full shadow-sm ${
+                              p.stock === 0 
+                                ? 'bg-rose-500 animate-pulse' 
+                                : p.stock <= (p.minStock || 0) 
+                                ? 'bg-amber-500 animate-pulse' 
+                                : 'bg-emerald-500'
+                            }`} />
+                            <span className={`text-xs font-black ${
+                              p.stock === 0 ? 'text-rose-600' : p.stock <= (p.minStock || 0) ? 'text-amber-600' : 'text-slate-700'
+                            }`}>
+                              {p.stock} en stock
+                            </span>
+                          </div>
+                          
+                          {(p.reservedQuantity ?? 0) > 0 && (
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight text-blue-500">
+                                <span>{p.reservedQuantity} réservé{p.reservedQuantity > 1 ? 's' : ''}</span>
+                                <span>{Math.round((p.reservedQuantity / p.stock) * 100)}%</span>
+                              </div>
+                              <div className="h-1 w-24 overflow-hidden rounded-full bg-slate-100">
+                                <div 
+                                  className="h-full bg-blue-500 transition-all" 
+                                  style={{ width: `${Math.min((p.reservedQuantity / p.stock) * 100, 100)}%` }}
+                                />
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="px-8 py-5 text-sm font-black text-slate-600">
@@ -746,14 +890,43 @@ export function CatalogWorkspace() {
           )}
 
           {drawerType === 'type' && (
-            <Field label="Nom de la catégorie">
-              <input 
-                value={typeForm.name}
-                onChange={e => setTypeForm({ name: e.target.value })}
-                className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none transition-all focus:border-blue-300 focus:bg-white"
-                placeholder="ex: Console, Tablette..."
-              />
-            </Field>
+            <div className="space-y-4">
+              <Field label="Nom de la catégorie">
+                <input 
+                  value={typeForm.name}
+                  onChange={e => setTypeForm({ ...typeForm, name: e.target.value })}
+                  className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none transition-all focus:border-blue-300 focus:bg-white"
+                  placeholder="ex: Console, Tablette..."
+                />
+              </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Frais Annexes Défaut (HT)">
+                  <input 
+                    type="number"
+                    value={typeForm.defaultExtraCosts}
+                    onChange={e => setTypeForm({ ...typeForm, defaultExtraCosts: e.target.value })}
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                  />
+                </Field>
+                <Field label="Coefficient Défaut">
+                  <input 
+                    type="number"
+                    step="0.1"
+                    value={typeForm.defaultCoefficient}
+                    onChange={e => setTypeForm({ ...typeForm, defaultCoefficient: e.target.value })}
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                  />
+                </Field>
+              </div>
+              <Field label="Marge Min. Souhaitée (%)">
+                <input 
+                  type="number"
+                  value={typeForm.minMarginRate}
+                  onChange={e => setTypeForm({ ...typeForm, minMarginRate: e.target.value })}
+                  className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                />
+              </Field>
+            </div>
           )}
 
           {drawerType === 'model' && (
@@ -801,6 +974,23 @@ export function CatalogWorkspace() {
 
           {drawerType === 'service' && (
             <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400">Mode de tarification</p>
+                <button 
+                  onClick={() => {
+                    const nextMode = !serviceForm.isAutoPricing
+                    setServiceForm(prev => ({ ...prev, isAutoPricing: nextMode }))
+                  }}
+                  className={`flex items-center gap-2 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${serviceForm.isAutoPricing ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500'}`}
+                >
+                  {serviceForm.isAutoPricing ? (
+                    <><RefreshCw className="h-3 w-3 animate-spin" /> Auto-Pricing</>
+                  ) : (
+                    <><PencilLine className="h-3 w-3" /> Manuel</>
+                  )}
+                </button>
+              </div>
+
               <Field label="Désignation Forfait">
                 <input 
                   value={serviceForm.name}
@@ -809,24 +999,119 @@ export function CatalogWorkspace() {
                   placeholder="ex: Changement écran"
                 />
               </Field>
+
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Main d'œuvre (HT)">
                   <input 
                     type="number"
                     value={serviceForm.laborCost}
-                    onChange={e => setServiceForm({ ...serviceForm, laborCost: e.target.value })}
-                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                    onChange={e => {
+                      const val = e.target.value
+                      const newLabor = parseFloat(val) || 0
+                      if (serviceForm.isAutoPricing) {
+                        const extra = parseFloat(serviceForm.extraCosts) || 0
+                        let partCost = 0
+                        if (serviceForm.partId) {
+                          const linkedPart = parts.find(p => p.id === serviceForm.partId)
+                          if (linkedPart) partCost = linkedPart.costPrice
+                        }
+                        const totalHT = newLabor + extra + partCost
+                        const coeff = 2.0 // Default
+                        setServiceForm(prev => ({ 
+                          ...prev, 
+                          laborCost: val, 
+                          suggestedPrice: (totalHT * coeff * 1.2).toFixed(0) 
+                        }))
+                      } else {
+                        setServiceForm(prev => ({ ...prev, laborCost: val }))
+                      }
+                    }}
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none focus:border-blue-300 focus:bg-white transition-all"
                   />
                 </Field>
-                <Field label="Prix Vente (TTC)">
+                <Field label="Frais Annexes (HT)">
                   <input 
                     type="number"
-                    value={serviceForm.suggestedPrice}
-                    onChange={e => setServiceForm({ ...serviceForm, suggestedPrice: e.target.value })}
+                    value={serviceForm.extraCosts}
+                    onChange={e => {
+                      const val = e.target.value
+                      const newExtra = parseFloat(val) || 0
+                      if (serviceForm.isAutoPricing) {
+                        const labor = parseFloat(serviceForm.laborCost) || 0
+                        let partCost = 0
+                        if (serviceForm.partId) {
+                          const linkedPart = parts.find(p => p.id === serviceForm.partId)
+                          if (linkedPart) partCost = linkedPart.costPrice
+                        }
+                        const totalHT = labor + newExtra + partCost
+                        const coeff = 2.0
+                        setServiceForm(prev => ({ 
+                          ...prev, 
+                          extraCosts: val, 
+                          suggestedPrice: (totalHT * coeff * 1.2).toFixed(0) 
+                        }))
+                      } else {
+                        setServiceForm(prev => ({ ...prev, extraCosts: val }))
+                      }
+                    }}
                     className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
                   />
                 </Field>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Prix Vente (TTC)">
+                  <input 
+                    type="number"
+                    value={serviceForm.suggestedPrice}
+                    readOnly={serviceForm.isAutoPricing}
+                    onChange={e => setServiceForm({ ...serviceForm, suggestedPrice: e.target.value })}
+                    className={`w-full rounded-xl border border-slate-100 py-3 px-4 text-sm outline-none ${serviceForm.isAutoPricing ? 'bg-slate-50 text-slate-400 border-dashed' : 'bg-white/60'}`}
+                  />
+                </Field>
+                <Field label="Temps (minutes)">
+                  <input 
+                    type="number"
+                    value={serviceForm.duration}
+                    onChange={e => setServiceForm({ ...serviceForm, duration: e.target.value })}
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                    placeholder="30"
+                  />
+                </Field>
+              </div>
+
+              <div className={`rounded-[2rem] p-6 text-white shadow-2xl transition-all duration-500 ${
+                serviceMargin.status === 'very_profitable' ? 'bg-emerald-600 shadow-emerald-600/20' :
+                serviceMargin.status === 'profitable' ? 'bg-emerald-500 shadow-emerald-500/20' :
+                serviceMargin.status === 'watch' ? 'bg-amber-500 shadow-amber-500/20' : 
+                'bg-rose-500 shadow-rose-500/20'
+              }`}>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/60">Analyse de Marge (HT)</p>
+                  <div className="rounded-xl bg-white/20 px-3 py-1 text-[10px] font-black uppercase backdrop-blur-md">
+                    {serviceMargin.status === 'very_profitable' ? 'Très Rentable' :
+                     serviceMargin.status === 'profitable' ? 'Rentable' :
+                     serviceMargin.status === 'watch' ? 'Marge Faible' : 'Critique'}
+                  </div>
+                </div>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-2xl font-black text-white">{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(serviceMargin.value)}</p>
+                    <p className="text-[10px] font-bold text-white/60 mt-1">Marge nette estimée</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-black text-white">{Math.round(serviceMargin.percent)}%</p>
+                    <p className="text-[10px] font-bold text-white/60 mt-1">Taux de marge</p>
+                  </div>
+                </div>
+                <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-black/10">
+                  <div 
+                    className="h-full bg-white transition-all duration-1000" 
+                    style={{ width: `${Math.min(Math.max(serviceMargin.percent, 0), 100)}%` }}
+                  />
+                </div>
+              </div>
+
               <div className="relative">
                 <Field label="Modèle concerné">
                   <div className="relative">
@@ -842,7 +1127,7 @@ export function CatalogWorkspace() {
                       placeholder="Lier à un modèle..."
                     />
                     {showModelSuggestions && filteredModelSuggestions.length > 0 && (
-                      <div className="absolute left-0 right-0 top-full z-10 mt-2 max-h-48 overflow-auto rounded-xl border border-slate-100 bg-white shadow-xl">
+                      <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-48 overflow-auto rounded-xl border border-slate-100 bg-white shadow-xl">
                         {filteredModelSuggestions.map(m => (
                           <button 
                             key={m.id}
@@ -851,7 +1136,7 @@ export function CatalogWorkspace() {
                               setModelSearch(`${m.brand.name} ${m.name}`)
                               setShowModelSuggestions(false)
                             }}
-                            className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-slate-50"
+                            className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-slate-50 border-b border-slate-50 last:border-none"
                           >
                             <span className="text-sm font-bold text-slate-900">{m.brand.name} {m.name}</span>
                             <ChevronRight className="h-4 w-4 text-slate-300" />
@@ -903,12 +1188,22 @@ export function CatalogWorkspace() {
                   />
                 </Field>
                 <Field label="SKU / Référence">
-                  <input 
-                    value={partForm.sku}
-                    onChange={e => setPartForm({ ...partForm, sku: e.target.value })}
-                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
-                    placeholder="ex: SCR-IP13-ORI"
-                  />
+                  <div className="flex gap-2">
+                    <input 
+                      value={partForm.sku}
+                      onChange={e => setPartForm({ ...partForm, sku: e.target.value })}
+                      className="flex-1 rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none focus:border-blue-300 focus:bg-white"
+                      placeholder="ex: SCR-IP13-ORI"
+                    />
+                    <button 
+                      onClick={generateSKU}
+                      type="button"
+                      className="flex items-center justify-center rounded-xl bg-slate-950 px-5 text-white hover:bg-black transition-all shadow-[0_10px_20px_rgba(0,0,0,0.3)] active:scale-90"
+                      title="Générer automatiquement"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                    </button>
+                  </div>
                 </Field>
               </div>
               <div className="relative">

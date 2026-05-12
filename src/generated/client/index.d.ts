@@ -6591,45 +6591,89 @@ export namespace Prisma {
 
   export type AggregateDeviceType = {
     _count: DeviceTypeCountAggregateOutputType | null
+    _avg: DeviceTypeAvgAggregateOutputType | null
+    _sum: DeviceTypeSumAggregateOutputType | null
     _min: DeviceTypeMinAggregateOutputType | null
     _max: DeviceTypeMaxAggregateOutputType | null
+  }
+
+  export type DeviceTypeAvgAggregateOutputType = {
+    defaultExtraCosts: number | null
+    defaultCoefficient: number | null
+    minMarginRate: number | null
+  }
+
+  export type DeviceTypeSumAggregateOutputType = {
+    defaultExtraCosts: number | null
+    defaultCoefficient: number | null
+    minMarginRate: number | null
   }
 
   export type DeviceTypeMinAggregateOutputType = {
     id: string | null
     name: string | null
+    defaultExtraCosts: number | null
+    defaultCoefficient: number | null
+    minMarginRate: number | null
     createdAt: Date | null
   }
 
   export type DeviceTypeMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    defaultExtraCosts: number | null
+    defaultCoefficient: number | null
+    minMarginRate: number | null
     createdAt: Date | null
   }
 
   export type DeviceTypeCountAggregateOutputType = {
     id: number
     name: number
+    defaultExtraCosts: number
+    defaultCoefficient: number
+    minMarginRate: number
     createdAt: number
     _all: number
   }
 
 
+  export type DeviceTypeAvgAggregateInputType = {
+    defaultExtraCosts?: true
+    defaultCoefficient?: true
+    minMarginRate?: true
+  }
+
+  export type DeviceTypeSumAggregateInputType = {
+    defaultExtraCosts?: true
+    defaultCoefficient?: true
+    minMarginRate?: true
+  }
+
   export type DeviceTypeMinAggregateInputType = {
     id?: true
     name?: true
+    defaultExtraCosts?: true
+    defaultCoefficient?: true
+    minMarginRate?: true
     createdAt?: true
   }
 
   export type DeviceTypeMaxAggregateInputType = {
     id?: true
     name?: true
+    defaultExtraCosts?: true
+    defaultCoefficient?: true
+    minMarginRate?: true
     createdAt?: true
   }
 
   export type DeviceTypeCountAggregateInputType = {
     id?: true
     name?: true
+    defaultExtraCosts?: true
+    defaultCoefficient?: true
+    minMarginRate?: true
     createdAt?: true
     _all?: true
   }
@@ -6672,6 +6716,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: DeviceTypeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeviceTypeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: DeviceTypeMinAggregateInputType
@@ -6702,6 +6758,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: DeviceTypeCountAggregateInputType | true
+    _avg?: DeviceTypeAvgAggregateInputType
+    _sum?: DeviceTypeSumAggregateInputType
     _min?: DeviceTypeMinAggregateInputType
     _max?: DeviceTypeMaxAggregateInputType
   }
@@ -6709,8 +6767,13 @@ export namespace Prisma {
   export type DeviceTypeGroupByOutputType = {
     id: string
     name: string
+    defaultExtraCosts: number
+    defaultCoefficient: number
+    minMarginRate: number
     createdAt: Date
     _count: DeviceTypeCountAggregateOutputType | null
+    _avg: DeviceTypeAvgAggregateOutputType | null
+    _sum: DeviceTypeSumAggregateOutputType | null
     _min: DeviceTypeMinAggregateOutputType | null
     _max: DeviceTypeMaxAggregateOutputType | null
   }
@@ -6732,6 +6795,9 @@ export namespace Prisma {
   export type DeviceTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    defaultExtraCosts?: boolean
+    defaultCoefficient?: boolean
+    minMarginRate?: boolean
     createdAt?: boolean
     models?: boolean | DeviceType$modelsArgs<ExtArgs>
     _count?: boolean | DeviceTypeCountOutputTypeDefaultArgs<ExtArgs>
@@ -6740,6 +6806,9 @@ export namespace Prisma {
   export type DeviceTypeSelectScalar = {
     id?: boolean
     name?: boolean
+    defaultExtraCosts?: boolean
+    defaultCoefficient?: boolean
+    minMarginRate?: boolean
     createdAt?: boolean
   }
 
@@ -6757,6 +6826,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      defaultExtraCosts: number
+      defaultCoefficient: number
+      minMarginRate: number
       createdAt: Date
     }, ExtArgs["result"]["deviceType"]>
     composites: {}
@@ -7139,6 +7211,9 @@ export namespace Prisma {
   interface DeviceTypeFieldRefs {
     readonly id: FieldRef<"DeviceType", 'String'>
     readonly name: FieldRef<"DeviceType", 'String'>
+    readonly defaultExtraCosts: FieldRef<"DeviceType", 'Float'>
+    readonly defaultCoefficient: FieldRef<"DeviceType", 'Float'>
+    readonly minMarginRate: FieldRef<"DeviceType", 'Float'>
     readonly createdAt: FieldRef<"DeviceType", 'DateTime'>
   }
     
@@ -10450,6 +10525,7 @@ export namespace Prisma {
 
   export type ServiceAvgAggregateOutputType = {
     laborCost: number | null
+    extraCosts: number | null
     suggestedPrice: number | null
     vatRate: number | null
     duration: number | null
@@ -10457,6 +10533,7 @@ export namespace Prisma {
 
   export type ServiceSumAggregateOutputType = {
     laborCost: number | null
+    extraCosts: number | null
     suggestedPrice: number | null
     vatRate: number | null
     duration: number | null
@@ -10466,7 +10543,9 @@ export namespace Prisma {
     id: string | null
     name: string | null
     laborCost: number | null
+    extraCosts: number | null
     suggestedPrice: number | null
+    isAutoPricing: boolean | null
     vatRate: number | null
     duration: number | null
     partId: string | null
@@ -10479,7 +10558,9 @@ export namespace Prisma {
     id: string | null
     name: string | null
     laborCost: number | null
+    extraCosts: number | null
     suggestedPrice: number | null
+    isAutoPricing: boolean | null
     vatRate: number | null
     duration: number | null
     partId: string | null
@@ -10492,7 +10573,9 @@ export namespace Prisma {
     id: number
     name: number
     laborCost: number
+    extraCosts: number
     suggestedPrice: number
+    isAutoPricing: number
     vatRate: number
     duration: number
     partId: number
@@ -10505,6 +10588,7 @@ export namespace Prisma {
 
   export type ServiceAvgAggregateInputType = {
     laborCost?: true
+    extraCosts?: true
     suggestedPrice?: true
     vatRate?: true
     duration?: true
@@ -10512,6 +10596,7 @@ export namespace Prisma {
 
   export type ServiceSumAggregateInputType = {
     laborCost?: true
+    extraCosts?: true
     suggestedPrice?: true
     vatRate?: true
     duration?: true
@@ -10521,7 +10606,9 @@ export namespace Prisma {
     id?: true
     name?: true
     laborCost?: true
+    extraCosts?: true
     suggestedPrice?: true
+    isAutoPricing?: true
     vatRate?: true
     duration?: true
     partId?: true
@@ -10534,7 +10621,9 @@ export namespace Prisma {
     id?: true
     name?: true
     laborCost?: true
+    extraCosts?: true
     suggestedPrice?: true
+    isAutoPricing?: true
     vatRate?: true
     duration?: true
     partId?: true
@@ -10547,7 +10636,9 @@ export namespace Prisma {
     id?: true
     name?: true
     laborCost?: true
+    extraCosts?: true
     suggestedPrice?: true
+    isAutoPricing?: true
     vatRate?: true
     duration?: true
     partId?: true
@@ -10647,7 +10738,9 @@ export namespace Prisma {
     id: string
     name: string
     laborCost: number
+    extraCosts: number
     suggestedPrice: number
+    isAutoPricing: boolean
     vatRate: number
     duration: number
     partId: string | null
@@ -10679,7 +10772,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     laborCost?: boolean
+    extraCosts?: boolean
     suggestedPrice?: boolean
+    isAutoPricing?: boolean
     vatRate?: boolean
     duration?: boolean
     partId?: boolean
@@ -10696,7 +10791,9 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     laborCost?: boolean
+    extraCosts?: boolean
     suggestedPrice?: boolean
+    isAutoPricing?: boolean
     vatRate?: boolean
     duration?: boolean
     partId?: boolean
@@ -10724,7 +10821,9 @@ export namespace Prisma {
       id: string
       name: string
       laborCost: number
+      extraCosts: number
       suggestedPrice: number
+      isAutoPricing: boolean
       vatRate: number
       duration: number
       partId: string | null
@@ -11117,7 +11216,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Service", 'String'>
     readonly name: FieldRef<"Service", 'String'>
     readonly laborCost: FieldRef<"Service", 'Float'>
+    readonly extraCosts: FieldRef<"Service", 'Float'>
     readonly suggestedPrice: FieldRef<"Service", 'Float'>
+    readonly isAutoPricing: FieldRef<"Service", 'Boolean'>
     readonly vatRate: FieldRef<"Service", 'Float'>
     readonly duration: FieldRef<"Service", 'Int'>
     readonly partId: FieldRef<"Service", 'String'>
@@ -16501,6 +16602,9 @@ export namespace Prisma {
   export const DeviceTypeScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    defaultExtraCosts: 'defaultExtraCosts',
+    defaultCoefficient: 'defaultCoefficient',
+    minMarginRate: 'minMarginRate',
     createdAt: 'createdAt'
   };
 
@@ -16554,7 +16658,9 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     laborCost: 'laborCost',
+    extraCosts: 'extraCosts',
     suggestedPrice: 'suggestedPrice',
+    isAutoPricing: 'isAutoPricing',
     vatRate: 'vatRate',
     duration: 'duration',
     partId: 'partId',
@@ -17143,6 +17249,9 @@ export namespace Prisma {
     NOT?: DeviceTypeWhereInput | DeviceTypeWhereInput[]
     id?: StringFilter<"DeviceType"> | string
     name?: StringFilter<"DeviceType"> | string
+    defaultExtraCosts?: FloatFilter<"DeviceType"> | number
+    defaultCoefficient?: FloatFilter<"DeviceType"> | number
+    minMarginRate?: FloatFilter<"DeviceType"> | number
     createdAt?: DateTimeFilter<"DeviceType"> | Date | string
     models?: DeviceModelListRelationFilter
   }
@@ -17150,6 +17259,9 @@ export namespace Prisma {
   export type DeviceTypeOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
     createdAt?: SortOrder
     models?: DeviceModelOrderByRelationAggregateInput
   }
@@ -17160,6 +17272,9 @@ export namespace Prisma {
     AND?: DeviceTypeWhereInput | DeviceTypeWhereInput[]
     OR?: DeviceTypeWhereInput[]
     NOT?: DeviceTypeWhereInput | DeviceTypeWhereInput[]
+    defaultExtraCosts?: FloatFilter<"DeviceType"> | number
+    defaultCoefficient?: FloatFilter<"DeviceType"> | number
+    minMarginRate?: FloatFilter<"DeviceType"> | number
     createdAt?: DateTimeFilter<"DeviceType"> | Date | string
     models?: DeviceModelListRelationFilter
   }, "id" | "name">
@@ -17167,10 +17282,15 @@ export namespace Prisma {
   export type DeviceTypeOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
     createdAt?: SortOrder
     _count?: DeviceTypeCountOrderByAggregateInput
+    _avg?: DeviceTypeAvgOrderByAggregateInput
     _max?: DeviceTypeMaxOrderByAggregateInput
     _min?: DeviceTypeMinOrderByAggregateInput
+    _sum?: DeviceTypeSumOrderByAggregateInput
   }
 
   export type DeviceTypeScalarWhereWithAggregatesInput = {
@@ -17179,6 +17299,9 @@ export namespace Prisma {
     NOT?: DeviceTypeScalarWhereWithAggregatesInput | DeviceTypeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"DeviceType"> | string
     name?: StringWithAggregatesFilter<"DeviceType"> | string
+    defaultExtraCosts?: FloatWithAggregatesFilter<"DeviceType"> | number
+    defaultCoefficient?: FloatWithAggregatesFilter<"DeviceType"> | number
+    minMarginRate?: FloatWithAggregatesFilter<"DeviceType"> | number
     createdAt?: DateTimeWithAggregatesFilter<"DeviceType"> | Date | string
   }
 
@@ -17419,7 +17542,9 @@ export namespace Prisma {
     id?: StringFilter<"Service"> | string
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
+    extraCosts?: FloatFilter<"Service"> | number
     suggestedPrice?: FloatFilter<"Service"> | number
+    isAutoPricing?: BoolFilter<"Service"> | boolean
     vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
@@ -17435,7 +17560,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
+    isAutoPricing?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrderInput | SortOrder
@@ -17454,7 +17581,9 @@ export namespace Prisma {
     NOT?: ServiceWhereInput | ServiceWhereInput[]
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
+    extraCosts?: FloatFilter<"Service"> | number
     suggestedPrice?: FloatFilter<"Service"> | number
+    isAutoPricing?: BoolFilter<"Service"> | boolean
     vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
@@ -17470,7 +17599,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
+    isAutoPricing?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrderInput | SortOrder
@@ -17491,7 +17622,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Service"> | string
     name?: StringWithAggregatesFilter<"Service"> | string
     laborCost?: FloatWithAggregatesFilter<"Service"> | number
+    extraCosts?: FloatWithAggregatesFilter<"Service"> | number
     suggestedPrice?: FloatWithAggregatesFilter<"Service"> | number
+    isAutoPricing?: BoolWithAggregatesFilter<"Service"> | boolean
     vatRate?: FloatWithAggregatesFilter<"Service"> | number
     duration?: IntWithAggregatesFilter<"Service"> | number
     partId?: StringNullableWithAggregatesFilter<"Service"> | string | null
@@ -18360,6 +18493,9 @@ export namespace Prisma {
   export type DeviceTypeCreateInput = {
     id?: string
     name: string
+    defaultExtraCosts?: number
+    defaultCoefficient?: number
+    minMarginRate?: number
     createdAt?: Date | string
     models?: DeviceModelCreateNestedManyWithoutTypeInput
   }
@@ -18367,6 +18503,9 @@ export namespace Prisma {
   export type DeviceTypeUncheckedCreateInput = {
     id?: string
     name: string
+    defaultExtraCosts?: number
+    defaultCoefficient?: number
+    minMarginRate?: number
     createdAt?: Date | string
     models?: DeviceModelUncheckedCreateNestedManyWithoutTypeInput
   }
@@ -18374,6 +18513,9 @@ export namespace Prisma {
   export type DeviceTypeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    defaultExtraCosts?: FloatFieldUpdateOperationsInput | number
+    defaultCoefficient?: FloatFieldUpdateOperationsInput | number
+    minMarginRate?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     models?: DeviceModelUpdateManyWithoutTypeNestedInput
   }
@@ -18381,6 +18523,9 @@ export namespace Prisma {
   export type DeviceTypeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    defaultExtraCosts?: FloatFieldUpdateOperationsInput | number
+    defaultCoefficient?: FloatFieldUpdateOperationsInput | number
+    minMarginRate?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     models?: DeviceModelUncheckedUpdateManyWithoutTypeNestedInput
   }
@@ -18388,12 +18533,18 @@ export namespace Prisma {
   export type DeviceTypeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    defaultExtraCosts?: FloatFieldUpdateOperationsInput | number
+    defaultCoefficient?: FloatFieldUpdateOperationsInput | number
+    minMarginRate?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeviceTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    defaultExtraCosts?: FloatFieldUpdateOperationsInput | number
+    defaultCoefficient?: FloatFieldUpdateOperationsInput | number
+    minMarginRate?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18618,7 +18769,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     description?: string | null
@@ -18632,7 +18785,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     partId?: string | null
@@ -18646,7 +18801,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18660,7 +18817,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18674,7 +18833,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18685,7 +18846,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19558,19 +19721,40 @@ export namespace Prisma {
   export type DeviceTypeCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type DeviceTypeAvgOrderByAggregateInput = {
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
   }
 
   export type DeviceTypeMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
     createdAt?: SortOrder
   }
 
   export type DeviceTypeMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type DeviceTypeSumOrderByAggregateInput = {
+    defaultExtraCosts?: SortOrder
+    defaultCoefficient?: SortOrder
+    minMarginRate?: SortOrder
   }
 
   export type DeviceBrandCountOrderByAggregateInput = {
@@ -19806,7 +19990,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
+    isAutoPricing?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
@@ -19817,6 +20003,7 @@ export namespace Prisma {
 
   export type ServiceAvgOrderByAggregateInput = {
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
@@ -19826,7 +20013,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
+    isAutoPricing?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
@@ -19839,7 +20028,9 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
+    isAutoPricing?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
@@ -19850,6 +20041,7 @@ export namespace Prisma {
 
   export type ServiceSumOrderByAggregateInput = {
     laborCost?: SortOrder
+    extraCosts?: SortOrder
     suggestedPrice?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
@@ -22619,12 +22811,18 @@ export namespace Prisma {
   export type DeviceTypeCreateWithoutModelsInput = {
     id?: string
     name: string
+    defaultExtraCosts?: number
+    defaultCoefficient?: number
+    minMarginRate?: number
     createdAt?: Date | string
   }
 
   export type DeviceTypeUncheckedCreateWithoutModelsInput = {
     id?: string
     name: string
+    defaultExtraCosts?: number
+    defaultCoefficient?: number
+    minMarginRate?: number
     createdAt?: Date | string
   }
 
@@ -22680,7 +22878,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     description?: string | null
@@ -22693,7 +22893,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     partId?: string | null
@@ -22744,12 +22946,18 @@ export namespace Prisma {
   export type DeviceTypeUpdateWithoutModelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    defaultExtraCosts?: FloatFieldUpdateOperationsInput | number
+    defaultCoefficient?: FloatFieldUpdateOperationsInput | number
+    minMarginRate?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeviceTypeUncheckedUpdateWithoutModelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    defaultExtraCosts?: FloatFieldUpdateOperationsInput | number
+    defaultCoefficient?: FloatFieldUpdateOperationsInput | number
+    minMarginRate?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22814,7 +23022,9 @@ export namespace Prisma {
     id?: StringFilter<"Service"> | string
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
+    extraCosts?: FloatFilter<"Service"> | number
     suggestedPrice?: FloatFilter<"Service"> | number
+    isAutoPricing?: BoolFilter<"Service"> | boolean
     vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
@@ -22852,7 +23062,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     description?: string | null
@@ -22865,7 +23077,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     modelId?: string | null
@@ -23603,7 +23817,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     description?: string | null
@@ -23616,7 +23832,9 @@ export namespace Prisma {
     id?: string
     name: string
     laborCost: number
+    extraCosts?: number
     suggestedPrice?: number
+    isAutoPricing?: boolean
     vatRate?: number
     duration?: number
     partId?: string | null
@@ -23684,7 +23902,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23697,7 +23917,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24332,7 +24554,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24345,7 +24569,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24358,7 +24584,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24370,7 +24598,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24383,7 +24613,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24396,7 +24628,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
+    extraCosts?: FloatFieldUpdateOperationsInput | number
     suggestedPrice?: FloatFieldUpdateOperationsInput | number
+    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     modelId?: NullableStringFieldUpdateOperationsInput | string | null

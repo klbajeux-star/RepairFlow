@@ -42,7 +42,9 @@ export async function POST(request: Request) {
       data: {
         name: requireString(json.name, 'Nom du forfait', { maxLength: 140 }),
         laborCost: requireNumber(json.laborCost, "Main d'oeuvre", { min: 0 }),
+        extraCosts: requireNumber(json.extraCosts || 0, "Frais annexes", { min: 0 }),
         suggestedPrice: requireNumber(json.suggestedPrice, "Prix de vente TTC", { min: 0 }),
+        isAutoPricing: Boolean(json.isAutoPricing),
         duration: requireInteger(json.duration, 'Durée'),
         partId: (typeof json.partId === 'string' && json.partId.trim()) ? json.partId : null,
         modelId: (typeof json.modelId === 'string' && json.modelId.trim()) ? json.modelId : null,

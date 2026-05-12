@@ -21,6 +21,9 @@ export async function PATCH(
       where: { id },
       data: {
         name: json.name !== undefined ? requireString(json.name, 'Nom') : undefined,
+        defaultExtraCosts: json.defaultExtraCosts !== undefined ? Number(json.defaultExtraCosts) : undefined,
+        defaultCoefficient: json.defaultCoefficient !== undefined ? Number(json.defaultCoefficient) : undefined,
+        minMarginRate: json.minMarginRate !== undefined ? Number(json.minMarginRate) : undefined,
       },
     })
 
