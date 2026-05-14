@@ -70,7 +70,8 @@ export async function POST(request: Request) {
       })
 
       for (const service of services) {
-        const totalPrice = service.suggestedPrice || (service.laborCost + (service.part?.costPrice ?? 0))
+        const totalPrice = service.finalPriceTTC ?? (service.laborCost + (service.part?.costPrice ?? 0))
+
         
         // Determine individual part status
         let linePartStatus = 'IN_STOCK'

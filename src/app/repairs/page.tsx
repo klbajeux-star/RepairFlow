@@ -85,11 +85,13 @@ interface Service {
   id: string
   name: string
   laborCost: number
-  suggestedPrice: number
+  finalPriceTTC: number
+  suggestedPriceTTC: number
   duration: number
   description?: string | null
   part?: Part | null
 }
+
 
 interface RepairLog {
   id: string
@@ -463,8 +465,9 @@ function RepairsContent() {
         services: selectedServicesList.map(s => ({
           id: s.id,
           name: s.name,
-          suggestedPrice: s.suggestedPrice
+          finalPriceTTC: s.finalPriceTTC
         })),
+
         notes: repairNotes,
         signature: signatureData,
         date: new Date().toLocaleDateString('fr-FR')
@@ -854,7 +857,8 @@ function RepairsContent() {
                       className={`flex flex-col rounded-2xl border p-4 text-left transition ${isSelected ? 'border-blue-400 bg-blue-50/50 ring-2 ring-blue-100' : 'border-slate-100 bg-white hover:border-slate-200'}`}
                     >
                       <p className="font-bold text-slate-950 leading-tight">{s.name}</p>
-                      <p className="mt-2 text-xs font-black text-blue-600">{formatCurrency(s.suggestedPrice)}</p>
+                      <p className="mt-2 text-xs font-black text-blue-600">{formatCurrency(s.finalPriceTTC)}</p>
+
                     </button>
                   )
                 })}
@@ -881,7 +885,8 @@ function RepairsContent() {
                   {services.filter(s => selectedServiceIds.includes(s.id)).map(s => (
                     <div key={s.id} className="flex justify-between text-xs py-1">
                       <span className="text-slate-600">{s.name}</span>
-                      <span className="font-bold text-slate-950">{formatCurrency(s.suggestedPrice)}</span>
+                      <span className="font-bold text-slate-950">{formatCurrency(s.finalPriceTTC)}</span>
+
                     </div>
                   ))}
                 </div>

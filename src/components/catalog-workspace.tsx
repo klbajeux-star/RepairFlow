@@ -28,6 +28,11 @@ import { formatCurrency } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
 import { ConfirmDialog } from './confirm-dialog'
 import { useConfirm } from '@/hooks/use-confirm'
+import { 
+  calculateSuggestedPrice, 
+  analyzeMargin, 
+  PricingParams 
+} from '@/lib/pricing-engine'
 
 type CatalogTab = 'models' | 'services' | 'parts'
 
@@ -77,14 +82,21 @@ interface Service {
   id: string
   name: string
   laborCost: number
-  suggestedPrice: number
+  extraCosts: number
+  finalPriceTTC: number
+  suggestedPriceTTC: number
+  pricingMode: 'AUTO' | 'MANUAL'
+  vatRate: number
   duration: number
   partId?: string | null
   part?: { name: string; costPrice: number } | null
   modelId?: string | null
-  model?: (DeviceModel & { brand: Brand }) | null
+  model?: (DeviceModel & { brand: Brand; type: DeviceType }) | null
   description?: string | null
+  lastPriceSyncAt?: string | null
+  lastPriceSyncReason?: string | null
 }
+
 
 const initialModelForm = {
   name: '',
@@ -97,8 +109,10 @@ const initialServiceForm = {
   name: '',
   laborCost: '',
   extraCosts: '0',
-  suggestedPrice: '',
-  isAutoPricing: false,
+  vatRate: '20',
+  finalPriceTTC: '',
+  suggestedPriceTTC: '',
+  pricingMode: 'MANUAL',
   duration: '30',
   partId: '',
   modelId: '',
@@ -299,44 +313,87 @@ export function CatalogWorkspace() {
     setPartForm({ ...partForm, sku: `${prefix}-${modelPrefix}-${random}` })
   }
 
-  const serviceMargin = useMemo(() => {
-    const price = parseFloat(serviceForm.suggestedPrice) || 0
-    const labor = parseFloat(serviceForm.laborCost) || 0
-    const extra = parseFloat(serviceForm.extraCosts) || 0
+  const suggestedPriceTTC = useMemo(() => {
+    const laborHT = parseFloat(serviceForm.laborCost) || 0
+    const extraHT = parseFloat(serviceForm.extraCosts) || 0
+    const vatRate = parseFloat(serviceForm.vatRate) || 20
     
-    // Try to find part cost if linked
-    let partCost = 0
+    let costHT = 0
     if (serviceForm.partId) {
       const linkedPart = parts.find(p => p.id === serviceForm.partId)
-      if (linkedPart) partCost = linkedPart.costPrice
+      if (linkedPart) costHT = linkedPart.costPrice
     }
-    
-    const totalCostHT = labor + extra + partCost
-    const saleHT = price / 1.2
-    const margin = saleHT - totalCostHT
-    const percent = saleHT > 0 ? (margin / saleHT) * 100 : 0
 
-    // Get min margin from type
-    let minMargin = 30
+    let coeff = 2.0
     if (serviceForm.modelId) {
       const model = models.find(m => m.id === serviceForm.modelId)
       if (model) {
         const type = types.find(t => t.id === model.typeId)
-        if (type) minMargin = type.minMarginRate
+        if (type) coeff = type.defaultCoefficient || 2.0
       }
     }
 
-    let status: 'very_profitable' | 'profitable' | 'watch' | 'low' = 'low'
-    if (percent >= minMargin + 15) status = 'very_profitable'
-    else if (percent >= minMargin) status = 'profitable'
-    else if (percent >= minMargin - 10) status = 'watch'
-    else status = 'low'
+    return calculateSuggestedPrice({
+      costHT,
+      laborHT,
+      extraHT,
+      coeff,
+      vatRate,
+      name: serviceForm.name
+    })
+  }, [serviceForm.name, serviceForm.laborCost, serviceForm.extraCosts, serviceForm.vatRate, serviceForm.partId, serviceForm.modelId, parts, models, types])
+
+  useEffect(() => {
+    if (serviceForm.pricingMode === 'AUTO') {
+      setServiceForm(prev => ({ 
+        ...prev, 
+        finalPriceTTC: suggestedPriceTTC.toString(),
+        suggestedPriceTTC: suggestedPriceTTC.toString() 
+      }))
+    } else {
+      setServiceForm(prev => ({
+        ...prev,
+        suggestedPriceTTC: suggestedPriceTTC.toString()
+      }))
+    }
+  }, [serviceForm.pricingMode, suggestedPriceTTC])
+
+  const serviceMargin = useMemo(() => {
+    const finalPriceTTC = parseFloat(serviceForm.finalPriceTTC) || 0
+    const laborHT = parseFloat(serviceForm.laborCost) || 0
+    const extraHT = parseFloat(serviceForm.extraCosts) || 0
+    const vatRate = parseFloat(serviceForm.vatRate) || 20
+    
+    let costHT = 0
+    if (serviceForm.partId) {
+      const linkedPart = parts.find(p => p.id === serviceForm.partId)
+      if (linkedPart) costHT = linkedPart.costPrice
+    }
+
+    let minMarginRate = 30
+    let coeff = 2.0
+    if (serviceForm.modelId) {
+      const model = models.find(m => m.id === serviceForm.modelId)
+      if (model) {
+        const type = types.find(t => t.id === model.typeId)
+        if (type) {
+          minMarginRate = type.minMarginRate
+          coeff = type.defaultCoefficient || 2.0
+        }
+      }
+    }
+
+    const analysis = analyzeMargin(
+      finalPriceTTC,
+      { costHT, laborHT, extraHT, coeff, vatRate, name: serviceForm.name },
+      minMarginRate
+    )
 
     return {
-      value: margin,
-      percent,
-      status,
-      minMargin
+      value: analysis.marginHT,
+      percent: analysis.marginPercent,
+      status: analysis.status,
+      minMargin: analysis.minMarginRate
     }
   }, [serviceForm, parts, models, types])
 
@@ -391,8 +448,10 @@ export function CatalogWorkspace() {
       name: item.name, 
       laborCost: item.laborCost.toString(), 
       extraCosts: (item.extraCosts || 0).toString(),
-      suggestedPrice: item.suggestedPrice?.toString() || '', 
-      isAutoPricing: !!item.isAutoPricing,
+      vatRate: (item.vatRate || 20).toString(),
+      finalPriceTTC: item.finalPriceTTC?.toString() || '', 
+      suggestedPriceTTC: item.suggestedPriceTTC?.toString() || '',
+      pricingMode: item.pricingMode || 'MANUAL',
       duration: item.duration?.toString() || '30', 
       partId: item.partId || '', 
       modelId: item.modelId || '', 
@@ -447,7 +506,19 @@ export function CatalogWorkspace() {
       const baseUrl = drawerType === 'model' ? '/api/models' : drawerType === 'service' ? '/api/services' : drawerType === 'part' ? '/api/parts' : drawerType === 'brand' ? '/api/brands' : '/api/types'
       const url = editingId ? `${baseUrl}/${editingId}` : baseUrl
       const method = editingId ? 'PATCH' : 'POST'
-      const body = drawerType === 'model' ? modelForm : drawerType === 'service' ? serviceForm : drawerType === 'part' ? partForm : drawerType === 'brand' ? brandForm : typeForm
+      let body: any = drawerType === 'model' ? modelForm : drawerType === 'service' ? serviceForm : drawerType === 'part' ? partForm : drawerType === 'brand' ? brandForm : typeForm
+      
+      if (drawerType === 'service') {
+        body = {
+          ...serviceForm,
+          laborCost: parseFloat(serviceForm.laborCost) || 0,
+          extraCosts: parseFloat(serviceForm.extraCosts) || 0,
+          vatRate: parseFloat(serviceForm.vatRate) || 20,
+          finalPriceTTC: parseFloat(serviceForm.finalPriceTTC) || 0,
+          suggestedPriceTTC: parseFloat(serviceForm.suggestedPriceTTC) || 0,
+          duration: parseInt(serviceForm.duration) || 0,
+        }
+      }
       
       const res = await fetch(url, {
         method,
@@ -468,15 +539,21 @@ export function CatalogWorkspace() {
          const sRes = await fetch('/api/services', {
            method: 'POST',
            headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({
-              name: `Remplacement ${partForm.name}`,
-               laborCost: 30,
-               suggestedPrice: (parseFloat(partForm.costPrice) || 0) + 60,
-               duration: 30,
-               partId: savedItem.id,
-              modelId: partForm.modelId,
-              description: `Service généré automatiquement.`
-           })
+             body: JSON.stringify({
+                name: `Remplacement ${partForm.name}`,
+                laborCost: 30,
+                extraCosts: 0,
+                pricingMode: 'AUTO',
+                vatRate: 20,
+                finalPriceTTC: Math.ceil(((parseFloat(partForm.costPrice) || 0) * 2.0 + 30) * 1.2),
+                suggestedPriceTTC: Math.ceil(((parseFloat(partForm.costPrice) || 0) * 2.0 + 30) * 1.2),
+                duration: 30,
+                partId: savedItem.id,
+                modelId: partForm.modelId,
+                description: `Service généré automatiquement.`
+             })
+
+
          })
          if (!sRes.ok) {
            const sData = await sRes.json().catch(() => ({}))
@@ -736,7 +813,7 @@ export function CatalogWorkspace() {
                     </tr>
                   ))}
                   
-                  {activeTab === 'services' && filteredServices.map(s => (
+                   {activeTab === 'services' && filteredServices.map(s => (
                     <tr key={s.id} className="group hover:bg-white/40 transition-colors">
                       <td className="px-8 py-5">
                         <p className="font-black text-slate-950">{s.name}</p>
@@ -762,18 +839,24 @@ export function CatalogWorkspace() {
                       </td>
                       <td className="px-8 py-5">
                         <div className="flex flex-col gap-1">
-                          <p className="font-black text-emerald-600">{formatCurrency(s.suggestedPrice)}</p>
+                          <p className="font-black text-emerald-600">{formatCurrency(s.finalPriceTTC)}</p>
                           {s.laborCost > 0 && (
                             <div className="flex items-center gap-1.5">
                               <div className={`h-1.5 w-1.5 rounded-full ${
-                                (s.suggestedPrice / 1.2 - s.laborCost - (s.extraCosts || 0)) / (s.suggestedPrice / 1.2) * 100 > 30 
+                                (s.finalPriceTTC / (1 + (s.vatRate || 20) / 100) - s.laborCost - (s.extraCosts || 0)) / (s.finalPriceTTC / (1 + (s.vatRate || 20) / 100)) * 100 > 30 
                                 ? 'bg-emerald-500' : 'bg-amber-500'
                               }`} />
-                              <span className="text-[9px] font-bold text-slate-400 uppercase">Marge OK</span>
+                              <span className="text-[9px] font-bold text-slate-400 uppercase">
+                                {s.pricingMode === 'AUTO' ? 'Auto' : 'Manuel'}
+                              </span>
                             </div>
+                          )}
+                          {s.lastPriceSyncAt && (
+                            <p className="text-[8px] font-bold text-blue-500 animate-pulse">✨ Synchronisé</p>
                           )}
                         </div>
                       </td>
+
                       <td className="px-8 py-5 text-right">
                         <button onClick={() => openDrawer('service', s)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
                       </td>
@@ -978,12 +1061,12 @@ export function CatalogWorkspace() {
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400">Mode de tarification</p>
                 <button 
                   onClick={() => {
-                    const nextMode = !serviceForm.isAutoPricing
-                    setServiceForm(prev => ({ ...prev, isAutoPricing: nextMode }))
+                    const nextMode = serviceForm.pricingMode === 'AUTO' ? 'MANUAL' : 'AUTO'
+                    setServiceForm(prev => ({ ...prev, pricingMode: nextMode }))
                   }}
-                  className={`flex items-center gap-2 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${serviceForm.isAutoPricing ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500'}`}
+                  className={`flex items-center gap-2 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${serviceForm.pricingMode === 'AUTO' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500'}`}
                 >
-                  {serviceForm.isAutoPricing ? (
+                  {serviceForm.pricingMode === 'AUTO' ? (
                     <><RefreshCw className="h-3 w-3 animate-spin" /> Auto-Pricing</>
                   ) : (
                     <><PencilLine className="h-3 w-3" /> Manuel</>
@@ -1005,27 +1088,7 @@ export function CatalogWorkspace() {
                   <input 
                     type="number"
                     value={serviceForm.laborCost}
-                    onChange={e => {
-                      const val = e.target.value
-                      const newLabor = parseFloat(val) || 0
-                      if (serviceForm.isAutoPricing) {
-                        const extra = parseFloat(serviceForm.extraCosts) || 0
-                        let partCost = 0
-                        if (serviceForm.partId) {
-                          const linkedPart = parts.find(p => p.id === serviceForm.partId)
-                          if (linkedPart) partCost = linkedPart.costPrice
-                        }
-                        const totalHT = newLabor + extra + partCost
-                        const coeff = 2.0 // Default
-                        setServiceForm(prev => ({ 
-                          ...prev, 
-                          laborCost: val, 
-                          suggestedPrice: (totalHT * coeff * 1.2).toFixed(0) 
-                        }))
-                      } else {
-                        setServiceForm(prev => ({ ...prev, laborCost: val }))
-                      }
-                    }}
+                    onChange={e => setServiceForm(prev => ({ ...prev, laborCost: e.target.value }))}
                     className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none focus:border-blue-300 focus:bg-white transition-all"
                   />
                 </Field>
@@ -1033,48 +1096,57 @@ export function CatalogWorkspace() {
                   <input 
                     type="number"
                     value={serviceForm.extraCosts}
-                    onChange={e => {
-                      const val = e.target.value
-                      const newExtra = parseFloat(val) || 0
-                      if (serviceForm.isAutoPricing) {
-                        const labor = parseFloat(serviceForm.laborCost) || 0
-                        let partCost = 0
-                        if (serviceForm.partId) {
-                          const linkedPart = parts.find(p => p.id === serviceForm.partId)
-                          if (linkedPart) partCost = linkedPart.costPrice
-                        }
-                        const totalHT = labor + newExtra + partCost
-                        const coeff = 2.0
-                        setServiceForm(prev => ({ 
-                          ...prev, 
-                          extraCosts: val, 
-                          suggestedPrice: (totalHT * coeff * 1.2).toFixed(0) 
-                        }))
-                      } else {
-                        setServiceForm(prev => ({ ...prev, extraCosts: val }))
-                      }
-                    }}
-                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                    onChange={e => setServiceForm(prev => ({ ...prev, extraCosts: e.target.value }))}
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none focus:border-blue-300 focus:bg-white transition-all"
                   />
                 </Field>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Prix Vente (TTC)">
+              <Field label="Prix Final (TTC)">
+                <div className="relative">
+                  {serviceForm.pricingMode === 'MANUAL' && (
+                    <div className="absolute -top-6 right-0 flex items-center gap-1.5 animate-in fade-in slide-in-from-bottom-1">
+                      <span className="text-[8px] font-black uppercase tracking-wider text-blue-600 bg-blue-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full ring-1 ring-blue-100 shadow-sm">
+                        Recommandé : {suggestedPriceTTC}€
+                      </span>
+                    </div>
+                  )}
+                  {serviceForm.lastPriceSyncAt && serviceForm.pricingMode === 'AUTO' && (
+                    <div className="absolute -top-6 left-0 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
+                      <span className="text-[8px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full ring-1 ring-slate-100 italic">
+                        Mis à jour {new Date(serviceForm.lastPriceSyncAt).toLocaleDateString()} ({serviceForm.lastPriceSyncReason})
+                      </span>
+                    </div>
+                  )}
                   <input 
                     type="number"
-                    value={serviceForm.suggestedPrice}
-                    readOnly={serviceForm.isAutoPricing}
-                    onChange={e => setServiceForm({ ...serviceForm, suggestedPrice: e.target.value })}
-                    className={`w-full rounded-xl border border-slate-100 py-3 px-4 text-sm outline-none ${serviceForm.isAutoPricing ? 'bg-slate-50 text-slate-400 border-dashed' : 'bg-white/60'}`}
+                    value={serviceForm.finalPriceTTC}
+                    readOnly={serviceForm.pricingMode === 'AUTO'}
+                    onChange={e => setServiceForm({ ...serviceForm, finalPriceTTC: e.target.value })}
+                    className={`w-full rounded-xl border border-slate-100 py-3 px-4 text-sm outline-none transition-all ${serviceForm.pricingMode === 'AUTO' ? 'bg-slate-50 text-slate-400 border-dashed cursor-not-allowed font-bold' : 'bg-white/60 focus:bg-white focus:border-blue-300'}`}
                   />
+                </div>
+              </Field>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="TVA (%)">
+                  <select 
+                    value={serviceForm.vatRate}
+                    onChange={e => setServiceForm({ ...serviceForm, vatRate: e.target.value })}
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none focus:border-blue-300 focus:bg-white transition-all"
+                  >
+                    <option value="20">20%</option>
+                    <option value="10">10%</option>
+                    <option value="5.5">5.5%</option>
+                    <option value="0">0%</option>
+                  </select>
                 </Field>
                 <Field label="Temps (minutes)">
                   <input 
                     type="number"
                     value={serviceForm.duration}
                     onChange={e => setServiceForm({ ...serviceForm, duration: e.target.value })}
-                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none"
+                    className="w-full rounded-xl border border-slate-100 bg-white/60 py-3 px-4 text-sm outline-none focus:border-blue-300 focus:bg-white transition-all"
                     placeholder="30"
                   />
                 </Field>

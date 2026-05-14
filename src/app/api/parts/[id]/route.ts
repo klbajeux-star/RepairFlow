@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { syncServicesByPart } from '@/lib/sync-service'
 import {
   ApiError,
   handleApiError,
@@ -37,6 +38,10 @@ export async function PATCH(
         modelId: json.modelId !== undefined ? ( (typeof json.modelId === 'string' && json.modelId.trim()) ? json.modelId : null ) : undefined,
       },
     })
+
+    if (json.costPrice !== undefined) {
+      await syncServicesByPart(id)
+    }
 
     return NextResponse.json(part)
   } catch (error) {

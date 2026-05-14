@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { syncServicesByCategory } from '@/lib/sync-service'
 import {
   handleApiError,
   requireString,
@@ -26,6 +27,10 @@ export async function PATCH(
         minMarginRate: json.minMarginRate !== undefined ? Number(json.minMarginRate) : undefined,
       },
     })
+
+    if (json.defaultExtraCosts !== undefined || json.defaultCoefficient !== undefined || json.minMarginRate !== undefined) {
+      await syncServicesByCategory(id)
+    }
 
     return NextResponse.json(type)
   } catch (error) {

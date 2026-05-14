@@ -230,13 +230,16 @@ exports.Prisma.ServiceScalarFieldEnum = {
   name: 'name',
   laborCost: 'laborCost',
   extraCosts: 'extraCosts',
-  suggestedPrice: 'suggestedPrice',
-  isAutoPricing: 'isAutoPricing',
+  finalPriceTTC: 'finalPriceTTC',
+  suggestedPriceTTC: 'suggestedPriceTTC',
+  pricingMode: 'pricingMode',
   vatRate: 'vatRate',
   duration: 'duration',
   partId: 'partId',
   modelId: 'modelId',
   description: 'description',
+  lastPriceSyncAt: 'lastPriceSyncAt',
+  lastPriceSyncReason: 'lastPriceSyncReason',
   createdAt: 'createdAt'
 };
 

@@ -37,8 +37,10 @@ import {
 } from '@/lib/repair'
 import { validateInvoiceForIssuance } from '@/lib/invoice-validation'
 import { DocumentData } from '@/lib/pdf-generator'
+import { analyzeMargin, PricingParams, MarginAnalysis } from '@/lib/pricing-engine'
 
 // --- Types ---
+
 
 interface Client {
   id: string
@@ -76,7 +78,15 @@ interface DraftLine {
   quantity: number
   vatRate: number
   unit?: 'C62'
+  // Snapshot économique (interne)
+  costHT?: number
+  laborHT?: number
+  extraHT?: number
+  marginHT?: number
+  marginPercent?: number
+  marginStatus?: 'very_profitable' | 'profitable' | 'watch' | 'low'
 }
+
 
 interface Quote {
   id: string
@@ -119,6 +129,7 @@ interface Invoice {
 interface ShopProduct {
   id: string
   name: string
+  purchasePrice: number
   sellingPrice: number
   vatRate: number
   category: string
@@ -134,11 +145,17 @@ interface Repair {
     priceAtTime: number
     quantity: number
     vatRate?: number
-    service: { name: string }
+    service: { 
+      name: string
+      laborCost: number
+      extraCosts: number
+      part?: { costPrice: number } | null
+    }
   }[]
   notes?: string | null
   createdAt: string
 }
+
 
 // --- Status Styles ---
 
@@ -304,15 +321,38 @@ function BillingContent() {
     setEditorMode(mode)
     setDraftClient(repair.client)
     setDraftRepairId(repair.id)
-    setDraftLines(repair.services.map(s => ({
-      id: s.id,
-      name: s.service.name,
-      price: s.priceAtTime,
-      quantity: s.quantity,
-      vatRate: s.vatRate ?? 20,
-      unit: 'C62'
-    })))
+    setDraftLines(repair.services.map(s => {
+      const costHT = s.service.part?.costPrice || 0
+      const laborHT = s.service.laborCost || 0
+      const extraHT = s.service.extraCosts || 0
+      const vatRate = s.vatRate ?? 20
+
+      const analysis = analyzeMargin(s.priceAtTime, {
+        costHT,
+        laborHT,
+        extraHT,
+        vatRate,
+        name: s.service.name,
+        coeff: 2.0
+      })
+
+      return {
+        id: s.id,
+        name: s.service.name,
+        price: s.priceAtTime,
+        quantity: s.quantity,
+        vatRate,
+        unit: 'C62',
+        costHT,
+        laborHT,
+        extraHT,
+        marginHT: analysis.marginHT,
+        marginPercent: analysis.marginPercent,
+        marginStatus: analysis.status
+      }
+    }))
     const ticketRef = getTicketReference(repair)
+
     const autoNote = `Document généré à partir du ticket ${ticketRef}`
     setDraftNotes(repair.notes ? `${repair.notes}\n\n${autoNote}` : autoNote)
     setDraftNumber('NOUVEAU')
@@ -330,8 +370,32 @@ function BillingContent() {
     setEditorMode(type)
     setDraftClient(doc.client)
     setDraftRepairId(doc.repairId || null)
-    setDraftLines(JSON.parse(doc.items).map((l: any) => ({ ...l, unit: l.unit || "C62" })))
+    setDraftLines(JSON.parse(doc.items).map((l: any) => {
+      const line = { 
+        ...l, 
+        unit: l.unit || "C62",
+        costHT: l.costHT ?? 0,
+        laborHT: l.laborHT ?? 0,
+        extraHT: l.extraHT ?? 0
+      }
+      
+      // Recalculer la marge systématiquement au chargement pour affichage
+      const analysis = analyzeMargin(line.price, {
+        costHT: line.costHT,
+        laborHT: line.laborHT,
+        extraHT: line.extraHT,
+        vatRate: line.vatRate || 20,
+        name: line.name,
+        coeff: 2.0
+      })
+      line.marginHT = analysis.marginHT
+      line.marginPercent = analysis.marginPercent
+      line.marginStatus = analysis.status
+      
+      return line
+    }))
     setDraftNotes(doc.notes || '')
+
     setDraftNumber(doc.number); setDraftStatus(doc.status || (type === "invoice" ? "BROUILLON" : "EN_ATTENTE")); setInitialStatus(doc.status || (type === "invoice" ? "BROUILLON" : "EN_ATTENTE"))
     setDraftPaymentMethod(doc.paymentMethod || 'VIREMENT')
     if (type === 'invoice') {
@@ -461,36 +525,91 @@ function BillingContent() {
 
   const updateLine = (index: number, field: keyof DraftLine, value: string | number) => {
     const newLines = [...draftLines]
-    newLines[index] = { ...newLines[index], [field]: value }
+    const updatedLine = { ...newLines[index], [field]: value }
+    
+    // Recalculer la marge si le prix ou le taux de TVA change
+    if (field === 'price' || field === 'vatRate' || field === 'name') {
+      const analysis = analyzeMargin(updatedLine.price, {
+        costHT: updatedLine.costHT || 0,
+        laborHT: updatedLine.laborHT || 0,
+        extraHT: updatedLine.extraHT || 0,
+        vatRate: updatedLine.vatRate || 20,
+        name: updatedLine.name,
+        coeff: 2.0
+      })
+      updatedLine.marginHT = analysis.marginHT
+      updatedLine.marginPercent = analysis.marginPercent
+      updatedLine.marginStatus = analysis.status
+    }
+
+    newLines[index] = updatedLine
     setDraftLines(newLines)
   }
+
 
   const removeLine = (index: number) => {
     setDraftLines(draftLines.filter((_, i) => i !== index))
   }
 
   const addLine = () => {
-    setDraftLines([...draftLines, { 
+    const newLine: DraftLine = { 
       id: Math.random().toString(36).substr(2, 9), 
       name: 'Prestation / Produit', 
       price: 0, 
       quantity: 1,
       vatRate: 20,
-      unit: 'C62'
-    }])
+      unit: 'C62',
+      costHT: 0,
+      laborHT: 0,
+      extraHT: 0
+    }
+    
+    const analysis = analyzeMargin(0, {
+      costHT: 0,
+      laborHT: 0,
+      extraHT: 0,
+      vatRate: 20,
+      name: newLine.name,
+      coeff: 2.0
+    })
+    
+    newLine.marginHT = analysis.marginHT
+    newLine.marginPercent = analysis.marginPercent
+    newLine.marginStatus = analysis.status
+
+    setDraftLines([...draftLines, newLine])
   }
 
+
   const addShopProduct = (p: ShopProduct) => {
+    const costHT = p.purchasePrice || 0
+    const vatRate = p.vatRate ?? 20
+    const analysis = analyzeMargin(p.sellingPrice, {
+      costHT,
+      laborHT: 0,
+      extraHT: 0,
+      vatRate,
+      name: p.name,
+      coeff: 2.0
+    })
+
     setDraftLines([...draftLines, {
       id: Math.random().toString(36).substr(2, 9),
       name: p.name,
       price: p.sellingPrice,
       quantity: 1,
-      vatRate: p.vatRate ?? 20,
-      unit: 'C62'
+      vatRate,
+      unit: 'C62',
+      costHT,
+      laborHT: 0,
+      extraHT: 0,
+      marginHT: analysis.marginHT,
+      marginPercent: analysis.marginPercent,
+      marginStatus: analysis.status
     }])
     setShopSearch('')
   }
+
 
   const filteredShop = useMemo(() => {
     const query = shopSearch.trim().toLowerCase()
@@ -763,8 +882,30 @@ function BillingContent() {
                         )}
                       </td>
                       <td className="px-8 py-5 text-right">
-                        <p className={`text-lg font-black ${activeTab === 'quotes' ? 'text-blue-600' : 'text-emerald-600'}`}>{formatCurrency(doc.totalTTC)}</p>
+                        <div className="flex flex-col items-end gap-1">
+                          <p className={`text-lg font-black ${activeTab === 'quotes' ? 'text-blue-600' : 'text-emerald-600'}`}>{formatCurrency(doc.totalTTC)}</p>
+                          {(() => {
+                            try {
+                              const items = JSON.parse(doc.items) as any[]
+                              const linesWithMargin = items.filter(l => l.marginPercent !== undefined)
+                              if (linesWithMargin.length > 0) {
+                                const avgMargin = linesWithMargin.reduce((acc, l) => acc + l.marginPercent, 0) / linesWithMargin.length
+                                return (
+                                  <span className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md ring-1 ring-inset ${
+                                    avgMargin >= 30 ? 'bg-emerald-50 text-emerald-600 ring-emerald-100' :
+                                    avgMargin >= 20 ? 'bg-amber-50 text-amber-600 ring-amber-100' :
+                                    'bg-rose-50 text-rose-600 ring-rose-100'
+                                  }`}>
+                                    Marge {Math.round(avgMargin)}%
+                                  </span>
+                                )
+                              }
+                            } catch (e) {}
+                            return null
+                          })()}
+                        </div>
                       </td>
+
                     </tr>
                   ))}
                 </tbody>
@@ -949,9 +1090,49 @@ function BillingContent() {
                                          <option value={0}>0%</option>
                                       </select>
                                    </td>
-                                   <td className="py-6 px-4 text-right font-black text-slate-950">
-                                      {((line.price * line.quantity) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} €
-                                   </td>
+                                    <td className="py-6 px-4 text-right font-black text-slate-950 relative group/margin">
+                                       {((line.price * line.quantity) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} €
+                                       
+                                       {/* Badge de marge interne (discret, caché à l'impression) */}
+                                       {line.marginStatus && (
+                                         <div className="absolute -top-1 -right-2 print:hidden group-hover/margin:scale-110 transition-transform cursor-help z-10">
+                                           <div className={`flex h-4 items-center gap-1 rounded-full px-1.5 text-[8px] font-black uppercase ring-1 ring-inset ${
+                                             line.marginStatus === 'very_profitable' ? 'bg-emerald-50 text-emerald-600 ring-emerald-200' :
+                                             line.marginStatus === 'profitable' ? 'bg-emerald-50 text-emerald-600 ring-emerald-200' :
+                                             line.marginStatus === 'watch' ? 'bg-amber-50 text-amber-600 ring-amber-200' :
+                                             'bg-rose-50 text-rose-600 ring-rose-200'
+                                           }`}>
+                                             {Math.round(line.marginPercent || 0)}%
+                                           </div>
+                                           
+                                           {/* Popover de détails au survol */}
+                                           <div className="absolute bottom-full right-0 mb-2 w-48 hidden group-hover/margin:block z-50 animate-in fade-in zoom-in-95 duration-200">
+                                             <div className="rounded-2xl bg-slate-900 p-4 text-white shadow-2xl ring-1 ring-white/10 text-left">
+                                               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-white/10 pb-2">Analyse Interne</p>
+                                               <div className="space-y-2">
+                                                 <div className="flex justify-between text-[10px] font-bold">
+                                                   <span className="text-slate-400 font-medium">Coût Pièce HT</span>
+                                                   <span>{formatCurrency(line.costHT || 0)}</span>
+                                                 </div>
+                                                 <div className="flex justify-between text-[10px] font-bold">
+                                                   <span className="text-slate-400 font-medium">Main d'œuvre HT</span>
+                                                   <span>{formatCurrency(line.laborHT || 0)}</span>
+                                                 </div>
+                                                 <div className="flex justify-between text-[10px] font-bold">
+                                                   <span className="text-slate-400 font-medium">Frais Annexes HT</span>
+                                                   <span>{formatCurrency(line.extraHT || 0)}</span>
+                                                 </div>
+                                                 <div className="flex justify-between text-[10px] font-black pt-2 border-t border-white/10">
+                                                   <span className="text-blue-400 uppercase tracking-tighter">Marge Nette HT</span>
+                                                   <span className="text-emerald-400">{formatCurrency(line.marginHT || 0)}</span>
+                                                 </div>
+                                               </div>
+                                             </div>
+                                           </div>
+                                         </div>
+                                       )}
+                                    </td>
+
                                    <td className="py-6 px-4 text-right print:hidden">
                                       <button 
                                         onClick={() => removeLine(idx)} disabled={isLocked}

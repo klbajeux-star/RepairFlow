@@ -145,21 +145,24 @@ model Part {
 }
 
 model Service {
-  id             String          @id @default(cuid())
-  name           String
-  laborCost      Float
-  extraCosts     Float           @default(0)
-  suggestedPrice Float           @default(0)
-  isAutoPricing  Boolean         @default(false)
-  vatRate        Float           @default(20)
-  duration       Int             @default(30)
-  partId         String?
-  modelId        String?
-  description    String?
-  createdAt      DateTime        @default(now())
-  repairs        RepairService[]
-  part           Part?           @relation(fields: [partId], references: [id])
-  model          DeviceModel?    @relation(fields: [modelId], references: [id])
+  id                  String          @id @default(cuid())
+  name                String
+  laborCost           Float
+  extraCosts          Float           @default(0)
+  finalPriceTTC       Float           @default(0)
+  suggestedPriceTTC   Float           @default(0)
+  pricingMode         String          @default("MANUAL")
+  vatRate             Float           @default(20)
+  duration            Int             @default(30)
+  partId              String?
+  modelId             String?
+  description         String?
+  lastPriceSyncAt     DateTime?
+  lastPriceSyncReason String?
+  createdAt           DateTime        @default(now())
+  repairs             RepairService[]
+  part                Part?           @relation(fields: [partId], references: [id])
+  model               DeviceModel?    @relation(fields: [modelId], references: [id])
 }
 
 model Repair {

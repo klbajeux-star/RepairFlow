@@ -256,13 +256,21 @@ export function ShopWorkspace() {
                       </td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-3">
-                          <div className={`flex h-10 w-10 items-center justify-center rounded-xl font-black ${p.stock <= p.minStock ? 'bg-rose-100 text-rose-600 ring-1 ring-rose-200' : 'bg-slate-100 text-slate-600'}`}>
+                          <div className={`flex h-10 w-10 items-center justify-center rounded-xl font-black shadow-sm ${
+                            p.stock === 0 
+                              ? 'bg-rose-500 text-white animate-pulse' 
+                              : p.stock <= (p.minStock || 0) 
+                              ? 'bg-amber-500 text-white animate-pulse' 
+                              : 'bg-emerald-500 text-white'
+                          }`}>
                             {p.stock}
                           </div>
                           <div>
                             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">En stock</p>
-                            <p className={`text-xs font-bold ${p.stock <= p.minStock ? 'text-rose-600' : 'text-slate-500'}`}>
-                              {p.stock <= p.minStock ? 'Réappro nécessaire' : 'Niveau correct'}
+                            <p className={`text-xs font-black ${
+                              p.stock === 0 ? 'text-rose-600' : p.stock <= (p.minStock || 0) ? 'text-amber-600' : 'text-emerald-600'
+                            }`}>
+                              {p.stock === 0 ? 'Rupture totale' : p.stock <= (p.minStock || 0) ? 'Réappro nécessaire' : 'Niveau correct'}
                             </p>
                           </div>
                         </div>

@@ -14,7 +14,7 @@ interface Client {
 interface Service {
   id: string
   name: string
-  suggestedPrice: number
+  finalPriceTTC: number
 }
 
 interface IntakeData {
@@ -112,9 +112,9 @@ export function generateIntakePDF(data: IntakeData) {
   let total = 0
   data.services.forEach((s) => {
     doc.text(s.name, margin, y)
-    const priceText = `${s.suggestedPrice.toFixed(2)} €`
+    const priceText = `${(s.finalPriceTTC || 0).toFixed(2)} €`
     doc.text(priceText, 190, y, { align: 'right' })
-    total += s.suggestedPrice
+    total += (s.finalPriceTTC || 0)
     y += 7
   })
 

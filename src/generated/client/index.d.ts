@@ -10526,7 +10526,8 @@ export namespace Prisma {
   export type ServiceAvgAggregateOutputType = {
     laborCost: number | null
     extraCosts: number | null
-    suggestedPrice: number | null
+    finalPriceTTC: number | null
+    suggestedPriceTTC: number | null
     vatRate: number | null
     duration: number | null
   }
@@ -10534,7 +10535,8 @@ export namespace Prisma {
   export type ServiceSumAggregateOutputType = {
     laborCost: number | null
     extraCosts: number | null
-    suggestedPrice: number | null
+    finalPriceTTC: number | null
+    suggestedPriceTTC: number | null
     vatRate: number | null
     duration: number | null
   }
@@ -10544,13 +10546,16 @@ export namespace Prisma {
     name: string | null
     laborCost: number | null
     extraCosts: number | null
-    suggestedPrice: number | null
-    isAutoPricing: boolean | null
+    finalPriceTTC: number | null
+    suggestedPriceTTC: number | null
+    pricingMode: string | null
     vatRate: number | null
     duration: number | null
     partId: string | null
     modelId: string | null
     description: string | null
+    lastPriceSyncAt: Date | null
+    lastPriceSyncReason: string | null
     createdAt: Date | null
   }
 
@@ -10559,13 +10564,16 @@ export namespace Prisma {
     name: string | null
     laborCost: number | null
     extraCosts: number | null
-    suggestedPrice: number | null
-    isAutoPricing: boolean | null
+    finalPriceTTC: number | null
+    suggestedPriceTTC: number | null
+    pricingMode: string | null
     vatRate: number | null
     duration: number | null
     partId: string | null
     modelId: string | null
     description: string | null
+    lastPriceSyncAt: Date | null
+    lastPriceSyncReason: string | null
     createdAt: Date | null
   }
 
@@ -10574,13 +10582,16 @@ export namespace Prisma {
     name: number
     laborCost: number
     extraCosts: number
-    suggestedPrice: number
-    isAutoPricing: number
+    finalPriceTTC: number
+    suggestedPriceTTC: number
+    pricingMode: number
     vatRate: number
     duration: number
     partId: number
     modelId: number
     description: number
+    lastPriceSyncAt: number
+    lastPriceSyncReason: number
     createdAt: number
     _all: number
   }
@@ -10589,7 +10600,8 @@ export namespace Prisma {
   export type ServiceAvgAggregateInputType = {
     laborCost?: true
     extraCosts?: true
-    suggestedPrice?: true
+    finalPriceTTC?: true
+    suggestedPriceTTC?: true
     vatRate?: true
     duration?: true
   }
@@ -10597,7 +10609,8 @@ export namespace Prisma {
   export type ServiceSumAggregateInputType = {
     laborCost?: true
     extraCosts?: true
-    suggestedPrice?: true
+    finalPriceTTC?: true
+    suggestedPriceTTC?: true
     vatRate?: true
     duration?: true
   }
@@ -10607,13 +10620,16 @@ export namespace Prisma {
     name?: true
     laborCost?: true
     extraCosts?: true
-    suggestedPrice?: true
-    isAutoPricing?: true
+    finalPriceTTC?: true
+    suggestedPriceTTC?: true
+    pricingMode?: true
     vatRate?: true
     duration?: true
     partId?: true
     modelId?: true
     description?: true
+    lastPriceSyncAt?: true
+    lastPriceSyncReason?: true
     createdAt?: true
   }
 
@@ -10622,13 +10638,16 @@ export namespace Prisma {
     name?: true
     laborCost?: true
     extraCosts?: true
-    suggestedPrice?: true
-    isAutoPricing?: true
+    finalPriceTTC?: true
+    suggestedPriceTTC?: true
+    pricingMode?: true
     vatRate?: true
     duration?: true
     partId?: true
     modelId?: true
     description?: true
+    lastPriceSyncAt?: true
+    lastPriceSyncReason?: true
     createdAt?: true
   }
 
@@ -10637,13 +10656,16 @@ export namespace Prisma {
     name?: true
     laborCost?: true
     extraCosts?: true
-    suggestedPrice?: true
-    isAutoPricing?: true
+    finalPriceTTC?: true
+    suggestedPriceTTC?: true
+    pricingMode?: true
     vatRate?: true
     duration?: true
     partId?: true
     modelId?: true
     description?: true
+    lastPriceSyncAt?: true
+    lastPriceSyncReason?: true
     createdAt?: true
     _all?: true
   }
@@ -10739,13 +10761,16 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts: number
-    suggestedPrice: number
-    isAutoPricing: boolean
+    finalPriceTTC: number
+    suggestedPriceTTC: number
+    pricingMode: string
     vatRate: number
     duration: number
     partId: string | null
     modelId: string | null
     description: string | null
+    lastPriceSyncAt: Date | null
+    lastPriceSyncReason: string | null
     createdAt: Date
     _count: ServiceCountAggregateOutputType | null
     _avg: ServiceAvgAggregateOutputType | null
@@ -10773,13 +10798,16 @@ export namespace Prisma {
     name?: boolean
     laborCost?: boolean
     extraCosts?: boolean
-    suggestedPrice?: boolean
-    isAutoPricing?: boolean
+    finalPriceTTC?: boolean
+    suggestedPriceTTC?: boolean
+    pricingMode?: boolean
     vatRate?: boolean
     duration?: boolean
     partId?: boolean
     modelId?: boolean
     description?: boolean
+    lastPriceSyncAt?: boolean
+    lastPriceSyncReason?: boolean
     createdAt?: boolean
     repairs?: boolean | Service$repairsArgs<ExtArgs>
     part?: boolean | Service$partArgs<ExtArgs>
@@ -10792,13 +10820,16 @@ export namespace Prisma {
     name?: boolean
     laborCost?: boolean
     extraCosts?: boolean
-    suggestedPrice?: boolean
-    isAutoPricing?: boolean
+    finalPriceTTC?: boolean
+    suggestedPriceTTC?: boolean
+    pricingMode?: boolean
     vatRate?: boolean
     duration?: boolean
     partId?: boolean
     modelId?: boolean
     description?: boolean
+    lastPriceSyncAt?: boolean
+    lastPriceSyncReason?: boolean
     createdAt?: boolean
   }
 
@@ -10822,13 +10853,16 @@ export namespace Prisma {
       name: string
       laborCost: number
       extraCosts: number
-      suggestedPrice: number
-      isAutoPricing: boolean
+      finalPriceTTC: number
+      suggestedPriceTTC: number
+      pricingMode: string
       vatRate: number
       duration: number
       partId: string | null
       modelId: string | null
       description: string | null
+      lastPriceSyncAt: Date | null
+      lastPriceSyncReason: string | null
       createdAt: Date
     }, ExtArgs["result"]["service"]>
     composites: {}
@@ -11217,13 +11251,16 @@ export namespace Prisma {
     readonly name: FieldRef<"Service", 'String'>
     readonly laborCost: FieldRef<"Service", 'Float'>
     readonly extraCosts: FieldRef<"Service", 'Float'>
-    readonly suggestedPrice: FieldRef<"Service", 'Float'>
-    readonly isAutoPricing: FieldRef<"Service", 'Boolean'>
+    readonly finalPriceTTC: FieldRef<"Service", 'Float'>
+    readonly suggestedPriceTTC: FieldRef<"Service", 'Float'>
+    readonly pricingMode: FieldRef<"Service", 'String'>
     readonly vatRate: FieldRef<"Service", 'Float'>
     readonly duration: FieldRef<"Service", 'Int'>
     readonly partId: FieldRef<"Service", 'String'>
     readonly modelId: FieldRef<"Service", 'String'>
     readonly description: FieldRef<"Service", 'String'>
+    readonly lastPriceSyncAt: FieldRef<"Service", 'DateTime'>
+    readonly lastPriceSyncReason: FieldRef<"Service", 'String'>
     readonly createdAt: FieldRef<"Service", 'DateTime'>
   }
     
@@ -16659,13 +16696,16 @@ export namespace Prisma {
     name: 'name',
     laborCost: 'laborCost',
     extraCosts: 'extraCosts',
-    suggestedPrice: 'suggestedPrice',
-    isAutoPricing: 'isAutoPricing',
+    finalPriceTTC: 'finalPriceTTC',
+    suggestedPriceTTC: 'suggestedPriceTTC',
+    pricingMode: 'pricingMode',
     vatRate: 'vatRate',
     duration: 'duration',
     partId: 'partId',
     modelId: 'modelId',
     description: 'description',
+    lastPriceSyncAt: 'lastPriceSyncAt',
+    lastPriceSyncReason: 'lastPriceSyncReason',
     createdAt: 'createdAt'
   };
 
@@ -17543,13 +17583,16 @@ export namespace Prisma {
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
     extraCosts?: FloatFilter<"Service"> | number
-    suggestedPrice?: FloatFilter<"Service"> | number
-    isAutoPricing?: BoolFilter<"Service"> | boolean
+    finalPriceTTC?: FloatFilter<"Service"> | number
+    suggestedPriceTTC?: FloatFilter<"Service"> | number
+    pricingMode?: StringFilter<"Service"> | string
     vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
     modelId?: StringNullableFilter<"Service"> | string | null
     description?: StringNullableFilter<"Service"> | string | null
+    lastPriceSyncAt?: DateTimeNullableFilter<"Service"> | Date | string | null
+    lastPriceSyncReason?: StringNullableFilter<"Service"> | string | null
     createdAt?: DateTimeFilter<"Service"> | Date | string
     repairs?: RepairServiceListRelationFilter
     part?: XOR<PartNullableRelationFilter, PartWhereInput> | null
@@ -17561,13 +17604,16 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
-    isAutoPricing?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
+    pricingMode?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrderInput | SortOrder
     modelId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    lastPriceSyncAt?: SortOrderInput | SortOrder
+    lastPriceSyncReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     repairs?: RepairServiceOrderByRelationAggregateInput
     part?: PartOrderByWithRelationInput
@@ -17582,13 +17628,16 @@ export namespace Prisma {
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
     extraCosts?: FloatFilter<"Service"> | number
-    suggestedPrice?: FloatFilter<"Service"> | number
-    isAutoPricing?: BoolFilter<"Service"> | boolean
+    finalPriceTTC?: FloatFilter<"Service"> | number
+    suggestedPriceTTC?: FloatFilter<"Service"> | number
+    pricingMode?: StringFilter<"Service"> | string
     vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
     modelId?: StringNullableFilter<"Service"> | string | null
     description?: StringNullableFilter<"Service"> | string | null
+    lastPriceSyncAt?: DateTimeNullableFilter<"Service"> | Date | string | null
+    lastPriceSyncReason?: StringNullableFilter<"Service"> | string | null
     createdAt?: DateTimeFilter<"Service"> | Date | string
     repairs?: RepairServiceListRelationFilter
     part?: XOR<PartNullableRelationFilter, PartWhereInput> | null
@@ -17600,13 +17649,16 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
-    isAutoPricing?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
+    pricingMode?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrderInput | SortOrder
     modelId?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    lastPriceSyncAt?: SortOrderInput | SortOrder
+    lastPriceSyncReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ServiceCountOrderByAggregateInput
     _avg?: ServiceAvgOrderByAggregateInput
@@ -17623,13 +17675,16 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Service"> | string
     laborCost?: FloatWithAggregatesFilter<"Service"> | number
     extraCosts?: FloatWithAggregatesFilter<"Service"> | number
-    suggestedPrice?: FloatWithAggregatesFilter<"Service"> | number
-    isAutoPricing?: BoolWithAggregatesFilter<"Service"> | boolean
+    finalPriceTTC?: FloatWithAggregatesFilter<"Service"> | number
+    suggestedPriceTTC?: FloatWithAggregatesFilter<"Service"> | number
+    pricingMode?: StringWithAggregatesFilter<"Service"> | string
     vatRate?: FloatWithAggregatesFilter<"Service"> | number
     duration?: IntWithAggregatesFilter<"Service"> | number
     partId?: StringNullableWithAggregatesFilter<"Service"> | string | null
     modelId?: StringNullableWithAggregatesFilter<"Service"> | string | null
     description?: StringNullableWithAggregatesFilter<"Service"> | string | null
+    lastPriceSyncAt?: DateTimeNullableWithAggregatesFilter<"Service"> | Date | string | null
+    lastPriceSyncReason?: StringNullableWithAggregatesFilter<"Service"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Service"> | Date | string
   }
 
@@ -18770,11 +18825,14 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     repairs?: RepairServiceCreateNestedManyWithoutServiceInput
     part?: PartCreateNestedOneWithoutServicesInput
@@ -18786,13 +18844,16 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     partId?: string | null
     modelId?: string | null
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     repairs?: RepairServiceUncheckedCreateNestedManyWithoutServiceInput
   }
@@ -18802,11 +18863,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairServiceUpdateManyWithoutServiceNestedInput
     part?: PartUpdateOneWithoutServicesNestedInput
@@ -18818,13 +18882,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairServiceUncheckedUpdateManyWithoutServiceNestedInput
   }
@@ -18834,11 +18901,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18847,13 +18917,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19991,20 +20064,24 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
-    isAutoPricing?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
+    pricingMode?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
     modelId?: SortOrder
     description?: SortOrder
+    lastPriceSyncAt?: SortOrder
+    lastPriceSyncReason?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ServiceAvgOrderByAggregateInput = {
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
   }
@@ -20014,13 +20091,16 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
-    isAutoPricing?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
+    pricingMode?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
     modelId?: SortOrder
     description?: SortOrder
+    lastPriceSyncAt?: SortOrder
+    lastPriceSyncReason?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -20029,20 +20109,24 @@ export namespace Prisma {
     name?: SortOrder
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
-    isAutoPricing?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
+    pricingMode?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
     partId?: SortOrder
     modelId?: SortOrder
     description?: SortOrder
+    lastPriceSyncAt?: SortOrder
+    lastPriceSyncReason?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ServiceSumOrderByAggregateInput = {
     laborCost?: SortOrder
     extraCosts?: SortOrder
-    suggestedPrice?: SortOrder
+    finalPriceTTC?: SortOrder
+    suggestedPriceTTC?: SortOrder
     vatRate?: SortOrder
     duration?: SortOrder
   }
@@ -22879,11 +22963,14 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     repairs?: RepairServiceCreateNestedManyWithoutServiceInput
     part?: PartCreateNestedOneWithoutServicesInput
@@ -22894,12 +22981,15 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     partId?: string | null
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     repairs?: RepairServiceUncheckedCreateNestedManyWithoutServiceInput
   }
@@ -23023,13 +23113,16 @@ export namespace Prisma {
     name?: StringFilter<"Service"> | string
     laborCost?: FloatFilter<"Service"> | number
     extraCosts?: FloatFilter<"Service"> | number
-    suggestedPrice?: FloatFilter<"Service"> | number
-    isAutoPricing?: BoolFilter<"Service"> | boolean
+    finalPriceTTC?: FloatFilter<"Service"> | number
+    suggestedPriceTTC?: FloatFilter<"Service"> | number
+    pricingMode?: StringFilter<"Service"> | string
     vatRate?: FloatFilter<"Service"> | number
     duration?: IntFilter<"Service"> | number
     partId?: StringNullableFilter<"Service"> | string | null
     modelId?: StringNullableFilter<"Service"> | string | null
     description?: StringNullableFilter<"Service"> | string | null
+    lastPriceSyncAt?: DateTimeNullableFilter<"Service"> | Date | string | null
+    lastPriceSyncReason?: StringNullableFilter<"Service"> | string | null
     createdAt?: DateTimeFilter<"Service"> | Date | string
   }
 
@@ -23063,11 +23156,14 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     repairs?: RepairServiceCreateNestedManyWithoutServiceInput
     model?: DeviceModelCreateNestedOneWithoutServicesInput
@@ -23078,12 +23174,15 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     modelId?: string | null
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     repairs?: RepairServiceUncheckedCreateNestedManyWithoutServiceInput
   }
@@ -23818,11 +23917,14 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
     part?: PartCreateNestedOneWithoutServicesInput
     model?: DeviceModelCreateNestedOneWithoutServicesInput
@@ -23833,13 +23935,16 @@ export namespace Prisma {
     name: string
     laborCost: number
     extraCosts?: number
-    suggestedPrice?: number
-    isAutoPricing?: boolean
+    finalPriceTTC?: number
+    suggestedPriceTTC?: number
+    pricingMode?: string
     vatRate?: number
     duration?: number
     partId?: string | null
     modelId?: string | null
     description?: string | null
+    lastPriceSyncAt?: Date | string | null
+    lastPriceSyncReason?: string | null
     createdAt?: Date | string
   }
 
@@ -23903,11 +24008,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     part?: PartUpdateOneWithoutServicesNestedInput
     model?: DeviceModelUpdateOneWithoutServicesNestedInput
@@ -23918,13 +24026,16 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24555,11 +24666,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairServiceUpdateManyWithoutServiceNestedInput
     part?: PartUpdateOneWithoutServicesNestedInput
@@ -24570,12 +24684,15 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairServiceUncheckedUpdateManyWithoutServiceNestedInput
   }
@@ -24585,12 +24702,15 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     partId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24599,11 +24719,14 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairServiceUpdateManyWithoutServiceNestedInput
     model?: DeviceModelUpdateOneWithoutServicesNestedInput
@@ -24614,12 +24737,15 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     repairs?: RepairServiceUncheckedUpdateManyWithoutServiceNestedInput
   }
@@ -24629,12 +24755,15 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     laborCost?: FloatFieldUpdateOperationsInput | number
     extraCosts?: FloatFieldUpdateOperationsInput | number
-    suggestedPrice?: FloatFieldUpdateOperationsInput | number
-    isAutoPricing?: BoolFieldUpdateOperationsInput | boolean
+    finalPriceTTC?: FloatFieldUpdateOperationsInput | number
+    suggestedPriceTTC?: FloatFieldUpdateOperationsInput | number
+    pricingMode?: StringFieldUpdateOperationsInput | string
     vatRate?: FloatFieldUpdateOperationsInput | number
     duration?: IntFieldUpdateOperationsInput | number
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPriceSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastPriceSyncReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
