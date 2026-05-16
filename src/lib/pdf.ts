@@ -121,7 +121,7 @@ export function generateIntakePDF(data: IntakeData) {
   y += 5
   doc.setFont('helvetica', 'bold')
   doc.text('TOTAL ESTIMÉ (TTC)', margin, y)
-  doc.text(`${total.toFixed(2)} €`, 190, y, { align: 'right' })
+  doc.text(`${(total || 0).toFixed(2)} €`, 190, y, { align: 'right' })
   y += 15
 
   // CGV

@@ -5,24 +5,22 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import {
   ChevronRight,
   Download,
+  FileCheck,
   FileText,
+
   Printer,
   Search,
   Wrench,
   Plus,
   Trash2,
-  Save,
-  RotateCcw,
-  ShoppingBag,
-  FileCheck,
-  AlertCircle,
-  Package,
-  ArrowRight,
-  History,
-  CheckCircle2,
-  Clock,
-  X,
+  TrendingUp,
   User,
+  X,
+  ArrowRight,
+  Save,
+  CheckCircle2,
+  AlertCircle,
+  ShoppingBag,
   Loader2,
   StickyNote,
   Lock as LockIcon,
@@ -516,8 +514,8 @@ function BillingContent() {
     
     const taxDetails = Object.entries(vatGroups).map(([rate, data]) => ({
       rate: Number(rate),
-      baseHT: Number(data.baseHT.toFixed(2)),
-      vatAmount: Number(data.vatAmount.toFixed(2))
+      baseHT: Number((data.baseHT || 0).toFixed(2)),
+      vatAmount: Number((data.vatAmount || 0).toFixed(2))
     }))
 
     return { totalTTC, totalHT, tva, taxDetails }
@@ -1052,107 +1050,78 @@ function BillingContent() {
                                  <th className="py-6 px-4 text-right w-12 print:hidden"></th>
                               </tr>
                            </thead>
-                          <tbody className="divide-y divide-slate-50">
-                              {draftLines.map((line, idx) => (
-                                <tr key={line.id} className="group hover:bg-slate-50/50 transition-colors">
-                                   <td className="py-6 px-4">
-                                      <input 
-                                        className="w-full font-black text-slate-900 bg-transparent outline-none focus:text-blue-600 transition-colors" 
-                                        value={line.name || ""} disabled={isLocked} 
-                                        onChange={e => updateLine(idx, 'name', e.target.value)} 
-                                      />
-                                   </td>
-                                   <td className="py-6 px-4 text-center">
-                                      <input 
-                                        className="w-full text-center font-bold bg-transparent outline-none" 
-                                        type="number" 
-                                        value={line.quantity || 0} 
-                                        onChange={e => updateLine(idx, 'quantity', parseInt(e.target.value) || 0)} 
-                                      />
-                                   </td>
-                                   <td className="py-6 px-4 text-right">
-                                      <input 
-                                        className="w-full text-right font-bold text-slate-600 bg-transparent outline-none disabled:text-slate-400" 
-                                        type="number" 
-                                        value={(line.price / (1 + (line.vatRate || 20) / 100)).toFixed(2)} disabled={isLocked} 
-                                        onChange={e => updateLine(idx, 'price', parseFloat(e.target.value) * (1 + (line.vatRate || 20) / 100) || 0)} 
-                                      />
-                                   </td>
-                                   <td className="py-6 px-4 text-center">
-                                      <select 
-                                         value={line.vatRate || 20} disabled={isLocked}
+                           <tbody className="divide-y divide-slate-50">
+                               {draftLines.map((line, idx) => (
+                                 <tr key={line.id} className="group hover:bg-slate-50/50 transition-colors">
+                                    <td className="py-6 px-4">
+                                       <input 
+                                         className="w-full font-black text-slate-900 bg-transparent outline-none focus:text-blue-600 transition-colors" 
+                                         value={line.name || ""} disabled={isLocked} 
+                                         onChange={e => updateLine(idx, 'name', e.target.value)} 
+                                       />
+                                       {line.marginPercent !== undefined && (
+                                         <div className="mt-1 flex items-center gap-2">
+                                           <span className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md ring-1 ring-inset ${
+                                             line.marginPercent >= 30 ? 'bg-emerald-50 text-emerald-600 ring-emerald-100' :
+                                             line.marginPercent >= 20 ? 'bg-amber-50 text-amber-600 ring-amber-100' :
+                                             'bg-rose-50 text-rose-600 ring-rose-100'
+                                           }`}>
+                                             Marge: {Math.round(line.marginPercent)}%
+                                           </span>
+                                         </div>
+                                       )}
+                                    </td>
+                                    <td className="py-6 px-4 text-center">
+                                       <input 
+                                         className="w-full text-center font-bold bg-transparent outline-none" 
+                                         type="number" 
+                                         value={line.quantity || 0} 
+                                         onChange={e => updateLine(idx, 'quantity', parseInt(e.target.value) || 0)} 
+                                         disabled={isLocked}
+                                       />
+                                    </td>
+                                    <td className="py-6 px-4 text-right">
+                                       <input 
+                                         className="w-full text-right font-bold text-slate-600 bg-transparent outline-none disabled:text-slate-400" 
+                                         type="number" 
+                                         value={((line.price || 0) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} 
+                                         disabled={isLocked} 
+                                         onChange={(e) => updateLine(idx, 'price', parseFloat(e.target.value) * (1 + (line.vatRate || 20) / 100))}
+                                       />
+                                    </td>
+                                    <td className="py-6 px-4 text-center">
+                                       <select 
+                                         className="bg-transparent font-bold text-slate-500 outline-none"
+                                         value={line.vatRate}
+                                         disabled={isLocked}
                                          onChange={e => updateLine(idx, 'vatRate', parseFloat(e.target.value))}
-                                         className="bg-transparent text-[10px] font-black text-slate-600 outline-none appearance-none cursor-pointer hover:text-blue-600 disabled:text-slate-400 disabled:cursor-not-allowed"
-                                      >
+                                       >
                                          <option value={20}>20%</option>
                                          <option value={10}>10%</option>
                                          <option value={5.5}>5.5%</option>
                                          <option value={0}>0%</option>
-                                      </select>
-                                   </td>
-                                    <td className="py-6 px-4 text-right font-black text-slate-950 relative group/margin">
-                                       {((line.price * line.quantity) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} €
-                                       
-                                       {/* Badge de marge interne (discret, caché à l'impression) */}
-                                       {line.marginStatus && (
-                                         <div className="absolute -top-1 -right-2 print:hidden group-hover/margin:scale-110 transition-transform cursor-help z-10">
-                                           <div className={`flex h-4 items-center gap-1 rounded-full px-1.5 text-[8px] font-black uppercase ring-1 ring-inset ${
-                                             line.marginStatus === 'very_profitable' ? 'bg-emerald-50 text-emerald-600 ring-emerald-200' :
-                                             line.marginStatus === 'profitable' ? 'bg-emerald-50 text-emerald-600 ring-emerald-200' :
-                                             line.marginStatus === 'watch' ? 'bg-amber-50 text-amber-600 ring-amber-200' :
-                                             'bg-rose-50 text-rose-600 ring-rose-200'
-                                           }`}>
-                                             {Math.round(line.marginPercent || 0)}%
-                                           </div>
-                                           
-                                           {/* Popover de détails au survol */}
-                                           <div className="absolute bottom-full right-0 mb-2 w-48 hidden group-hover/margin:block z-50 animate-in fade-in zoom-in-95 duration-200">
-                                             <div className="rounded-2xl bg-slate-900 p-4 text-white shadow-2xl ring-1 ring-white/10 text-left">
-                                               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-white/10 pb-2">Analyse Interne</p>
-                                               <div className="space-y-2">
-                                                 <div className="flex justify-between text-[10px] font-bold">
-                                                   <span className="text-slate-400 font-medium">Coût Pièce HT</span>
-                                                   <span>{formatCurrency(line.costHT || 0)}</span>
-                                                 </div>
-                                                 <div className="flex justify-between text-[10px] font-bold">
-                                                   <span className="text-slate-400 font-medium">Main d'œuvre HT</span>
-                                                   <span>{formatCurrency(line.laborHT || 0)}</span>
-                                                 </div>
-                                                 <div className="flex justify-between text-[10px] font-bold">
-                                                   <span className="text-slate-400 font-medium">Frais Annexes HT</span>
-                                                   <span>{formatCurrency(line.extraHT || 0)}</span>
-                                                 </div>
-                                                 <div className="flex justify-between text-[10px] font-black pt-2 border-t border-white/10">
-                                                   <span className="text-blue-400 uppercase tracking-tighter">Marge Nette HT</span>
-                                                   <span className="text-emerald-400">{formatCurrency(line.marginHT || 0)}</span>
-                                                 </div>
-                                               </div>
-                                             </div>
-                                           </div>
-                                         </div>
+                                       </select>
+                                    </td>
+                                    <td className="py-6 px-4 text-right">
+                                       <p className="text-sm font-black text-slate-900">
+                                         {(((line.price || 0) * (line.quantity || 1)) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} €
+                                       </p>
+                                    </td>
+                                    <td className="py-6 px-4 text-right print:hidden">
+                                       {!isLocked && (
+                                         <button 
+                                           onClick={() => removeLine(idx)}
+                                           className="p-2 text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
+                                         >
+                                           <Trash2 className="w-4 h-4" />
+                                         </button>
                                        )}
                                     </td>
-
-                                   <td className="py-6 px-4 text-right print:hidden">
-                                      <button 
-                                        onClick={() => removeLine(idx)} disabled={isLocked}
-                                        className="text-slate-200 hover:text-red-500 transition-colors"
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </button>
-                                   </td>
-                                </tr>
-                              ))}
-                           </tbody>
-                       </table>
-                       <button 
-                          onClick={addLine} disabled={isLocked} 
-                          className="mt-6 flex items-center gap-3 px-6 py-3 rounded-xl border-2 border-dashed border-slate-100 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 hover:border-blue-200 transition-all print:hidden disabled:opacity-0"
-                        >
-                          <Plus className="w-4 h-4" /> 
-                          Ajouter une ligne personnalisée
-                        </button>
-                    </div>
+                                 </tr>
+                               ))}
+                            </tbody>
+                         </table>
+                      </div>
 
                     <div className="mt-24 pt-12 border-t border-slate-100 flex justify-between items-start">
                         <div className="max-w-md">
@@ -1243,8 +1212,62 @@ function BillingContent() {
                   </div>
                </div>
 
-               <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-sm backdrop-blur-md">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Configuration</p>
+                <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-sm backdrop-blur-md">
+                   <div className="flex items-center justify-between mb-4">
+                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Rentabilité du document</p>
+                     <TrendingUp className="w-4 h-4 text-blue-500" />
+                   </div>
+                   
+                   {(() => {
+                     const totalMarginHT = draftLines.reduce((acc, l) => acc + (l.marginHT || 0) * l.quantity, 0)
+                     const totalHT = totals.totalHT
+                     const avgMarginPercent = totalHT > 0 ? (totalMarginHT / totalHT) * 100 : 0
+                     
+                     return (
+                       <div className="space-y-4">
+                         <div className="flex items-end justify-between">
+                           <div>
+                             <p className="text-2xl font-black text-slate-950 tracking-tighter">{Math.round(avgMarginPercent)}%</p>
+                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Marge Moyenne</p>
+                           </div>
+                           <div className="text-right">
+                             <p className={`text-sm font-black tracking-tight ${totalMarginHT > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                               +{formatCurrency(totalMarginHT)}
+                             </p>
+                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Bénéfice Net HT</p>
+                           </div>
+                         </div>
+
+                         <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                           <div 
+                             className={`h-full transition-all duration-500 ${
+                               avgMarginPercent >= 35 ? 'bg-emerald-500' : 
+                               avgMarginPercent >= 20 ? 'bg-amber-500' : 'bg-rose-500'
+                             }`}
+                             style={{ width: `${Math.min(100, Math.max(0, avgMarginPercent))}%` }}
+                           />
+                         </div>
+
+                         <div className="grid grid-cols-2 gap-2 pt-2">
+                           <div className="bg-white/50 rounded-xl p-2 border border-slate-100/50">
+                             <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Coûts Totaux</p>
+                             <p className="text-xs font-bold text-slate-700">
+                               {formatCurrency(draftLines.reduce((acc, l) => acc + ((l.costHT || 0) + (l.laborHT || 0) + (l.extraHT || 0)) * l.quantity, 0))}
+                             </p>
+                           </div>
+                           <div className="bg-white/50 rounded-xl p-2 border border-slate-100/50">
+                             <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Seuil Rentab.</p>
+                             <p className="text-xs font-bold text-slate-700">OK</p>
+                           </div>
+                         </div>
+                       </div>
+                     )
+                   })()}
+                </div>
+
+                <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-sm backdrop-blur-md">
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Configuration</p>
+
                   
                   <div className="space-y-4">
                      <div>
