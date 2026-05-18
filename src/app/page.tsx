@@ -26,6 +26,7 @@ import {
   StickyNote,
   Smartphone,
   Tablet,
+  TrendingUp,
   Truck,
   User,
   UserPlus,
@@ -44,10 +45,12 @@ import {
   getRepairStatusLabel,
   getRepairStatusStyle,
   getRepairTotal,
+  getRepairMargin,
   getTicketReference,
   PartStatus,
   partStatuses,
 } from '@/lib/repair'
+import { analyzeMargin } from '@/lib/pricing-engine'
 import { SideDrawer } from '@/components/side-drawer'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { AddressAutocomplete } from '@/components/address-autocomplete'
@@ -571,13 +574,15 @@ export default function Dashboard() {
   }, [clients, clientSearch])
 
   const boardData = useMemo(() => {
-    return kanbanColumns.map((column) => ({
-      ...column,
-      items: filteredRepairs.filter((repair) => repair.status === column.status),
-      totalValue: filteredRepairs
-        .filter((repair) => repair.status === column.status)
-        .reduce((sum, repair) => sum + getRepairTotal(repair), 0),
-    }))
+    return kanbanColumns.map((column) => {
+      const columnRepairs = filteredRepairs.filter((repair) => repair.status === column.status)
+      return {
+        ...column,
+        items: columnRepairs,
+        totalValue: columnRepairs.reduce((sum, repair) => sum + getRepairTotal(repair), 0),
+        totalMargin: columnRepairs.reduce((sum, repair) => sum + getRepairMargin(repair).marginHT, 0),
+      }
+    })
   }, [filteredRepairs])
 
   const pendingCount = repairs.filter((repair) => repair.status === 'PENDING').length
@@ -588,9 +593,11 @@ export default function Dashboard() {
 
 
   const lowStockParts = parts.filter((part) => part.stock <= 2)
-  const totalOpenRevenue = repairs
-    .filter((repair) => ['PENDING', 'DIAGNOSIS', 'IN_PROGRESS', 'READY'].includes(repair.status))
-    .reduce((total, repair) => total + getRepairTotal(repair), 0)
+  const activeRepairs = repairs.filter((repair) => ['PENDING', 'DIAGNOSIS', 'IN_PROGRESS', 'READY'].includes(repair.status))
+  
+  const totalOpenRevenue = activeRepairs.reduce((total, repair) => total + getRepairTotal(repair), 0)
+  const totalOpenMargin = activeRepairs.reduce((total, repair) => total + getRepairMargin(repair).marginHT, 0)
+
 
   async function createClient() {
     try {
@@ -947,9 +954,9 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
             />
             <StatCard
               icon={<CheckCircle2 className="h-5 w-5" />}
-              title="Montant ouvert"
+              title="Valeur en cours"
               value={formatCurrency(totalOpenRevenue)}
-              subtitle="Total cumul • des dossiers actifs"
+              subtitle={`${formatCurrency(totalOpenMargin)} de marge estimée`}
               compactValue
             />
           </div>
@@ -1070,13 +1077,23 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-white/60 bg-white px-3 py-1.5 text-right shadow-sm">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                              Valeur
+                          <div className="flex flex-col gap-2">
+                            <div className="rounded-2xl border border-white/60 bg-white px-3 py-1.5 text-right shadow-sm">
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                Valeur
+                                </p>
+                              <p className="text-sm font-black text-slate-950">
+                                {formatCurrency(column.totalValue)}
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-emerald-100/50 bg-emerald-50/30 px-3 py-1 text-right">
+                              <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-600/70">
+                                Marge estimée
                               </p>
-                            <p className="text-sm font-black text-slate-950">
-                              {formatCurrency(column.totalValue)}
+                              <p className="text-xs font-black text-emerald-700">
+                                {formatCurrency(column.totalMargin)}
                               </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1096,6 +1113,7 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
 
                         {column.items.map((repair) => {
                           const total = getRepairTotal(repair)
+                          const margin = getRepairMargin(repair)
                           const isSelected = selectedRepairId === repair.id
                           const summary = getRepairSummary(repair)
 
@@ -1117,9 +1135,25 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                             >
                               <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0">
-                                  <p className="text-sm font-black tracking-tight text-emerald-500">
-                                    {getTicketReference(repair)}
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-sm font-black tracking-tight text-emerald-500">
+                                      {getTicketReference(repair)}
                                     </p>
+                                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-100">
+                                      <TrendingUp className={`h-2.5 w-2.5 ${
+                                        margin.status === 'very_profitable' ? 'text-emerald-500' :
+                                        margin.status === 'profitable' ? 'text-emerald-400' :
+                                        margin.status === 'watch' ? 'text-amber-500' : 'text-rose-500'
+                                      }`} />
+                                      <span className={`text-[9px] font-black uppercase tracking-tighter ${
+                                        margin.status === 'very_profitable' ? 'text-emerald-600' :
+                                        margin.status === 'profitable' ? 'text-emerald-500' :
+                                        margin.status === 'watch' ? 'text-amber-600' : 'text-rose-600'
+                                      }`}>
+                                        {Math.round(margin.marginPercent)}%
+                                      </span>
+                                    </div>
+                                  </div>
                                   <p className="mt-2 line-clamp-1 text-[1.05rem] font-semibold text-slate-950">
                                     {repair.client.name}
                                     </p>
@@ -1833,6 +1867,17 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                   .filter((s) => !deviceForm.modelId || s.modelId === deviceForm.modelId)
                   .map((s) => {
                     const isSelected = quickFlowForm.serviceIds.includes(s.id)
+                    const marginResult = analyzeMargin(
+                      s.finalPriceTTC || (s.laborCost + (s.part?.costPrice || 0)),
+                      {
+                        costHT: s.part?.costPrice || 0,
+                        laborHT: s.laborCost || 0,
+                        extraHT: s.extraCosts || 0,
+                        vatRate: s.vatRate || 20,
+                        name: s.name
+                      }
+                    )
+
                     return (
                       <button
                         key={s.id}
@@ -1849,9 +1894,17 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
                           </div>
                           <div>
                             <p className="font-bold text-slate-950">{s.name}</p>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                              Forfait main d'œuvre incluse
-                            </p>
+                            <div className={`mt-1 flex items-center gap-1.5 px-2 py-0.5 rounded-md w-fit ${
+                              marginResult.status === 'very_profitable' ? 'bg-emerald-50 text-emerald-600' :
+                              marginResult.status === 'profitable' ? 'bg-emerald-50 text-emerald-500' :
+                              marginResult.status === 'watch' ? 'bg-amber-50 text-amber-600' :
+                              'bg-rose-50 text-rose-600'
+                            }`}>
+                              <TrendingUp className="h-3 w-3" />
+                              <span className="text-[10px] font-black uppercase tracking-widest">
+                                Marge: {Math.round(marginResult.marginPercent)}%
+                              </span>
+                            </div>
                           </div>
                         </div>
                         <p className="font-black text-slate-950">{formatCurrency(s.finalPriceTTC ?? (s.laborCost + (s.part?.costPrice ?? 0)))}</p>

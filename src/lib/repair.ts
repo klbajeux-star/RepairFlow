@@ -1,3 +1,5 @@
+import { analyzeMargin, PricingParams } from './pricing-engine'
+
 export const repairStatuses = [
   'PENDING',
   'DIAGNOSIS',
@@ -95,6 +97,45 @@ export function getRepairTotal(
     return total + service.priceAtTime * (service.quantity ?? 1)
   }, 0)
 }
+
+export function getRepairMargin(repair: any) {
+  const lines = Array.isArray(repair) ? repair : (repair.services || [])
+  
+  let totalCostHT = 0
+  let totalSaleHT = 0
+  
+  lines.forEach((line: any) => {
+    const s = line.service
+    if (!s) return
+
+    const costHT = s.part?.costPrice || 0
+    const laborHT = s.laborCost || 0
+    const extraHT = s.extraCosts || 0
+    const vatRate = line.vatRate || s.vatRate || 20
+    const priceTTC = (line.priceAtTime || 0) * (line.quantity || 1)
+    
+    totalSaleHT += priceTTC / (1 + vatRate / 100)
+    totalCostHT += (costHT + laborHT + extraHT) * (line.quantity || 1)
+  })
+
+  const marginHT = totalSaleHT - totalCostHT
+  const marginPercent = totalSaleHT > 0 ? (marginHT / totalSaleHT) * 100 : 0
+  
+  let status: 'very_profitable' | 'profitable' | 'watch' | 'low' = 'low'
+  if (marginPercent >= 45) status = 'very_profitable'
+  else if (marginPercent >= 30) status = 'profitable'
+  else if (marginPercent >= 20) status = 'watch'
+  else status = 'low'
+
+  return { 
+    marginHT, 
+    marginPercent,
+    status,
+    totalCostHT,
+    totalSaleHT
+  }
+}
+
 
 export function getRepairStatusLabel(status: string) {
   return repairStatusLabels[status as RepairStatus] ?? status
