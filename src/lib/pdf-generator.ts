@@ -223,9 +223,9 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
       
       doc.setFont('helvetica', 'normal')
       doc.text(line.quantity.toString(), 115, y, { align: 'center' })
-      doc.text(`${puHT.toFixed(2)} €`, 140, y, { align: 'right' })
-      doc.text(`${rate}%`, 160, y, { align: 'center' })
-      doc.text(`${totalHTLine.toFixed(2)} €`, 190, y, { align: 'right' })
+      doc.text(`${(puHT || 0).toFixed(2)} €`, 140, y, { align: 'right' })
+      doc.text(`${line.quantity}`, 165, y, { align: 'center' })
+      doc.text(`${(totalHTLine || 0).toFixed(2)} €`, 190, y, { align: 'right' })
       
       y += 10
       doc.line(margin, y - 6, 210 - margin, y - 6)
@@ -269,7 +269,7 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     taxDetails.forEach(tax => {
       totalY += 8
       doc.setTextColor(148, 163, 184)
-      doc.text(`TVA (${tax.rate || 20}%) SUR ${tax.baseHT.toFixed(2)} €`, totalBoxX + 8, totalY)
+      doc.text(`TVA (${tax.rate || 20}%) SUR ${(tax.baseHT || 0).toFixed(2)} €`, totalBoxX + 8, totalY)
       doc.setTextColor(15, 23, 42)
       doc.text(`${(tax.vatAmount || 0).toFixed(2)} €`, 210 - margin - 8, totalY, { align: 'right' })
     })
