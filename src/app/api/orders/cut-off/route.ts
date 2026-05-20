@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { handleApiError } from '@/lib/api-utils'
+import { calculateMissingParts } from '@/lib/inventory'
 
 export async function GET() {
   try {
-    const repairsWithToOrder = await prisma.repair.findMany({
+    const repairs = await prisma.repair.findMany({
       where: {
-        services: {
-          some: { partStatus: 'TO_ORDER' }
-        },
-        status: { notIn: ['CANCELLED', 'ARCHIVED'] }
+        status: { in: ['PENDING', 'DIAGNOSIS', 'IN_PROGRESS'] }
       },
       include: {
         client: true,
@@ -23,34 +21,24 @@ export async function GET() {
       }
     })
 
-    const orderItems: Record<string, any> = {}
+    const missingParts = calculateMissingParts(repairs)
 
-    repairsWithToOrder.forEach(repair => {
-      repair.services.forEach(rs => {
-        const part = rs.service.part
-        if (part && rs.partStatus === 'TO_ORDER') {
-          if (!orderItems[part.id]) {
-            orderItems[part.id] = {
-              id: part.id,
-              name: part.name,
-              sku: part.sku,
-              supplier: part.supplier || 'Générique',
-              supplierRef: part.supplierRef,
-              quantity: 0,
-              tickets: []
-            }
-          }
-          orderItems[part.id].quantity += 1
-          orderItems[part.id].tickets.push({
-            id: repair.id,
-            client: repair.client.name,
-            createdAt: repair.createdAt
-          })
-        }
-      })
-    })
+    // Adapter le format pour le OrderDrawer existant
+    const orderItems = missingParts.map(mp => ({
+      id: mp.partId,
+      name: mp.name,
+      sku: mp.sku,
+      supplier: 'Générique', // On pourra affiner avec mp.supplier si on l'ajoute à MissingPart
+      supplierRef: null,
+      quantity: mp.quantityToOrder,
+      tickets: mp.relatedRepairs.map(r => ({
+        id: r.id,
+        client: r.clientName,
+        createdAt: new Date().toISOString() // Temporaire
+      }))
+    }))
 
-    return NextResponse.json(Object.values(orderItems))
+    return NextResponse.json(orderItems)
   } catch (error) {
     return handleApiError(error, 'Impossible de générer la liste de commande.')
   }
