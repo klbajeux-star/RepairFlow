@@ -29,8 +29,9 @@ import {
   TrendingUp,
   Truck,
   User,
-  UserPlus,
   Wrench,
+  WashingMachine,
+  UserPlus,
   Cpu,
   Trash2,
   X,
@@ -52,6 +53,9 @@ import {
 } from '@/lib/repair'
 import { analyzeMargin } from '@/lib/pricing-engine'
 import { SideDrawer } from '@/components/side-drawer'
+import OrderDrawer from '@/components/OrderDrawer'
+import { OrderAlert } from '@/components/order-alert'
+import { calculateMissingParts } from '@/lib/inventory'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { AddressAutocomplete } from '@/components/address-autocomplete'
 import { PatternLock } from '@/components/pattern-lock'
@@ -450,6 +454,10 @@ export default function Dashboard() {
   useEffect(() => {
     void loadDashboard()
   }, [])
+
+  const [isOrderDrawerOpen, setIsOrderDrawerOpen] = useState(false)
+
+  const missingParts = useMemo(() => calculateMissingParts(repairs), [repairs])
 
   async function loadDashboard() {
     try {
@@ -888,6 +896,22 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
   return (
     <>
       <div className="space-y-6 pb-8">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+              Bonjour, Momuy&Tech 👋
+            </h1>
+            <p className="mt-2 text-sm font-medium text-slate-500">
+              Voici l'état de ton atelier ce {formatDate(new Date())}
+            </p>
+          </div>
+
+          <OrderAlert 
+            missingCount={missingParts.length} 
+            onAction={() => setIsOrderDrawerOpen(true)} 
+          />
+        </div>
+
         <section className="grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)]">
           <div className="rounded-[2rem] border border-white/80 bg-slate-950 px-5 py-6 text-white shadow-[0_28px_80px_-36px_rgba(15,23,42,0.5)] sm:px-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -2051,6 +2075,12 @@ SIGNATURE : ${signatureData ? 'REÇUE' : 'ABSENTE'}
         </div>
       </SideDrawer>
       <ConfirmDialog isOpen={confirmDialog.isOpen} onClose={confirmDialog.close} onConfirm={confirmDialog.options?.onConfirm || (() => {})} title={confirmDialog.options?.title || ''} message={confirmDialog.options?.message || ''} type={confirmDialog.options?.type} confirmLabel={confirmDialog.options?.confirmLabel} cancelLabel={confirmDialog.options?.cancelLabel} />
+      
+      <OrderDrawer 
+        isOpen={isOrderDrawerOpen} 
+        onClose={() => setIsOrderDrawerOpen(false)} 
+        onOrderConfirmed={loadDashboard}
+      />
     </>
   )
 }
