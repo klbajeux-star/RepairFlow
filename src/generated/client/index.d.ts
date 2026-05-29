@@ -83,6 +83,16 @@ export type ShopProduct = $Result.DefaultSelection<Prisma.$ShopProductPayload>
  * 
  */
 export type WorkshopSettings = $Result.DefaultSelection<Prisma.$WorkshopSettingsPayload>
+/**
+ * Model Order
+ * 
+ */
+export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
+/**
+ * Model OrderLine
+ * 
+ */
+export type OrderLine = $Result.DefaultSelection<Prisma.$OrderLinePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -345,6 +355,26 @@ export class PrismaClient<
     * ```
     */
   get workshopSettings(): Prisma.WorkshopSettingsDelegate<ExtArgs>;
+
+  /**
+   * `prisma.order`: Exposes CRUD operations for the **Order** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Orders
+    * const orders = await prisma.order.findMany()
+    * ```
+    */
+  get order(): Prisma.OrderDelegate<ExtArgs>;
+
+  /**
+   * `prisma.orderLine`: Exposes CRUD operations for the **OrderLine** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrderLines
+    * const orderLines = await prisma.orderLine.findMany()
+    * ```
+    */
+  get orderLine(): Prisma.OrderLineDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -828,7 +858,9 @@ export namespace Prisma {
     RepairService: 'RepairService',
     RepairLog: 'RepairLog',
     ShopProduct: 'ShopProduct',
-    WorkshopSettings: 'WorkshopSettings'
+    WorkshopSettings: 'WorkshopSettings',
+    Order: 'Order',
+    OrderLine: 'OrderLine'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -845,7 +877,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'user' | 'client' | 'quote' | 'invoice' | 'deviceType' | 'deviceBrand' | 'deviceModel' | 'part' | 'service' | 'repair' | 'repairService' | 'repairLog' | 'shopProduct' | 'workshopSettings'
+      modelProps: 'user' | 'client' | 'quote' | 'invoice' | 'deviceType' | 'deviceBrand' | 'deviceModel' | 'part' | 'service' | 'repair' | 'repairService' | 'repairLog' | 'shopProduct' | 'workshopSettings' | 'order' | 'orderLine'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
@@ -1717,6 +1749,130 @@ export namespace Prisma {
           }
         }
       }
+      Order: {
+        payload: Prisma.$OrderPayload<ExtArgs>
+        fields: Prisma.OrderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrderFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrderFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>
+          }
+          findFirst: {
+            args: Prisma.OrderFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrderFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>
+          }
+          findMany: {
+            args: Prisma.OrderFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>[]
+          }
+          create: {
+            args: Prisma.OrderCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>
+          }
+          delete: {
+            args: Prisma.OrderDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>
+          }
+          update: {
+            args: Prisma.OrderUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>
+          }
+          deleteMany: {
+            args: Prisma.OrderDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrderUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.OrderUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderPayload>
+          }
+          aggregate: {
+            args: Prisma.OrderAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateOrder>
+          }
+          groupBy: {
+            args: Prisma.OrderGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<OrderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrderCountArgs<ExtArgs>,
+            result: $Utils.Optional<OrderCountAggregateOutputType> | number
+          }
+        }
+      }
+      OrderLine: {
+        payload: Prisma.$OrderLinePayload<ExtArgs>
+        fields: Prisma.OrderLineFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OrderLineFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OrderLineFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>
+          }
+          findFirst: {
+            args: Prisma.OrderLineFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OrderLineFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>
+          }
+          findMany: {
+            args: Prisma.OrderLineFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>[]
+          }
+          create: {
+            args: Prisma.OrderLineCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>
+          }
+          delete: {
+            args: Prisma.OrderLineDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>
+          }
+          update: {
+            args: Prisma.OrderLineUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>
+          }
+          deleteMany: {
+            args: Prisma.OrderLineDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OrderLineUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.OrderLineUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$OrderLinePayload>
+          }
+          aggregate: {
+            args: Prisma.OrderLineAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateOrderLine>
+          }
+          groupBy: {
+            args: Prisma.OrderLineGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<OrderLineGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OrderLineCountArgs<ExtArgs>,
+            result: $Utils.Optional<OrderLineCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2117,10 +2273,12 @@ export namespace Prisma {
 
   export type PartCountOutputType = {
     services: number
+    orderLines: number
   }
 
   export type PartCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     services?: boolean | PartCountOutputTypeCountServicesArgs
+    orderLines?: boolean | PartCountOutputTypeCountOrderLinesArgs
   }
 
   // Custom InputTypes
@@ -2141,6 +2299,14 @@ export namespace Prisma {
    */
   export type PartCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ServiceWhereInput
+  }
+
+
+  /**
+   * PartCountOutputType without action
+   */
+  export type PartCountOutputTypeCountOrderLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderLineWhereInput
   }
 
 
@@ -2188,6 +2354,7 @@ export namespace Prisma {
     quotes: number
     logs: number
     services: number
+    orderLines: number
   }
 
   export type RepairCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2195,6 +2362,7 @@ export namespace Prisma {
     quotes?: boolean | RepairCountOutputTypeCountQuotesArgs
     logs?: boolean | RepairCountOutputTypeCountLogsArgs
     services?: boolean | RepairCountOutputTypeCountServicesArgs
+    orderLines?: boolean | RepairCountOutputTypeCountOrderLinesArgs
   }
 
   // Custom InputTypes
@@ -2239,6 +2407,48 @@ export namespace Prisma {
    */
   export type RepairCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RepairServiceWhereInput
+  }
+
+
+  /**
+   * RepairCountOutputType without action
+   */
+  export type RepairCountOutputTypeCountOrderLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderLineWhereInput
+  }
+
+
+
+  /**
+   * Count Type OrderCountOutputType
+   */
+
+  export type OrderCountOutputType = {
+    lines: number
+  }
+
+  export type OrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lines?: boolean | OrderCountOutputTypeCountLinesArgs
+  }
+
+  // Custom InputTypes
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderCountOutputType
+     */
+    select?: OrderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderLineWhereInput
   }
 
 
@@ -4400,6 +4610,7 @@ export namespace Prisma {
     updatedAt: Date | null
     taxDetails: string | null
     createdById: string | null
+    isArchived: boolean | null
   }
 
   export type QuoteMaxAggregateOutputType = {
@@ -4419,6 +4630,7 @@ export namespace Prisma {
     updatedAt: Date | null
     taxDetails: string | null
     createdById: string | null
+    isArchived: boolean | null
   }
 
   export type QuoteCountAggregateOutputType = {
@@ -4438,6 +4650,7 @@ export namespace Prisma {
     updatedAt: number
     taxDetails: number
     createdById: number
+    isArchived: number
     _all: number
   }
 
@@ -4469,6 +4682,7 @@ export namespace Prisma {
     updatedAt?: true
     taxDetails?: true
     createdById?: true
+    isArchived?: true
   }
 
   export type QuoteMaxAggregateInputType = {
@@ -4488,6 +4702,7 @@ export namespace Prisma {
     updatedAt?: true
     taxDetails?: true
     createdById?: true
+    isArchived?: true
   }
 
   export type QuoteCountAggregateInputType = {
@@ -4507,6 +4722,7 @@ export namespace Prisma {
     updatedAt?: true
     taxDetails?: true
     createdById?: true
+    isArchived?: true
     _all?: true
   }
 
@@ -4613,6 +4829,7 @@ export namespace Prisma {
     updatedAt: Date
     taxDetails: string | null
     createdById: string | null
+    isArchived: boolean
     _count: QuoteCountAggregateOutputType | null
     _avg: QuoteAvgAggregateOutputType | null
     _sum: QuoteSumAggregateOutputType | null
@@ -4651,6 +4868,7 @@ export namespace Prisma {
     updatedAt?: boolean
     taxDetails?: boolean
     createdById?: boolean
+    isArchived?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Quote$repairArgs<ExtArgs>
     invoice?: boolean | Quote$invoiceArgs<ExtArgs>
@@ -4674,6 +4892,7 @@ export namespace Prisma {
     updatedAt?: boolean
     taxDetails?: boolean
     createdById?: boolean
+    isArchived?: boolean
   }
 
   export type QuoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4709,6 +4928,7 @@ export namespace Prisma {
       updatedAt: Date
       taxDetails: string | null
       createdById: string | null
+      isArchived: boolean
     }, ExtArgs["result"]["quote"]>
     composites: {}
   }
@@ -5110,6 +5330,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Quote", 'DateTime'>
     readonly taxDetails: FieldRef<"Quote", 'String'>
     readonly createdById: FieldRef<"Quote", 'String'>
+    readonly isArchived: FieldRef<"Quote", 'Boolean'>
   }
     
 
@@ -5512,6 +5733,7 @@ export namespace Prisma {
     updatedAt: Date | null
     taxDetails: string | null
     createdById: string | null
+    isArchived: boolean | null
   }
 
   export type InvoiceMaxAggregateOutputType = {
@@ -5531,6 +5753,7 @@ export namespace Prisma {
     updatedAt: Date | null
     taxDetails: string | null
     createdById: string | null
+    isArchived: boolean | null
   }
 
   export type InvoiceCountAggregateOutputType = {
@@ -5550,6 +5773,7 @@ export namespace Prisma {
     updatedAt: number
     taxDetails: number
     createdById: number
+    isArchived: number
     _all: number
   }
 
@@ -5581,6 +5805,7 @@ export namespace Prisma {
     updatedAt?: true
     taxDetails?: true
     createdById?: true
+    isArchived?: true
   }
 
   export type InvoiceMaxAggregateInputType = {
@@ -5600,6 +5825,7 @@ export namespace Prisma {
     updatedAt?: true
     taxDetails?: true
     createdById?: true
+    isArchived?: true
   }
 
   export type InvoiceCountAggregateInputType = {
@@ -5619,6 +5845,7 @@ export namespace Prisma {
     updatedAt?: true
     taxDetails?: true
     createdById?: true
+    isArchived?: true
     _all?: true
   }
 
@@ -5725,6 +5952,7 @@ export namespace Prisma {
     updatedAt: Date
     taxDetails: string | null
     createdById: string | null
+    isArchived: boolean
     _count: InvoiceCountAggregateOutputType | null
     _avg: InvoiceAvgAggregateOutputType | null
     _sum: InvoiceSumAggregateOutputType | null
@@ -5763,6 +5991,7 @@ export namespace Prisma {
     updatedAt?: boolean
     taxDetails?: boolean
     createdById?: boolean
+    isArchived?: boolean
     client?: boolean | ClientDefaultArgs<ExtArgs>
     repair?: boolean | Invoice$repairArgs<ExtArgs>
     quote?: boolean | Invoice$quoteArgs<ExtArgs>
@@ -5786,6 +6015,7 @@ export namespace Prisma {
     updatedAt?: boolean
     taxDetails?: boolean
     createdById?: boolean
+    isArchived?: boolean
   }
 
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5821,6 +6051,7 @@ export namespace Prisma {
       updatedAt: Date
       taxDetails: string | null
       createdById: string | null
+      isArchived: boolean
     }, ExtArgs["result"]["invoice"]>
     composites: {}
   }
@@ -6222,6 +6453,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
     readonly taxDetails: FieldRef<"Invoice", 'String'>
     readonly createdById: FieldRef<"Invoice", 'String'>
+    readonly isArchived: FieldRef<"Invoice", 'Boolean'>
   }
     
 
@@ -9710,6 +9942,7 @@ export namespace Prisma {
     quality?: boolean
     model?: boolean | Part$modelArgs<ExtArgs>
     services?: boolean | Part$servicesArgs<ExtArgs>
+    orderLines?: boolean | Part$orderLinesArgs<ExtArgs>
     _count?: boolean | PartCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["part"]>
 
@@ -9735,6 +9968,7 @@ export namespace Prisma {
   export type PartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     model?: boolean | Part$modelArgs<ExtArgs>
     services?: boolean | Part$servicesArgs<ExtArgs>
+    orderLines?: boolean | Part$orderLinesArgs<ExtArgs>
     _count?: boolean | PartCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -9744,6 +9978,7 @@ export namespace Prisma {
     objects: {
       model: Prisma.$DeviceModelPayload<ExtArgs> | null
       services: Prisma.$ServicePayload<ExtArgs>[]
+      orderLines: Prisma.$OrderLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10114,6 +10349,8 @@ export namespace Prisma {
     model<T extends Part$modelArgs<ExtArgs> = {}>(args?: Subset<T, Part$modelArgs<ExtArgs>>): Prisma__DeviceModelClient<$Result.GetResult<Prisma.$DeviceModelPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
     services<T extends Part$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Part$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    orderLines<T extends Part$orderLinesArgs<ExtArgs> = {}>(args?: Subset<T, Part$orderLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10492,6 +10729,27 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ServiceScalarFieldEnum | ServiceScalarFieldEnum[]
+  }
+
+
+  /**
+   * Part.orderLines
+   */
+  export type Part$orderLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    where?: OrderLineWhereInput
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    cursor?: OrderLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderLineScalarFieldEnum | OrderLineScalarFieldEnum[]
   }
 
 
@@ -11823,6 +12081,7 @@ export namespace Prisma {
     client?: boolean | ClientDefaultArgs<ExtArgs>
     logs?: boolean | Repair$logsArgs<ExtArgs>
     services?: boolean | Repair$servicesArgs<ExtArgs>
+    orderLines?: boolean | Repair$orderLinesArgs<ExtArgs>
     createdBy?: boolean | Repair$createdByArgs<ExtArgs>
     updatedBy?: boolean | Repair$updatedByArgs<ExtArgs>
     _count?: boolean | RepairCountOutputTypeDefaultArgs<ExtArgs>
@@ -11845,6 +12104,7 @@ export namespace Prisma {
     client?: boolean | ClientDefaultArgs<ExtArgs>
     logs?: boolean | Repair$logsArgs<ExtArgs>
     services?: boolean | Repair$servicesArgs<ExtArgs>
+    orderLines?: boolean | Repair$orderLinesArgs<ExtArgs>
     createdBy?: boolean | Repair$createdByArgs<ExtArgs>
     updatedBy?: boolean | Repair$updatedByArgs<ExtArgs>
     _count?: boolean | RepairCountOutputTypeDefaultArgs<ExtArgs>
@@ -11859,6 +12119,7 @@ export namespace Prisma {
       client: Prisma.$ClientPayload<ExtArgs>
       logs: Prisma.$RepairLogPayload<ExtArgs>[]
       services: Prisma.$RepairServicePayload<ExtArgs>[]
+      orderLines: Prisma.$OrderLinePayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs> | null
       updatedBy: Prisma.$UserPayload<ExtArgs> | null
     }
@@ -12229,6 +12490,8 @@ export namespace Prisma {
     logs<T extends Repair$logsArgs<ExtArgs> = {}>(args?: Subset<T, Repair$logsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairLogPayload<ExtArgs>, T, 'findMany'> | Null>;
 
     services<T extends Repair$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RepairServicePayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    orderLines<T extends Repair$orderLinesArgs<ExtArgs> = {}>(args?: Subset<T, Repair$orderLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findMany'> | Null>;
 
     createdBy<T extends Repair$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Repair$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
 
@@ -12650,6 +12913,27 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RepairServiceScalarFieldEnum | RepairServiceScalarFieldEnum[]
+  }
+
+
+  /**
+   * Repair.orderLines
+   */
+  export type Repair$orderLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    where?: OrderLineWhereInput
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    cursor?: OrderLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderLineScalarFieldEnum | OrderLineScalarFieldEnum[]
   }
 
 
@@ -16548,6 +16832,1966 @@ export namespace Prisma {
 
 
   /**
+   * Model Order
+   */
+
+  export type AggregateOrder = {
+    _count: OrderCountAggregateOutputType | null
+    _avg: OrderAvgAggregateOutputType | null
+    _sum: OrderSumAggregateOutputType | null
+    _min: OrderMinAggregateOutputType | null
+    _max: OrderMaxAggregateOutputType | null
+  }
+
+  export type OrderAvgAggregateOutputType = {
+    totalHT: number | null
+  }
+
+  export type OrderSumAggregateOutputType = {
+    totalHT: number | null
+  }
+
+  export type OrderMinAggregateOutputType = {
+    id: string | null
+    number: string | null
+    status: string | null
+    supplier: string | null
+    totalHT: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OrderMaxAggregateOutputType = {
+    id: string | null
+    number: string | null
+    status: string | null
+    supplier: string | null
+    totalHT: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OrderCountAggregateOutputType = {
+    id: number
+    number: number
+    status: number
+    supplier: number
+    totalHT: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OrderAvgAggregateInputType = {
+    totalHT?: true
+  }
+
+  export type OrderSumAggregateInputType = {
+    totalHT?: true
+  }
+
+  export type OrderMinAggregateInputType = {
+    id?: true
+    number?: true
+    status?: true
+    supplier?: true
+    totalHT?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OrderMaxAggregateInputType = {
+    id?: true
+    number?: true
+    status?: true
+    supplier?: true
+    totalHT?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OrderCountAggregateInputType = {
+    id?: true
+    number?: true
+    status?: true
+    supplier?: true
+    totalHT?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OrderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Order to aggregate.
+     */
+    where?: OrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Orders to fetch.
+     */
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Orders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Orders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Orders
+    **/
+    _count?: true | OrderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OrderAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrderSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrderMaxAggregateInputType
+  }
+
+  export type GetOrderAggregateType<T extends OrderAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrder[P]>
+      : GetScalarType<T[P], AggregateOrder[P]>
+  }
+
+
+
+
+  export type OrderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderWhereInput
+    orderBy?: OrderOrderByWithAggregationInput | OrderOrderByWithAggregationInput[]
+    by: OrderScalarFieldEnum[] | OrderScalarFieldEnum
+    having?: OrderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrderCountAggregateInputType | true
+    _avg?: OrderAvgAggregateInputType
+    _sum?: OrderSumAggregateInputType
+    _min?: OrderMinAggregateInputType
+    _max?: OrderMaxAggregateInputType
+  }
+
+  export type OrderGroupByOutputType = {
+    id: string
+    number: string
+    status: string
+    supplier: string | null
+    totalHT: number
+    createdAt: Date
+    updatedAt: Date
+    _count: OrderCountAggregateOutputType | null
+    _avg: OrderAvgAggregateOutputType | null
+    _sum: OrderSumAggregateOutputType | null
+    _min: OrderMinAggregateOutputType | null
+    _max: OrderMaxAggregateOutputType | null
+  }
+
+  type GetOrderGroupByPayload<T extends OrderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrderGroupByOutputType[P]>
+            : GetScalarType<T[P], OrderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    status?: boolean
+    supplier?: boolean
+    totalHT?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lines?: boolean | Order$linesArgs<ExtArgs>
+    _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["order"]>
+
+  export type OrderSelectScalar = {
+    id?: boolean
+    number?: boolean
+    status?: boolean
+    supplier?: boolean
+    totalHT?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lines?: boolean | Order$linesArgs<ExtArgs>
+    _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+
+  export type $OrderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Order"
+    objects: {
+      lines: Prisma.$OrderLinePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      number: string
+      status: string
+      supplier: string | null
+      totalHT: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["order"]>
+    composites: {}
+  }
+
+
+  type OrderGetPayload<S extends boolean | null | undefined | OrderDefaultArgs> = $Result.GetResult<Prisma.$OrderPayload, S>
+
+  type OrderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<OrderFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: OrderCountAggregateInputType | true
+    }
+
+  export interface OrderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Order'], meta: { name: 'Order' } }
+    /**
+     * Find zero or one Order that matches the filter.
+     * @param {OrderFindUniqueArgs} args - Arguments to find a Order
+     * @example
+     * // Get one Order
+     * const order = await prisma.order.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends OrderFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderFindUniqueArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Order that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {OrderFindUniqueOrThrowArgs} args - Arguments to find a Order
+     * @example
+     * // Get one Order
+     * const order = await prisma.order.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends OrderFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first Order that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderFindFirstArgs} args - Arguments to find a Order
+     * @example
+     * // Get one Order
+     * const order = await prisma.order.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends OrderFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderFindFirstArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Order that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderFindFirstOrThrowArgs} args - Arguments to find a Order
+     * @example
+     * // Get one Order
+     * const order = await prisma.order.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends OrderFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more Orders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Orders
+     * const orders = await prisma.order.findMany()
+     * 
+     * // Get first 10 Orders
+     * const orders = await prisma.order.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const orderWithIdOnly = await prisma.order.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends OrderFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a Order.
+     * @param {OrderCreateArgs} args - Arguments to create a Order.
+     * @example
+     * // Create one Order
+     * const Order = await prisma.order.create({
+     *   data: {
+     *     // ... data to create a Order
+     *   }
+     * })
+     * 
+    **/
+    create<T extends OrderCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderCreateArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Delete a Order.
+     * @param {OrderDeleteArgs} args - Arguments to delete one Order.
+     * @example
+     * // Delete one Order
+     * const Order = await prisma.order.delete({
+     *   where: {
+     *     // ... filter to delete one Order
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends OrderDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderDeleteArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one Order.
+     * @param {OrderUpdateArgs} args - Arguments to update one Order.
+     * @example
+     * // Update one Order
+     * const order = await prisma.order.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends OrderUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderUpdateArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more Orders.
+     * @param {OrderDeleteManyArgs} args - Arguments to filter Orders to delete.
+     * @example
+     * // Delete a few Orders
+     * const { count } = await prisma.order.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends OrderDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Orders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Orders
+     * const order = await prisma.order.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends OrderUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Order.
+     * @param {OrderUpsertArgs} args - Arguments to update or create a Order.
+     * @example
+     * // Update or create a Order
+     * const order = await prisma.order.upsert({
+     *   create: {
+     *     // ... data to create a Order
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Order we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends OrderUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderUpsertArgs<ExtArgs>>
+    ): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of Orders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderCountArgs} args - Arguments to filter Orders to count.
+     * @example
+     * // Count the number of Orders
+     * const count = await prisma.order.count({
+     *   where: {
+     *     // ... the filter for the Orders we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrderCountArgs>(
+      args?: Subset<T, OrderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Order.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrderAggregateArgs>(args: Subset<T, OrderAggregateArgs>): Prisma.PrismaPromise<GetOrderAggregateType<T>>
+
+    /**
+     * Group by Order.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrderGroupByArgs['orderBy'] }
+        : { orderBy?: OrderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Order model
+   */
+  readonly fields: OrderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Order.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+    lines<T extends Order$linesArgs<ExtArgs> = {}>(args?: Subset<T, Order$linesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the Order model
+   */ 
+  interface OrderFieldRefs {
+    readonly id: FieldRef<"Order", 'String'>
+    readonly number: FieldRef<"Order", 'String'>
+    readonly status: FieldRef<"Order", 'String'>
+    readonly supplier: FieldRef<"Order", 'String'>
+    readonly totalHT: FieldRef<"Order", 'Float'>
+    readonly createdAt: FieldRef<"Order", 'DateTime'>
+    readonly updatedAt: FieldRef<"Order", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+
+  /**
+   * Order findUnique
+   */
+  export type OrderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * Filter, which Order to fetch.
+     */
+    where: OrderWhereUniqueInput
+  }
+
+
+  /**
+   * Order findUniqueOrThrow
+   */
+  export type OrderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * Filter, which Order to fetch.
+     */
+    where: OrderWhereUniqueInput
+  }
+
+
+  /**
+   * Order findFirst
+   */
+  export type OrderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * Filter, which Order to fetch.
+     */
+    where?: OrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Orders to fetch.
+     */
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Orders.
+     */
+    cursor?: OrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Orders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Orders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Orders.
+     */
+    distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+
+  /**
+   * Order findFirstOrThrow
+   */
+  export type OrderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * Filter, which Order to fetch.
+     */
+    where?: OrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Orders to fetch.
+     */
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Orders.
+     */
+    cursor?: OrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Orders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Orders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Orders.
+     */
+    distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+
+  /**
+   * Order findMany
+   */
+  export type OrderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * Filter, which Orders to fetch.
+     */
+    where?: OrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Orders to fetch.
+     */
+    orderBy?: OrderOrderByWithRelationInput | OrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Orders.
+     */
+    cursor?: OrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Orders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Orders.
+     */
+    skip?: number
+    distinct?: OrderScalarFieldEnum | OrderScalarFieldEnum[]
+  }
+
+
+  /**
+   * Order create
+   */
+  export type OrderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Order.
+     */
+    data: XOR<OrderCreateInput, OrderUncheckedCreateInput>
+  }
+
+
+  /**
+   * Order update
+   */
+  export type OrderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Order.
+     */
+    data: XOR<OrderUpdateInput, OrderUncheckedUpdateInput>
+    /**
+     * Choose, which Order to update.
+     */
+    where: OrderWhereUniqueInput
+  }
+
+
+  /**
+   * Order updateMany
+   */
+  export type OrderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Orders.
+     */
+    data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyInput>
+    /**
+     * Filter which Orders to update
+     */
+    where?: OrderWhereInput
+  }
+
+
+  /**
+   * Order upsert
+   */
+  export type OrderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Order to update in case it exists.
+     */
+    where: OrderWhereUniqueInput
+    /**
+     * In case the Order found by the `where` argument doesn't exist, create a new Order with this data.
+     */
+    create: XOR<OrderCreateInput, OrderUncheckedCreateInput>
+    /**
+     * In case the Order was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrderUpdateInput, OrderUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Order delete
+   */
+  export type OrderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+    /**
+     * Filter which Order to delete.
+     */
+    where: OrderWhereUniqueInput
+  }
+
+
+  /**
+   * Order deleteMany
+   */
+  export type OrderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Orders to delete
+     */
+    where?: OrderWhereInput
+  }
+
+
+  /**
+   * Order.lines
+   */
+  export type Order$linesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    where?: OrderLineWhereInput
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    cursor?: OrderLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OrderLineScalarFieldEnum | OrderLineScalarFieldEnum[]
+  }
+
+
+  /**
+   * Order without action
+   */
+  export type OrderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderInclude<ExtArgs> | null
+  }
+
+
+
+  /**
+   * Model OrderLine
+   */
+
+  export type AggregateOrderLine = {
+    _count: OrderLineCountAggregateOutputType | null
+    _avg: OrderLineAvgAggregateOutputType | null
+    _sum: OrderLineSumAggregateOutputType | null
+    _min: OrderLineMinAggregateOutputType | null
+    _max: OrderLineMaxAggregateOutputType | null
+  }
+
+  export type OrderLineAvgAggregateOutputType = {
+    quantityOrdered: number | null
+    quantityReceived: number | null
+    costPrice: number | null
+  }
+
+  export type OrderLineSumAggregateOutputType = {
+    quantityOrdered: number | null
+    quantityReceived: number | null
+    costPrice: number | null
+  }
+
+  export type OrderLineMinAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    partId: string | null
+    quantityOrdered: number | null
+    quantityReceived: number | null
+    costPrice: number | null
+    repairId: string | null
+    status: string | null
+  }
+
+  export type OrderLineMaxAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    partId: string | null
+    quantityOrdered: number | null
+    quantityReceived: number | null
+    costPrice: number | null
+    repairId: string | null
+    status: string | null
+  }
+
+  export type OrderLineCountAggregateOutputType = {
+    id: number
+    orderId: number
+    partId: number
+    quantityOrdered: number
+    quantityReceived: number
+    costPrice: number
+    repairId: number
+    status: number
+    _all: number
+  }
+
+
+  export type OrderLineAvgAggregateInputType = {
+    quantityOrdered?: true
+    quantityReceived?: true
+    costPrice?: true
+  }
+
+  export type OrderLineSumAggregateInputType = {
+    quantityOrdered?: true
+    quantityReceived?: true
+    costPrice?: true
+  }
+
+  export type OrderLineMinAggregateInputType = {
+    id?: true
+    orderId?: true
+    partId?: true
+    quantityOrdered?: true
+    quantityReceived?: true
+    costPrice?: true
+    repairId?: true
+    status?: true
+  }
+
+  export type OrderLineMaxAggregateInputType = {
+    id?: true
+    orderId?: true
+    partId?: true
+    quantityOrdered?: true
+    quantityReceived?: true
+    costPrice?: true
+    repairId?: true
+    status?: true
+  }
+
+  export type OrderLineCountAggregateInputType = {
+    id?: true
+    orderId?: true
+    partId?: true
+    quantityOrdered?: true
+    quantityReceived?: true
+    costPrice?: true
+    repairId?: true
+    status?: true
+    _all?: true
+  }
+
+  export type OrderLineAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderLine to aggregate.
+     */
+    where?: OrderLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderLines to fetch.
+     */
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OrderLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OrderLines
+    **/
+    _count?: true | OrderLineCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OrderLineAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrderLineSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OrderLineMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OrderLineMaxAggregateInputType
+  }
+
+  export type GetOrderLineAggregateType<T extends OrderLineAggregateArgs> = {
+        [P in keyof T & keyof AggregateOrderLine]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOrderLine[P]>
+      : GetScalarType<T[P], AggregateOrderLine[P]>
+  }
+
+
+
+
+  export type OrderLineGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OrderLineWhereInput
+    orderBy?: OrderLineOrderByWithAggregationInput | OrderLineOrderByWithAggregationInput[]
+    by: OrderLineScalarFieldEnum[] | OrderLineScalarFieldEnum
+    having?: OrderLineScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OrderLineCountAggregateInputType | true
+    _avg?: OrderLineAvgAggregateInputType
+    _sum?: OrderLineSumAggregateInputType
+    _min?: OrderLineMinAggregateInputType
+    _max?: OrderLineMaxAggregateInputType
+  }
+
+  export type OrderLineGroupByOutputType = {
+    id: string
+    orderId: string
+    partId: string
+    quantityOrdered: number
+    quantityReceived: number
+    costPrice: number
+    repairId: string | null
+    status: string
+    _count: OrderLineCountAggregateOutputType | null
+    _avg: OrderLineAvgAggregateOutputType | null
+    _sum: OrderLineSumAggregateOutputType | null
+    _min: OrderLineMinAggregateOutputType | null
+    _max: OrderLineMaxAggregateOutputType | null
+  }
+
+  type GetOrderLineGroupByPayload<T extends OrderLineGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OrderLineGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OrderLineGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OrderLineGroupByOutputType[P]>
+            : GetScalarType<T[P], OrderLineGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OrderLineSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    partId?: boolean
+    quantityOrdered?: boolean
+    quantityReceived?: boolean
+    costPrice?: boolean
+    repairId?: boolean
+    status?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    part?: boolean | PartDefaultArgs<ExtArgs>
+    repair?: boolean | OrderLine$repairArgs<ExtArgs>
+  }, ExtArgs["result"]["orderLine"]>
+
+  export type OrderLineSelectScalar = {
+    id?: boolean
+    orderId?: boolean
+    partId?: boolean
+    quantityOrdered?: boolean
+    quantityReceived?: boolean
+    costPrice?: boolean
+    repairId?: boolean
+    status?: boolean
+  }
+
+  export type OrderLineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+    part?: boolean | PartDefaultArgs<ExtArgs>
+    repair?: boolean | OrderLine$repairArgs<ExtArgs>
+  }
+
+
+  export type $OrderLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OrderLine"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs>
+      part: Prisma.$PartPayload<ExtArgs>
+      repair: Prisma.$RepairPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderId: string
+      partId: string
+      quantityOrdered: number
+      quantityReceived: number
+      costPrice: number
+      repairId: string | null
+      status: string
+    }, ExtArgs["result"]["orderLine"]>
+    composites: {}
+  }
+
+
+  type OrderLineGetPayload<S extends boolean | null | undefined | OrderLineDefaultArgs> = $Result.GetResult<Prisma.$OrderLinePayload, S>
+
+  type OrderLineCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<OrderLineFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: OrderLineCountAggregateInputType | true
+    }
+
+  export interface OrderLineDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OrderLine'], meta: { name: 'OrderLine' } }
+    /**
+     * Find zero or one OrderLine that matches the filter.
+     * @param {OrderLineFindUniqueArgs} args - Arguments to find a OrderLine
+     * @example
+     * // Get one OrderLine
+     * const orderLine = await prisma.orderLine.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends OrderLineFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderLineFindUniqueArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one OrderLine that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {OrderLineFindUniqueOrThrowArgs} args - Arguments to find a OrderLine
+     * @example
+     * // Get one OrderLine
+     * const orderLine = await prisma.orderLine.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends OrderLineFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderLineFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first OrderLine that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineFindFirstArgs} args - Arguments to find a OrderLine
+     * @example
+     * // Get one OrderLine
+     * const orderLine = await prisma.orderLine.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends OrderLineFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderLineFindFirstArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first OrderLine that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineFindFirstOrThrowArgs} args - Arguments to find a OrderLine
+     * @example
+     * // Get one OrderLine
+     * const orderLine = await prisma.orderLine.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends OrderLineFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderLineFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more OrderLines that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OrderLines
+     * const orderLines = await prisma.orderLine.findMany()
+     * 
+     * // Get first 10 OrderLines
+     * const orderLines = await prisma.orderLine.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const orderLineWithIdOnly = await prisma.orderLine.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends OrderLineFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderLineFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a OrderLine.
+     * @param {OrderLineCreateArgs} args - Arguments to create a OrderLine.
+     * @example
+     * // Create one OrderLine
+     * const OrderLine = await prisma.orderLine.create({
+     *   data: {
+     *     // ... data to create a OrderLine
+     *   }
+     * })
+     * 
+    **/
+    create<T extends OrderLineCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderLineCreateArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Delete a OrderLine.
+     * @param {OrderLineDeleteArgs} args - Arguments to delete one OrderLine.
+     * @example
+     * // Delete one OrderLine
+     * const OrderLine = await prisma.orderLine.delete({
+     *   where: {
+     *     // ... filter to delete one OrderLine
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends OrderLineDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderLineDeleteArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one OrderLine.
+     * @param {OrderLineUpdateArgs} args - Arguments to update one OrderLine.
+     * @example
+     * // Update one OrderLine
+     * const orderLine = await prisma.orderLine.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends OrderLineUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderLineUpdateArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more OrderLines.
+     * @param {OrderLineDeleteManyArgs} args - Arguments to filter OrderLines to delete.
+     * @example
+     * // Delete a few OrderLines
+     * const { count } = await prisma.orderLine.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends OrderLineDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, OrderLineDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OrderLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OrderLines
+     * const orderLine = await prisma.orderLine.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends OrderLineUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderLineUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one OrderLine.
+     * @param {OrderLineUpsertArgs} args - Arguments to update or create a OrderLine.
+     * @example
+     * // Update or create a OrderLine
+     * const orderLine = await prisma.orderLine.upsert({
+     *   create: {
+     *     // ... data to create a OrderLine
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OrderLine we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends OrderLineUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, OrderLineUpsertArgs<ExtArgs>>
+    ): Prisma__OrderLineClient<$Result.GetResult<Prisma.$OrderLinePayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of OrderLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineCountArgs} args - Arguments to filter OrderLines to count.
+     * @example
+     * // Count the number of OrderLines
+     * const count = await prisma.orderLine.count({
+     *   where: {
+     *     // ... the filter for the OrderLines we want to count
+     *   }
+     * })
+    **/
+    count<T extends OrderLineCountArgs>(
+      args?: Subset<T, OrderLineCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OrderLineCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OrderLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OrderLineAggregateArgs>(args: Subset<T, OrderLineAggregateArgs>): Prisma.PrismaPromise<GetOrderLineAggregateType<T>>
+
+    /**
+     * Group by OrderLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OrderLineGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OrderLineGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OrderLineGroupByArgs['orderBy'] }
+        : { orderBy?: OrderLineGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OrderLineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOrderLineGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OrderLine model
+   */
+  readonly fields: OrderLineFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OrderLine.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OrderLineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+    order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
+
+    part<T extends PartDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PartDefaultArgs<ExtArgs>>): Prisma__PartClient<$Result.GetResult<Prisma.$PartPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
+
+    repair<T extends OrderLine$repairArgs<ExtArgs> = {}>(args?: Subset<T, OrderLine$repairArgs<ExtArgs>>): Prisma__RepairClient<$Result.GetResult<Prisma.$RepairPayload<ExtArgs>, T, 'findUniqueOrThrow'> | null, null, ExtArgs>;
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the OrderLine model
+   */ 
+  interface OrderLineFieldRefs {
+    readonly id: FieldRef<"OrderLine", 'String'>
+    readonly orderId: FieldRef<"OrderLine", 'String'>
+    readonly partId: FieldRef<"OrderLine", 'String'>
+    readonly quantityOrdered: FieldRef<"OrderLine", 'Int'>
+    readonly quantityReceived: FieldRef<"OrderLine", 'Int'>
+    readonly costPrice: FieldRef<"OrderLine", 'Float'>
+    readonly repairId: FieldRef<"OrderLine", 'String'>
+    readonly status: FieldRef<"OrderLine", 'String'>
+  }
+    
+
+  // Custom InputTypes
+
+  /**
+   * OrderLine findUnique
+   */
+  export type OrderLineFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderLine to fetch.
+     */
+    where: OrderLineWhereUniqueInput
+  }
+
+
+  /**
+   * OrderLine findUniqueOrThrow
+   */
+  export type OrderLineFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderLine to fetch.
+     */
+    where: OrderLineWhereUniqueInput
+  }
+
+
+  /**
+   * OrderLine findFirst
+   */
+  export type OrderLineFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderLine to fetch.
+     */
+    where?: OrderLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderLines to fetch.
+     */
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderLines.
+     */
+    cursor?: OrderLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderLines.
+     */
+    distinct?: OrderLineScalarFieldEnum | OrderLineScalarFieldEnum[]
+  }
+
+
+  /**
+   * OrderLine findFirstOrThrow
+   */
+  export type OrderLineFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderLine to fetch.
+     */
+    where?: OrderLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderLines to fetch.
+     */
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OrderLines.
+     */
+    cursor?: OrderLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OrderLines.
+     */
+    distinct?: OrderLineScalarFieldEnum | OrderLineScalarFieldEnum[]
+  }
+
+
+  /**
+   * OrderLine findMany
+   */
+  export type OrderLineFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * Filter, which OrderLines to fetch.
+     */
+    where?: OrderLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OrderLines to fetch.
+     */
+    orderBy?: OrderLineOrderByWithRelationInput | OrderLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OrderLines.
+     */
+    cursor?: OrderLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OrderLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OrderLines.
+     */
+    skip?: number
+    distinct?: OrderLineScalarFieldEnum | OrderLineScalarFieldEnum[]
+  }
+
+
+  /**
+   * OrderLine create
+   */
+  export type OrderLineCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OrderLine.
+     */
+    data: XOR<OrderLineCreateInput, OrderLineUncheckedCreateInput>
+  }
+
+
+  /**
+   * OrderLine update
+   */
+  export type OrderLineUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OrderLine.
+     */
+    data: XOR<OrderLineUpdateInput, OrderLineUncheckedUpdateInput>
+    /**
+     * Choose, which OrderLine to update.
+     */
+    where: OrderLineWhereUniqueInput
+  }
+
+
+  /**
+   * OrderLine updateMany
+   */
+  export type OrderLineUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OrderLines.
+     */
+    data: XOR<OrderLineUpdateManyMutationInput, OrderLineUncheckedUpdateManyInput>
+    /**
+     * Filter which OrderLines to update
+     */
+    where?: OrderLineWhereInput
+  }
+
+
+  /**
+   * OrderLine upsert
+   */
+  export type OrderLineUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OrderLine to update in case it exists.
+     */
+    where: OrderLineWhereUniqueInput
+    /**
+     * In case the OrderLine found by the `where` argument doesn't exist, create a new OrderLine with this data.
+     */
+    create: XOR<OrderLineCreateInput, OrderLineUncheckedCreateInput>
+    /**
+     * In case the OrderLine was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OrderLineUpdateInput, OrderLineUncheckedUpdateInput>
+  }
+
+
+  /**
+   * OrderLine delete
+   */
+  export type OrderLineDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+    /**
+     * Filter which OrderLine to delete.
+     */
+    where: OrderLineWhereUniqueInput
+  }
+
+
+  /**
+   * OrderLine deleteMany
+   */
+  export type OrderLineDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OrderLines to delete
+     */
+    where?: OrderLineWhereInput
+  }
+
+
+  /**
+   * OrderLine.repair
+   */
+  export type OrderLine$repairArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Repair
+     */
+    select?: RepairSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: RepairInclude<ExtArgs> | null
+    where?: RepairWhereInput
+  }
+
+
+  /**
+   * OrderLine without action
+   */
+  export type OrderLineDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderLine
+     */
+    select?: OrderLineSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: OrderLineInclude<ExtArgs> | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -16608,7 +18852,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     taxDetails: 'taxDetails',
-    createdById: 'createdById'
+    createdById: 'createdById',
+    isArchived: 'isArchived'
   };
 
   export type QuoteScalarFieldEnum = (typeof QuoteScalarFieldEnum)[keyof typeof QuoteScalarFieldEnum]
@@ -16630,7 +18875,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     taxDetails: 'taxDetails',
-    createdById: 'createdById'
+    createdById: 'createdById',
+    isArchived: 'isArchived'
   };
 
   export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
@@ -16792,6 +19038,33 @@ export namespace Prisma {
   };
 
   export type WorkshopSettingsScalarFieldEnum = (typeof WorkshopSettingsScalarFieldEnum)[keyof typeof WorkshopSettingsScalarFieldEnum]
+
+
+  export const OrderScalarFieldEnum: {
+    id: 'id',
+    number: 'number',
+    status: 'status',
+    supplier: 'supplier',
+    totalHT: 'totalHT',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+  export const OrderLineScalarFieldEnum: {
+    id: 'id',
+    orderId: 'orderId',
+    partId: 'partId',
+    quantityOrdered: 'quantityOrdered',
+    quantityReceived: 'quantityReceived',
+    costPrice: 'costPrice',
+    repairId: 'repairId',
+    status: 'status'
+  };
+
+  export type OrderLineScalarFieldEnum = (typeof OrderLineScalarFieldEnum)[keyof typeof OrderLineScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -17061,6 +19334,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     taxDetails?: StringNullableFilter<"Quote"> | string | null
     createdById?: StringNullableFilter<"Quote"> | string | null
+    isArchived?: BoolFilter<"Quote"> | boolean
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     invoice?: XOR<InvoiceNullableRelationFilter, InvoiceWhereInput> | null
@@ -17084,6 +19358,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
+    isArchived?: SortOrder
     client?: ClientOrderByWithRelationInput
     repair?: RepairOrderByWithRelationInput
     invoice?: InvoiceOrderByWithRelationInput
@@ -17110,6 +19385,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     taxDetails?: StringNullableFilter<"Quote"> | string | null
     createdById?: StringNullableFilter<"Quote"> | string | null
+    isArchived?: BoolFilter<"Quote"> | boolean
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     invoice?: XOR<InvoiceNullableRelationFilter, InvoiceWhereInput> | null
@@ -17133,6 +19409,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
+    isArchived?: SortOrder
     _count?: QuoteCountOrderByAggregateInput
     _avg?: QuoteAvgOrderByAggregateInput
     _max?: QuoteMaxOrderByAggregateInput
@@ -17160,6 +19437,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     taxDetails?: StringNullableWithAggregatesFilter<"Quote"> | string | null
     createdById?: StringNullableWithAggregatesFilter<"Quote"> | string | null
+    isArchived?: BoolWithAggregatesFilter<"Quote"> | boolean
   }
 
   export type InvoiceWhereInput = {
@@ -17182,6 +19460,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
     createdById?: StringNullableFilter<"Invoice"> | string | null
+    isArchived?: BoolFilter<"Invoice"> | boolean
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     quote?: XOR<QuoteNullableRelationFilter, QuoteWhereInput> | null
@@ -17205,6 +19484,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
+    isArchived?: SortOrder
     client?: ClientOrderByWithRelationInput
     repair?: RepairOrderByWithRelationInput
     quote?: QuoteOrderByWithRelationInput
@@ -17231,6 +19511,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
     createdById?: StringNullableFilter<"Invoice"> | string | null
+    isArchived?: BoolFilter<"Invoice"> | boolean
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
     quote?: XOR<QuoteNullableRelationFilter, QuoteWhereInput> | null
@@ -17254,6 +19535,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
+    isArchived?: SortOrder
     _count?: InvoiceCountOrderByAggregateInput
     _avg?: InvoiceAvgOrderByAggregateInput
     _max?: InvoiceMaxOrderByAggregateInput
@@ -17281,6 +19563,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     createdById?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
+    isArchived?: BoolWithAggregatesFilter<"Invoice"> | boolean
   }
 
   export type DeviceTypeWhereInput = {
@@ -17482,6 +19765,7 @@ export namespace Prisma {
     quality?: StringNullableFilter<"Part"> | string | null
     model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
     services?: ServiceListRelationFilter
+    orderLines?: OrderLineListRelationFilter
   }
 
   export type PartOrderByWithRelationInput = {
@@ -17503,6 +19787,7 @@ export namespace Prisma {
     quality?: SortOrderInput | SortOrder
     model?: DeviceModelOrderByWithRelationInput
     services?: ServiceOrderByRelationAggregateInput
+    orderLines?: OrderLineOrderByRelationAggregateInput
   }
 
   export type PartWhereUniqueInput = Prisma.AtLeast<{
@@ -17527,6 +19812,7 @@ export namespace Prisma {
     quality?: StringNullableFilter<"Part"> | string | null
     model?: XOR<DeviceModelNullableRelationFilter, DeviceModelWhereInput> | null
     services?: ServiceListRelationFilter
+    orderLines?: OrderLineListRelationFilter
   }, "id" | "sku">
 
   export type PartOrderByWithAggregationInput = {
@@ -17705,6 +19991,7 @@ export namespace Prisma {
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     logs?: RepairLogListRelationFilter
     services?: RepairServiceListRelationFilter
+    orderLines?: OrderLineListRelationFilter
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     updatedBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }
@@ -17723,6 +20010,7 @@ export namespace Prisma {
     client?: ClientOrderByWithRelationInput
     logs?: RepairLogOrderByRelationAggregateInput
     services?: RepairServiceOrderByRelationAggregateInput
+    orderLines?: OrderLineOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
   }
@@ -17744,6 +20032,7 @@ export namespace Prisma {
     client?: XOR<ClientRelationFilter, ClientWhereInput>
     logs?: RepairLogListRelationFilter
     services?: RepairServiceListRelationFilter
+    orderLines?: OrderLineListRelationFilter
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     updatedBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
   }, "id">
@@ -18120,6 +20409,151 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"WorkshopSettings"> | Date | string
   }
 
+  export type OrderWhereInput = {
+    AND?: OrderWhereInput | OrderWhereInput[]
+    OR?: OrderWhereInput[]
+    NOT?: OrderWhereInput | OrderWhereInput[]
+    id?: StringFilter<"Order"> | string
+    number?: StringFilter<"Order"> | string
+    status?: StringFilter<"Order"> | string
+    supplier?: StringNullableFilter<"Order"> | string | null
+    totalHT?: FloatFilter<"Order"> | number
+    createdAt?: DateTimeFilter<"Order"> | Date | string
+    updatedAt?: DateTimeFilter<"Order"> | Date | string
+    lines?: OrderLineListRelationFilter
+  }
+
+  export type OrderOrderByWithRelationInput = {
+    id?: SortOrder
+    number?: SortOrder
+    status?: SortOrder
+    supplier?: SortOrderInput | SortOrder
+    totalHT?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lines?: OrderLineOrderByRelationAggregateInput
+  }
+
+  export type OrderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    number?: string
+    AND?: OrderWhereInput | OrderWhereInput[]
+    OR?: OrderWhereInput[]
+    NOT?: OrderWhereInput | OrderWhereInput[]
+    status?: StringFilter<"Order"> | string
+    supplier?: StringNullableFilter<"Order"> | string | null
+    totalHT?: FloatFilter<"Order"> | number
+    createdAt?: DateTimeFilter<"Order"> | Date | string
+    updatedAt?: DateTimeFilter<"Order"> | Date | string
+    lines?: OrderLineListRelationFilter
+  }, "id" | "number">
+
+  export type OrderOrderByWithAggregationInput = {
+    id?: SortOrder
+    number?: SortOrder
+    status?: SortOrder
+    supplier?: SortOrderInput | SortOrder
+    totalHT?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OrderCountOrderByAggregateInput
+    _avg?: OrderAvgOrderByAggregateInput
+    _max?: OrderMaxOrderByAggregateInput
+    _min?: OrderMinOrderByAggregateInput
+    _sum?: OrderSumOrderByAggregateInput
+  }
+
+  export type OrderScalarWhereWithAggregatesInput = {
+    AND?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
+    OR?: OrderScalarWhereWithAggregatesInput[]
+    NOT?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Order"> | string
+    number?: StringWithAggregatesFilter<"Order"> | string
+    status?: StringWithAggregatesFilter<"Order"> | string
+    supplier?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    totalHT?: FloatWithAggregatesFilter<"Order"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+  }
+
+  export type OrderLineWhereInput = {
+    AND?: OrderLineWhereInput | OrderLineWhereInput[]
+    OR?: OrderLineWhereInput[]
+    NOT?: OrderLineWhereInput | OrderLineWhereInput[]
+    id?: StringFilter<"OrderLine"> | string
+    orderId?: StringFilter<"OrderLine"> | string
+    partId?: StringFilter<"OrderLine"> | string
+    quantityOrdered?: IntFilter<"OrderLine"> | number
+    quantityReceived?: IntFilter<"OrderLine"> | number
+    costPrice?: FloatFilter<"OrderLine"> | number
+    repairId?: StringNullableFilter<"OrderLine"> | string | null
+    status?: StringFilter<"OrderLine"> | string
+    order?: XOR<OrderRelationFilter, OrderWhereInput>
+    part?: XOR<PartRelationFilter, PartWhereInput>
+    repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+  }
+
+  export type OrderLineOrderByWithRelationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    partId?: SortOrder
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
+    repairId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    order?: OrderOrderByWithRelationInput
+    part?: PartOrderByWithRelationInput
+    repair?: RepairOrderByWithRelationInput
+  }
+
+  export type OrderLineWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: OrderLineWhereInput | OrderLineWhereInput[]
+    OR?: OrderLineWhereInput[]
+    NOT?: OrderLineWhereInput | OrderLineWhereInput[]
+    orderId?: StringFilter<"OrderLine"> | string
+    partId?: StringFilter<"OrderLine"> | string
+    quantityOrdered?: IntFilter<"OrderLine"> | number
+    quantityReceived?: IntFilter<"OrderLine"> | number
+    costPrice?: FloatFilter<"OrderLine"> | number
+    repairId?: StringNullableFilter<"OrderLine"> | string | null
+    status?: StringFilter<"OrderLine"> | string
+    order?: XOR<OrderRelationFilter, OrderWhereInput>
+    part?: XOR<PartRelationFilter, PartWhereInput>
+    repair?: XOR<RepairNullableRelationFilter, RepairWhereInput> | null
+  }, "id">
+
+  export type OrderLineOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    partId?: SortOrder
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
+    repairId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    _count?: OrderLineCountOrderByAggregateInput
+    _avg?: OrderLineAvgOrderByAggregateInput
+    _max?: OrderLineMaxOrderByAggregateInput
+    _min?: OrderLineMinOrderByAggregateInput
+    _sum?: OrderLineSumOrderByAggregateInput
+  }
+
+  export type OrderLineScalarWhereWithAggregatesInput = {
+    AND?: OrderLineScalarWhereWithAggregatesInput | OrderLineScalarWhereWithAggregatesInput[]
+    OR?: OrderLineScalarWhereWithAggregatesInput[]
+    NOT?: OrderLineScalarWhereWithAggregatesInput | OrderLineScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OrderLine"> | string
+    orderId?: StringWithAggregatesFilter<"OrderLine"> | string
+    partId?: StringWithAggregatesFilter<"OrderLine"> | string
+    quantityOrdered?: IntWithAggregatesFilter<"OrderLine"> | number
+    quantityReceived?: IntWithAggregatesFilter<"OrderLine"> | number
+    costPrice?: FloatWithAggregatesFilter<"OrderLine"> | number
+    repairId?: StringNullableWithAggregatesFilter<"OrderLine"> | string | null
+    status?: StringWithAggregatesFilter<"OrderLine"> | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -18333,6 +20767,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutQuotesInput
     repair?: RepairCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
@@ -18356,6 +20791,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
   }
 
   export type QuoteUpdateInput = {
@@ -18371,6 +20807,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     repair?: RepairUpdateOneWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
@@ -18394,6 +20831,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUpdateManyMutationInput = {
@@ -18409,6 +20847,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUncheckedUpdateManyInput = {
@@ -18428,6 +20867,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type InvoiceCreateInput = {
@@ -18444,6 +20884,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutInvoicesInput
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
@@ -18467,6 +20908,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -18484,6 +20926,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
@@ -18507,6 +20950,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -18524,6 +20968,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type InvoiceUncheckedUpdateManyInput = {
@@ -18543,6 +20988,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DeviceTypeCreateInput = {
@@ -18721,6 +21167,7 @@ export namespace Prisma {
     quality?: string | null
     model?: DeviceModelCreateNestedOneWithoutPartsInput
     services?: ServiceCreateNestedManyWithoutPartInput
+    orderLines?: OrderLineCreateNestedManyWithoutPartInput
   }
 
   export type PartUncheckedCreateInput = {
@@ -18741,6 +21188,7 @@ export namespace Prisma {
     createdAt?: Date | string
     quality?: string | null
     services?: ServiceUncheckedCreateNestedManyWithoutPartInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutPartInput
   }
 
   export type PartUpdateInput = {
@@ -18761,6 +21209,7 @@ export namespace Prisma {
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     model?: DeviceModelUpdateOneWithoutPartsNestedInput
     services?: ServiceUpdateManyWithoutPartNestedInput
+    orderLines?: OrderLineUpdateManyWithoutPartNestedInput
   }
 
   export type PartUncheckedUpdateInput = {
@@ -18781,6 +21230,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     services?: ServiceUncheckedUpdateManyWithoutPartNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutPartNestedInput
   }
 
   export type PartUpdateManyMutationInput = {
@@ -18941,6 +21391,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
@@ -18958,6 +21409,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairUpdateInput = {
@@ -18971,6 +21423,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
@@ -18988,6 +21441,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUpdateManyMutationInput = {
@@ -19341,6 +21795,133 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrderCreateInput = {
+    id?: string
+    number: string
+    status?: string
+    supplier?: string | null
+    totalHT?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lines?: OrderLineCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateInput = {
+    id?: string
+    number: string
+    status?: string
+    supplier?: string | null
+    totalHT?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lines?: OrderLineUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lines?: OrderLineUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lines?: OrderLineUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderLineCreateInput = {
+    id?: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    status?: string
+    order: OrderCreateNestedOneWithoutLinesInput
+    part: PartCreateNestedOneWithoutOrderLinesInput
+    repair?: RepairCreateNestedOneWithoutOrderLinesInput
+  }
+
+  export type OrderLineUncheckedCreateInput = {
+    id?: string
+    orderId: string
+    partId: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    repairId?: string | null
+    status?: string
+  }
+
+  export type OrderLineUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    order?: OrderUpdateOneRequiredWithoutLinesNestedInput
+    part?: PartUpdateOneRequiredWithoutOrderLinesNestedInput
+    repair?: RepairUpdateOneWithoutOrderLinesNestedInput
+  }
+
+  export type OrderLineUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    partId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OrderLineUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OrderLineUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    partId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -19643,6 +22224,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrder
     createdById?: SortOrder
+    isArchived?: SortOrder
   }
 
   export type QuoteAvgOrderByAggregateInput = {
@@ -19667,6 +22249,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrder
     createdById?: SortOrder
+    isArchived?: SortOrder
   }
 
   export type QuoteMinOrderByAggregateInput = {
@@ -19686,6 +22269,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrder
     createdById?: SortOrder
+    isArchived?: SortOrder
   }
 
   export type QuoteSumOrderByAggregateInput = {
@@ -19731,6 +22315,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrder
     createdById?: SortOrder
+    isArchived?: SortOrder
   }
 
   export type InvoiceAvgOrderByAggregateInput = {
@@ -19755,6 +22340,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrder
     createdById?: SortOrder
+    isArchived?: SortOrder
   }
 
   export type InvoiceMinOrderByAggregateInput = {
@@ -19774,6 +22360,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     taxDetails?: SortOrder
     createdById?: SortOrder
+    isArchived?: SortOrder
   }
 
   export type InvoiceSumOrderByAggregateInput = {
@@ -19935,6 +22522,16 @@ export namespace Prisma {
   export type DeviceModelNullableRelationFilter = {
     is?: DeviceModelWhereInput | null
     isNot?: DeviceModelWhereInput | null
+  }
+
+  export type OrderLineListRelationFilter = {
+    every?: OrderLineWhereInput
+    some?: OrderLineWhereInput
+    none?: OrderLineWhereInput
+  }
+
+  export type OrderLineOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type PartCountOrderByAggregateInput = {
@@ -20368,6 +22965,99 @@ export namespace Prisma {
     iban?: SortOrder
     bic?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type OrderCountOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    status?: SortOrder
+    supplier?: SortOrder
+    totalHT?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OrderAvgOrderByAggregateInput = {
+    totalHT?: SortOrder
+  }
+
+  export type OrderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    status?: SortOrder
+    supplier?: SortOrder
+    totalHT?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OrderMinOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    status?: SortOrder
+    supplier?: SortOrder
+    totalHT?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OrderSumOrderByAggregateInput = {
+    totalHT?: SortOrder
+  }
+
+  export type OrderRelationFilter = {
+    is?: OrderWhereInput
+    isNot?: OrderWhereInput
+  }
+
+  export type PartRelationFilter = {
+    is?: PartWhereInput
+    isNot?: PartWhereInput
+  }
+
+  export type OrderLineCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    partId?: SortOrder
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
+    repairId?: SortOrder
+    status?: SortOrder
+  }
+
+  export type OrderLineAvgOrderByAggregateInput = {
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
+  }
+
+  export type OrderLineMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    partId?: SortOrder
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
+    repairId?: SortOrder
+    status?: SortOrder
+  }
+
+  export type OrderLineMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    partId?: SortOrder
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
+    repairId?: SortOrder
+    status?: SortOrder
+  }
+
+  export type OrderLineSumOrderByAggregateInput = {
+    quantityOrdered?: SortOrder
+    quantityReceived?: SortOrder
+    costPrice?: SortOrder
   }
 
   export type RepairCreateNestedManyWithoutCreatedByInput = {
@@ -21034,10 +23724,22 @@ export namespace Prisma {
     connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
   }
 
+  export type OrderLineCreateNestedManyWithoutPartInput = {
+    create?: XOR<OrderLineCreateWithoutPartInput, OrderLineUncheckedCreateWithoutPartInput> | OrderLineCreateWithoutPartInput[] | OrderLineUncheckedCreateWithoutPartInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutPartInput | OrderLineCreateOrConnectWithoutPartInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+  }
+
   export type ServiceUncheckedCreateNestedManyWithoutPartInput = {
     create?: XOR<ServiceCreateWithoutPartInput, ServiceUncheckedCreateWithoutPartInput> | ServiceCreateWithoutPartInput[] | ServiceUncheckedCreateWithoutPartInput[]
     connectOrCreate?: ServiceCreateOrConnectWithoutPartInput | ServiceCreateOrConnectWithoutPartInput[]
     connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+  }
+
+  export type OrderLineUncheckedCreateNestedManyWithoutPartInput = {
+    create?: XOR<OrderLineCreateWithoutPartInput, OrderLineUncheckedCreateWithoutPartInput> | OrderLineCreateWithoutPartInput[] | OrderLineUncheckedCreateWithoutPartInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutPartInput | OrderLineCreateOrConnectWithoutPartInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -21079,6 +23781,19 @@ export namespace Prisma {
     deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
   }
 
+  export type OrderLineUpdateManyWithoutPartNestedInput = {
+    create?: XOR<OrderLineCreateWithoutPartInput, OrderLineUncheckedCreateWithoutPartInput> | OrderLineCreateWithoutPartInput[] | OrderLineUncheckedCreateWithoutPartInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutPartInput | OrderLineCreateOrConnectWithoutPartInput[]
+    upsert?: OrderLineUpsertWithWhereUniqueWithoutPartInput | OrderLineUpsertWithWhereUniqueWithoutPartInput[]
+    set?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    disconnect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    delete?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    update?: OrderLineUpdateWithWhereUniqueWithoutPartInput | OrderLineUpdateWithWhereUniqueWithoutPartInput[]
+    updateMany?: OrderLineUpdateManyWithWhereWithoutPartInput | OrderLineUpdateManyWithWhereWithoutPartInput[]
+    deleteMany?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
+  }
+
   export type ServiceUncheckedUpdateManyWithoutPartNestedInput = {
     create?: XOR<ServiceCreateWithoutPartInput, ServiceUncheckedCreateWithoutPartInput> | ServiceCreateWithoutPartInput[] | ServiceUncheckedCreateWithoutPartInput[]
     connectOrCreate?: ServiceCreateOrConnectWithoutPartInput | ServiceCreateOrConnectWithoutPartInput[]
@@ -21090,6 +23805,19 @@ export namespace Prisma {
     update?: ServiceUpdateWithWhereUniqueWithoutPartInput | ServiceUpdateWithWhereUniqueWithoutPartInput[]
     updateMany?: ServiceUpdateManyWithWhereWithoutPartInput | ServiceUpdateManyWithWhereWithoutPartInput[]
     deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
+  }
+
+  export type OrderLineUncheckedUpdateManyWithoutPartNestedInput = {
+    create?: XOR<OrderLineCreateWithoutPartInput, OrderLineUncheckedCreateWithoutPartInput> | OrderLineCreateWithoutPartInput[] | OrderLineUncheckedCreateWithoutPartInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutPartInput | OrderLineCreateOrConnectWithoutPartInput[]
+    upsert?: OrderLineUpsertWithWhereUniqueWithoutPartInput | OrderLineUpsertWithWhereUniqueWithoutPartInput[]
+    set?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    disconnect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    delete?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    update?: OrderLineUpdateWithWhereUniqueWithoutPartInput | OrderLineUpdateWithWhereUniqueWithoutPartInput[]
+    updateMany?: OrderLineUpdateManyWithWhereWithoutPartInput | OrderLineUpdateManyWithWhereWithoutPartInput[]
+    deleteMany?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
   }
 
   export type RepairServiceCreateNestedManyWithoutServiceInput = {
@@ -21192,6 +23920,12 @@ export namespace Prisma {
     connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
   }
 
+  export type OrderLineCreateNestedManyWithoutRepairInput = {
+    create?: XOR<OrderLineCreateWithoutRepairInput, OrderLineUncheckedCreateWithoutRepairInput> | OrderLineCreateWithoutRepairInput[] | OrderLineUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutRepairInput | OrderLineCreateOrConnectWithoutRepairInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+  }
+
   export type UserCreateNestedOneWithoutCreatedRepairsInput = {
     create?: XOR<UserCreateWithoutCreatedRepairsInput, UserUncheckedCreateWithoutCreatedRepairsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreatedRepairsInput
@@ -21226,6 +23960,12 @@ export namespace Prisma {
     create?: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput> | RepairServiceCreateWithoutRepairInput[] | RepairServiceUncheckedCreateWithoutRepairInput[]
     connectOrCreate?: RepairServiceCreateOrConnectWithoutRepairInput | RepairServiceCreateOrConnectWithoutRepairInput[]
     connect?: RepairServiceWhereUniqueInput | RepairServiceWhereUniqueInput[]
+  }
+
+  export type OrderLineUncheckedCreateNestedManyWithoutRepairInput = {
+    create?: XOR<OrderLineCreateWithoutRepairInput, OrderLineUncheckedCreateWithoutRepairInput> | OrderLineCreateWithoutRepairInput[] | OrderLineUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutRepairInput | OrderLineCreateOrConnectWithoutRepairInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
   }
 
   export type InvoiceUpdateManyWithoutRepairNestedInput = {
@@ -21286,6 +24026,19 @@ export namespace Prisma {
     update?: RepairServiceUpdateWithWhereUniqueWithoutRepairInput | RepairServiceUpdateWithWhereUniqueWithoutRepairInput[]
     updateMany?: RepairServiceUpdateManyWithWhereWithoutRepairInput | RepairServiceUpdateManyWithWhereWithoutRepairInput[]
     deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
+  }
+
+  export type OrderLineUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<OrderLineCreateWithoutRepairInput, OrderLineUncheckedCreateWithoutRepairInput> | OrderLineCreateWithoutRepairInput[] | OrderLineUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutRepairInput | OrderLineCreateOrConnectWithoutRepairInput[]
+    upsert?: OrderLineUpsertWithWhereUniqueWithoutRepairInput | OrderLineUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    disconnect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    delete?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    update?: OrderLineUpdateWithWhereUniqueWithoutRepairInput | OrderLineUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: OrderLineUpdateManyWithWhereWithoutRepairInput | OrderLineUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
   }
 
   export type UserUpdateOneWithoutCreatedRepairsNestedInput = {
@@ -21360,6 +24113,19 @@ export namespace Prisma {
     deleteMany?: RepairServiceScalarWhereInput | RepairServiceScalarWhereInput[]
   }
 
+  export type OrderLineUncheckedUpdateManyWithoutRepairNestedInput = {
+    create?: XOR<OrderLineCreateWithoutRepairInput, OrderLineUncheckedCreateWithoutRepairInput> | OrderLineCreateWithoutRepairInput[] | OrderLineUncheckedCreateWithoutRepairInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutRepairInput | OrderLineCreateOrConnectWithoutRepairInput[]
+    upsert?: OrderLineUpsertWithWhereUniqueWithoutRepairInput | OrderLineUpsertWithWhereUniqueWithoutRepairInput[]
+    set?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    disconnect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    delete?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    update?: OrderLineUpdateWithWhereUniqueWithoutRepairInput | OrderLineUpdateWithWhereUniqueWithoutRepairInput[]
+    updateMany?: OrderLineUpdateManyWithWhereWithoutRepairInput | OrderLineUpdateManyWithWhereWithoutRepairInput[]
+    deleteMany?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
+  }
+
   export type RepairCreateNestedOneWithoutServicesInput = {
     create?: XOR<RepairCreateWithoutServicesInput, RepairUncheckedCreateWithoutServicesInput>
     connectOrCreate?: RepairCreateOrConnectWithoutServicesInput
@@ -21416,6 +24182,88 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRepairLogsInput, UserUpdateWithoutRepairLogsInput>, UserUncheckedUpdateWithoutRepairLogsInput>
+  }
+
+  export type OrderLineCreateNestedManyWithoutOrderInput = {
+    create?: XOR<OrderLineCreateWithoutOrderInput, OrderLineUncheckedCreateWithoutOrderInput> | OrderLineCreateWithoutOrderInput[] | OrderLineUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutOrderInput | OrderLineCreateOrConnectWithoutOrderInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+  }
+
+  export type OrderLineUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<OrderLineCreateWithoutOrderInput, OrderLineUncheckedCreateWithoutOrderInput> | OrderLineCreateWithoutOrderInput[] | OrderLineUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutOrderInput | OrderLineCreateOrConnectWithoutOrderInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+  }
+
+  export type OrderLineUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<OrderLineCreateWithoutOrderInput, OrderLineUncheckedCreateWithoutOrderInput> | OrderLineCreateWithoutOrderInput[] | OrderLineUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutOrderInput | OrderLineCreateOrConnectWithoutOrderInput[]
+    upsert?: OrderLineUpsertWithWhereUniqueWithoutOrderInput | OrderLineUpsertWithWhereUniqueWithoutOrderInput[]
+    set?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    disconnect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    delete?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    update?: OrderLineUpdateWithWhereUniqueWithoutOrderInput | OrderLineUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: OrderLineUpdateManyWithWhereWithoutOrderInput | OrderLineUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
+  }
+
+  export type OrderLineUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<OrderLineCreateWithoutOrderInput, OrderLineUncheckedCreateWithoutOrderInput> | OrderLineCreateWithoutOrderInput[] | OrderLineUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OrderLineCreateOrConnectWithoutOrderInput | OrderLineCreateOrConnectWithoutOrderInput[]
+    upsert?: OrderLineUpsertWithWhereUniqueWithoutOrderInput | OrderLineUpsertWithWhereUniqueWithoutOrderInput[]
+    set?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    disconnect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    delete?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    connect?: OrderLineWhereUniqueInput | OrderLineWhereUniqueInput[]
+    update?: OrderLineUpdateWithWhereUniqueWithoutOrderInput | OrderLineUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: OrderLineUpdateManyWithWhereWithoutOrderInput | OrderLineUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
+  }
+
+  export type OrderCreateNestedOneWithoutLinesInput = {
+    create?: XOR<OrderCreateWithoutLinesInput, OrderUncheckedCreateWithoutLinesInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutLinesInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type PartCreateNestedOneWithoutOrderLinesInput = {
+    create?: XOR<PartCreateWithoutOrderLinesInput, PartUncheckedCreateWithoutOrderLinesInput>
+    connectOrCreate?: PartCreateOrConnectWithoutOrderLinesInput
+    connect?: PartWhereUniqueInput
+  }
+
+  export type RepairCreateNestedOneWithoutOrderLinesInput = {
+    create?: XOR<RepairCreateWithoutOrderLinesInput, RepairUncheckedCreateWithoutOrderLinesInput>
+    connectOrCreate?: RepairCreateOrConnectWithoutOrderLinesInput
+    connect?: RepairWhereUniqueInput
+  }
+
+  export type OrderUpdateOneRequiredWithoutLinesNestedInput = {
+    create?: XOR<OrderCreateWithoutLinesInput, OrderUncheckedCreateWithoutLinesInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutLinesInput
+    upsert?: OrderUpsertWithoutLinesInput
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutLinesInput, OrderUpdateWithoutLinesInput>, OrderUncheckedUpdateWithoutLinesInput>
+  }
+
+  export type PartUpdateOneRequiredWithoutOrderLinesNestedInput = {
+    create?: XOR<PartCreateWithoutOrderLinesInput, PartUncheckedCreateWithoutOrderLinesInput>
+    connectOrCreate?: PartCreateOrConnectWithoutOrderLinesInput
+    upsert?: PartUpsertWithoutOrderLinesInput
+    connect?: PartWhereUniqueInput
+    update?: XOR<XOR<PartUpdateToOneWithWhereWithoutOrderLinesInput, PartUpdateWithoutOrderLinesInput>, PartUncheckedUpdateWithoutOrderLinesInput>
+  }
+
+  export type RepairUpdateOneWithoutOrderLinesNestedInput = {
+    create?: XOR<RepairCreateWithoutOrderLinesInput, RepairUncheckedCreateWithoutOrderLinesInput>
+    connectOrCreate?: RepairCreateOrConnectWithoutOrderLinesInput
+    upsert?: RepairUpsertWithoutOrderLinesInput
+    disconnect?: RepairWhereInput | boolean
+    delete?: RepairWhereInput | boolean
+    connect?: RepairWhereUniqueInput
+    update?: XOR<XOR<RepairUpdateToOneWithWhereWithoutOrderLinesInput, RepairUpdateWithoutOrderLinesInput>, RepairUncheckedUpdateWithoutOrderLinesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -21646,6 +24494,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
 
@@ -21661,6 +24510,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutCreatedByInput = {
@@ -21679,6 +24529,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
   }
 
@@ -21694,6 +24545,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutUpdatedByInput = {
@@ -21715,6 +24567,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutInvoicesInput
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
@@ -21736,6 +24589,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -21757,6 +24611,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutQuotesInput
     repair?: RepairCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
@@ -21778,6 +24633,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
   }
 
   export type QuoteCreateOrConnectWithoutCreatedByInput = {
@@ -21888,6 +24744,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     taxDetails?: StringNullableFilter<"Invoice"> | string | null
     createdById?: StringNullableFilter<"Invoice"> | string | null
+    isArchived?: BoolFilter<"Invoice"> | boolean
   }
 
   export type QuoteUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -21926,6 +24783,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     taxDetails?: StringNullableFilter<"Quote"> | string | null
     createdById?: StringNullableFilter<"Quote"> | string | null
+    isArchived?: BoolFilter<"Quote"> | boolean
   }
 
   export type RepairLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -21970,6 +24828,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
     createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
@@ -21991,6 +24850,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -22012,6 +24872,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     repair?: RepairCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
     createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
@@ -22033,6 +24894,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
   }
 
   export type QuoteCreateOrConnectWithoutClientInput = {
@@ -22050,6 +24912,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutRepairInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
@@ -22066,6 +24929,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutClientInput = {
@@ -22172,6 +25036,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
@@ -22188,6 +25053,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutQuotesInput = {
@@ -22209,6 +25075,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutInvoicesInput
     repair?: RepairCreateNestedOneWithoutInvoicesInput
     createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
@@ -22231,6 +25098,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
   }
 
   export type InvoiceCreateOrConnectWithoutQuoteInput = {
@@ -22343,6 +25211,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
@@ -22359,6 +25228,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type InvoiceUpsertWithoutQuoteInput = {
@@ -22386,6 +25256,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
@@ -22408,6 +25279,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUpsertWithoutCreatedQuotesInput = {
@@ -22504,6 +25376,7 @@ export namespace Prisma {
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
@@ -22520,6 +25393,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutInvoicesInput = {
@@ -22540,6 +25414,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutQuotesInput
     repair?: RepairCreateNestedOneWithoutQuotesInput
     createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
@@ -22561,6 +25436,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
   }
 
   export type QuoteCreateOrConnectWithoutInvoiceInput = {
@@ -22673,6 +25549,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
@@ -22689,6 +25566,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type QuoteUpsertWithoutInvoiceInput = {
@@ -22715,6 +25593,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     repair?: RepairUpdateOneWithoutQuotesNestedInput
     createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
@@ -22736,6 +25615,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUpsertWithoutCreatedInvoicesInput = {
@@ -22932,6 +25812,7 @@ export namespace Prisma {
     createdAt?: Date | string
     quality?: string | null
     services?: ServiceCreateNestedManyWithoutPartInput
+    orderLines?: OrderLineCreateNestedManyWithoutPartInput
   }
 
   export type PartUncheckedCreateWithoutModelInput = {
@@ -22951,6 +25832,7 @@ export namespace Prisma {
     createdAt?: Date | string
     quality?: string | null
     services?: ServiceUncheckedCreateNestedManyWithoutPartInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutPartInput
   }
 
   export type PartCreateOrConnectWithoutModelInput = {
@@ -23192,6 +26074,31 @@ export namespace Prisma {
     create: XOR<ServiceCreateWithoutPartInput, ServiceUncheckedCreateWithoutPartInput>
   }
 
+  export type OrderLineCreateWithoutPartInput = {
+    id?: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    status?: string
+    order: OrderCreateNestedOneWithoutLinesInput
+    repair?: RepairCreateNestedOneWithoutOrderLinesInput
+  }
+
+  export type OrderLineUncheckedCreateWithoutPartInput = {
+    id?: string
+    orderId: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    repairId?: string | null
+    status?: string
+  }
+
+  export type OrderLineCreateOrConnectWithoutPartInput = {
+    where: OrderLineWhereUniqueInput
+    create: XOR<OrderLineCreateWithoutPartInput, OrderLineUncheckedCreateWithoutPartInput>
+  }
+
   export type DeviceModelUpsertWithoutPartsInput = {
     update: XOR<DeviceModelUpdateWithoutPartsInput, DeviceModelUncheckedUpdateWithoutPartsInput>
     create: XOR<DeviceModelCreateWithoutPartsInput, DeviceModelUncheckedCreateWithoutPartsInput>
@@ -23239,6 +26146,36 @@ export namespace Prisma {
     data: XOR<ServiceUpdateManyMutationInput, ServiceUncheckedUpdateManyWithoutPartInput>
   }
 
+  export type OrderLineUpsertWithWhereUniqueWithoutPartInput = {
+    where: OrderLineWhereUniqueInput
+    update: XOR<OrderLineUpdateWithoutPartInput, OrderLineUncheckedUpdateWithoutPartInput>
+    create: XOR<OrderLineCreateWithoutPartInput, OrderLineUncheckedCreateWithoutPartInput>
+  }
+
+  export type OrderLineUpdateWithWhereUniqueWithoutPartInput = {
+    where: OrderLineWhereUniqueInput
+    data: XOR<OrderLineUpdateWithoutPartInput, OrderLineUncheckedUpdateWithoutPartInput>
+  }
+
+  export type OrderLineUpdateManyWithWhereWithoutPartInput = {
+    where: OrderLineScalarWhereInput
+    data: XOR<OrderLineUpdateManyMutationInput, OrderLineUncheckedUpdateManyWithoutPartInput>
+  }
+
+  export type OrderLineScalarWhereInput = {
+    AND?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
+    OR?: OrderLineScalarWhereInput[]
+    NOT?: OrderLineScalarWhereInput | OrderLineScalarWhereInput[]
+    id?: StringFilter<"OrderLine"> | string
+    orderId?: StringFilter<"OrderLine"> | string
+    partId?: StringFilter<"OrderLine"> | string
+    quantityOrdered?: IntFilter<"OrderLine"> | number
+    quantityReceived?: IntFilter<"OrderLine"> | number
+    costPrice?: FloatFilter<"OrderLine"> | number
+    repairId?: StringNullableFilter<"OrderLine"> | string | null
+    status?: StringFilter<"OrderLine"> | string
+  }
+
   export type RepairServiceCreateWithoutServiceInput = {
     id?: string
     quantity?: number
@@ -23279,6 +26216,7 @@ export namespace Prisma {
     createdAt?: Date | string
     quality?: string | null
     model?: DeviceModelCreateNestedOneWithoutPartsInput
+    orderLines?: OrderLineCreateNestedManyWithoutPartInput
   }
 
   export type PartUncheckedCreateWithoutServicesInput = {
@@ -23298,6 +26236,7 @@ export namespace Prisma {
     modelId?: string | null
     createdAt?: Date | string
     quality?: string | null
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutPartInput
   }
 
   export type PartCreateOrConnectWithoutServicesInput = {
@@ -23387,6 +26326,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     model?: DeviceModelUpdateOneWithoutPartsNestedInput
+    orderLines?: OrderLineUpdateManyWithoutPartNestedInput
   }
 
   export type PartUncheckedUpdateWithoutServicesInput = {
@@ -23406,6 +26346,7 @@ export namespace Prisma {
     modelId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quality?: NullableStringFieldUpdateOperationsInput | string | null
+    orderLines?: OrderLineUncheckedUpdateManyWithoutPartNestedInput
   }
 
   export type DeviceModelUpsertWithoutServicesInput = {
@@ -23453,6 +26394,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutInvoicesInput
     quote?: QuoteCreateNestedOneWithoutInvoiceInput
     createdBy?: UserCreateNestedOneWithoutCreatedInvoicesInput
@@ -23474,6 +26416,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
     quote?: QuoteUncheckedCreateNestedOneWithoutInvoiceInput
   }
 
@@ -23495,6 +26438,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     taxDetails?: string | null
+    isArchived?: boolean
     client: ClientCreateNestedOneWithoutQuotesInput
     invoice?: InvoiceCreateNestedOneWithoutQuoteInput
     createdBy?: UserCreateNestedOneWithoutCreatedQuotesInput
@@ -23516,6 +26460,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taxDetails?: string | null
     createdById?: string | null
+    isArchived?: boolean
   }
 
   export type QuoteCreateOrConnectWithoutRepairInput = {
@@ -23606,6 +26551,31 @@ export namespace Prisma {
   export type RepairServiceCreateOrConnectWithoutRepairInput = {
     where: RepairServiceWhereUniqueInput
     create: XOR<RepairServiceCreateWithoutRepairInput, RepairServiceUncheckedCreateWithoutRepairInput>
+  }
+
+  export type OrderLineCreateWithoutRepairInput = {
+    id?: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    status?: string
+    order: OrderCreateNestedOneWithoutLinesInput
+    part: PartCreateNestedOneWithoutOrderLinesInput
+  }
+
+  export type OrderLineUncheckedCreateWithoutRepairInput = {
+    id?: string
+    orderId: string
+    partId: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    status?: string
+  }
+
+  export type OrderLineCreateOrConnectWithoutRepairInput = {
+    where: OrderLineWhereUniqueInput
+    create: XOR<OrderLineCreateWithoutRepairInput, OrderLineUncheckedCreateWithoutRepairInput>
   }
 
   export type UserCreateWithoutCreatedRepairsInput = {
@@ -23793,6 +26763,22 @@ export namespace Prisma {
     data: XOR<RepairServiceUpdateManyMutationInput, RepairServiceUncheckedUpdateManyWithoutRepairInput>
   }
 
+  export type OrderLineUpsertWithWhereUniqueWithoutRepairInput = {
+    where: OrderLineWhereUniqueInput
+    update: XOR<OrderLineUpdateWithoutRepairInput, OrderLineUncheckedUpdateWithoutRepairInput>
+    create: XOR<OrderLineCreateWithoutRepairInput, OrderLineUncheckedCreateWithoutRepairInput>
+  }
+
+  export type OrderLineUpdateWithWhereUniqueWithoutRepairInput = {
+    where: OrderLineWhereUniqueInput
+    data: XOR<OrderLineUpdateWithoutRepairInput, OrderLineUncheckedUpdateWithoutRepairInput>
+  }
+
+  export type OrderLineUpdateManyWithWhereWithoutRepairInput = {
+    where: OrderLineScalarWhereInput
+    data: XOR<OrderLineUpdateManyMutationInput, OrderLineUncheckedUpdateManyWithoutRepairInput>
+  }
+
   export type UserUpsertWithoutCreatedRepairsInput = {
     update: XOR<UserUpdateWithoutCreatedRepairsInput, UserUncheckedUpdateWithoutCreatedRepairsInput>
     create: XOR<UserCreateWithoutCreatedRepairsInput, UserUncheckedCreateWithoutCreatedRepairsInput>
@@ -23889,6 +26875,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutRepairInput
     client: ClientCreateNestedOneWithoutRepairsInput
     logs?: RepairLogCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
@@ -23905,6 +26892,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutServicesInput = {
@@ -23974,6 +26962,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutRepairNestedInput
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
@@ -23990,6 +26979,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type ServiceUpsertWithoutRepairsInput = {
@@ -24049,6 +27039,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutRepairInput
     client: ClientCreateNestedOneWithoutRepairsInput
     services?: RepairServiceCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineCreateNestedManyWithoutRepairInput
     createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
     updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
   }
@@ -24065,6 +27056,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
     services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+    orderLines?: OrderLineUncheckedCreateNestedManyWithoutRepairInput
   }
 
   export type RepairCreateOrConnectWithoutLogsInput = {
@@ -24130,6 +27122,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutRepairNestedInput
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
@@ -24146,6 +27139,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type UserUpsertWithoutRepairLogsInput = {
@@ -24191,6 +27185,275 @@ export namespace Prisma {
     createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
+  export type OrderLineCreateWithoutOrderInput = {
+    id?: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    status?: string
+    part: PartCreateNestedOneWithoutOrderLinesInput
+    repair?: RepairCreateNestedOneWithoutOrderLinesInput
+  }
+
+  export type OrderLineUncheckedCreateWithoutOrderInput = {
+    id?: string
+    partId: string
+    quantityOrdered: number
+    quantityReceived?: number
+    costPrice: number
+    repairId?: string | null
+    status?: string
+  }
+
+  export type OrderLineCreateOrConnectWithoutOrderInput = {
+    where: OrderLineWhereUniqueInput
+    create: XOR<OrderLineCreateWithoutOrderInput, OrderLineUncheckedCreateWithoutOrderInput>
+  }
+
+  export type OrderLineUpsertWithWhereUniqueWithoutOrderInput = {
+    where: OrderLineWhereUniqueInput
+    update: XOR<OrderLineUpdateWithoutOrderInput, OrderLineUncheckedUpdateWithoutOrderInput>
+    create: XOR<OrderLineCreateWithoutOrderInput, OrderLineUncheckedCreateWithoutOrderInput>
+  }
+
+  export type OrderLineUpdateWithWhereUniqueWithoutOrderInput = {
+    where: OrderLineWhereUniqueInput
+    data: XOR<OrderLineUpdateWithoutOrderInput, OrderLineUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type OrderLineUpdateManyWithWhereWithoutOrderInput = {
+    where: OrderLineScalarWhereInput
+    data: XOR<OrderLineUpdateManyMutationInput, OrderLineUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type OrderCreateWithoutLinesInput = {
+    id?: string
+    number: string
+    status?: string
+    supplier?: string | null
+    totalHT?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrderUncheckedCreateWithoutLinesInput = {
+    id?: string
+    number: string
+    status?: string
+    supplier?: string | null
+    totalHT?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OrderCreateOrConnectWithoutLinesInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutLinesInput, OrderUncheckedCreateWithoutLinesInput>
+  }
+
+  export type PartCreateWithoutOrderLinesInput = {
+    id?: string
+    name: string
+    sku: string
+    costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
+    stock?: number
+    reservedQuantity?: number
+    minStock?: number
+    supplier?: string | null
+    supplierRef?: string | null
+    location?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    quality?: string | null
+    model?: DeviceModelCreateNestedOneWithoutPartsInput
+    services?: ServiceCreateNestedManyWithoutPartInput
+  }
+
+  export type PartUncheckedCreateWithoutOrderLinesInput = {
+    id?: string
+    name: string
+    sku: string
+    costPrice: number
+    sellingPrice?: number | null
+    vatRate?: number
+    stock?: number
+    reservedQuantity?: number
+    minStock?: number
+    supplier?: string | null
+    supplierRef?: string | null
+    location?: string | null
+    description?: string | null
+    modelId?: string | null
+    createdAt?: Date | string
+    quality?: string | null
+    services?: ServiceUncheckedCreateNestedManyWithoutPartInput
+  }
+
+  export type PartCreateOrConnectWithoutOrderLinesInput = {
+    where: PartWhereUniqueInput
+    create: XOR<PartCreateWithoutOrderLinesInput, PartUncheckedCreateWithoutOrderLinesInput>
+  }
+
+  export type RepairCreateWithoutOrderLinesInput = {
+    id?: string
+    status?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceCreateNestedManyWithoutRepairInput
+    quotes?: QuoteCreateNestedManyWithoutRepairInput
+    client: ClientCreateNestedOneWithoutRepairsInput
+    logs?: RepairLogCreateNestedManyWithoutRepairInput
+    services?: RepairServiceCreateNestedManyWithoutRepairInput
+    createdBy?: UserCreateNestedOneWithoutCreatedRepairsInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedRepairsInput
+  }
+
+  export type RepairUncheckedCreateWithoutOrderLinesInput = {
+    id?: string
+    status?: string
+    clientId: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: string | null
+    updatedById?: string | null
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutRepairInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutRepairInput
+    logs?: RepairLogUncheckedCreateNestedManyWithoutRepairInput
+    services?: RepairServiceUncheckedCreateNestedManyWithoutRepairInput
+  }
+
+  export type RepairCreateOrConnectWithoutOrderLinesInput = {
+    where: RepairWhereUniqueInput
+    create: XOR<RepairCreateWithoutOrderLinesInput, RepairUncheckedCreateWithoutOrderLinesInput>
+  }
+
+  export type OrderUpsertWithoutLinesInput = {
+    update: XOR<OrderUpdateWithoutLinesInput, OrderUncheckedUpdateWithoutLinesInput>
+    create: XOR<OrderCreateWithoutLinesInput, OrderUncheckedCreateWithoutLinesInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutLinesInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutLinesInput, OrderUncheckedUpdateWithoutLinesInput>
+  }
+
+  export type OrderUpdateWithoutLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrderUncheckedUpdateWithoutLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    totalHT?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PartUpsertWithoutOrderLinesInput = {
+    update: XOR<PartUpdateWithoutOrderLinesInput, PartUncheckedUpdateWithoutOrderLinesInput>
+    create: XOR<PartCreateWithoutOrderLinesInput, PartUncheckedCreateWithoutOrderLinesInput>
+    where?: PartWhereInput
+  }
+
+  export type PartUpdateToOneWithWhereWithoutOrderLinesInput = {
+    where?: PartWhereInput
+    data: XOR<PartUpdateWithoutOrderLinesInput, PartUncheckedUpdateWithoutOrderLinesInput>
+  }
+
+  export type PartUpdateWithoutOrderLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: DeviceModelUpdateOneWithoutPartsNestedInput
+    services?: ServiceUpdateManyWithoutPartNestedInput
+  }
+
+  export type PartUncheckedUpdateWithoutOrderLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    sellingPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    vatRate?: FloatFieldUpdateOperationsInput | number
+    stock?: IntFieldUpdateOperationsInput | number
+    reservedQuantity?: IntFieldUpdateOperationsInput | number
+    minStock?: IntFieldUpdateOperationsInput | number
+    supplier?: NullableStringFieldUpdateOperationsInput | string | null
+    supplierRef?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    modelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    quality?: NullableStringFieldUpdateOperationsInput | string | null
+    services?: ServiceUncheckedUpdateManyWithoutPartNestedInput
+  }
+
+  export type RepairUpsertWithoutOrderLinesInput = {
+    update: XOR<RepairUpdateWithoutOrderLinesInput, RepairUncheckedUpdateWithoutOrderLinesInput>
+    create: XOR<RepairCreateWithoutOrderLinesInput, RepairUncheckedCreateWithoutOrderLinesInput>
+    where?: RepairWhereInput
+  }
+
+  export type RepairUpdateToOneWithWhereWithoutOrderLinesInput = {
+    where?: RepairWhereInput
+    data: XOR<RepairUpdateWithoutOrderLinesInput, RepairUncheckedUpdateWithoutOrderLinesInput>
+  }
+
+  export type RepairUpdateWithoutOrderLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUpdateManyWithoutRepairNestedInput
+    client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
+    logs?: RepairLogUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
+  }
+
+  export type RepairUncheckedUpdateWithoutOrderLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    invoices?: InvoiceUncheckedUpdateManyWithoutRepairNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
+    logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
+    services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+  }
+
   export type RepairUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
@@ -24202,6 +27465,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
 
@@ -24217,6 +27481,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUncheckedUpdateManyWithoutCreatedByInput = {
@@ -24240,6 +27505,7 @@ export namespace Prisma {
     client?: ClientUpdateOneRequiredWithoutRepairsNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
   }
 
@@ -24255,6 +27521,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -24281,6 +27548,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
@@ -24302,6 +27570,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -24321,6 +27590,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUpdateWithoutCreatedByInput = {
@@ -24336,6 +27606,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     repair?: RepairUpdateOneWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
@@ -24357,6 +27628,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUncheckedUpdateManyWithoutCreatedByInput = {
@@ -24375,6 +27647,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RepairLogUpdateWithoutUserInput = {
@@ -24415,6 +27688,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     repair?: RepairUpdateOneWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
     createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
@@ -24436,6 +27710,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -24455,6 +27730,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUpdateWithoutClientInput = {
@@ -24470,6 +27746,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     repair?: RepairUpdateOneWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
     createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
@@ -24491,6 +27768,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUncheckedUpdateManyWithoutClientInput = {
@@ -24509,6 +27787,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RepairUpdateWithoutClientInput = {
@@ -24521,6 +27800,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUpdateManyWithoutRepairNestedInput
     createdBy?: UserUpdateOneWithoutCreatedRepairsNestedInput
     updatedBy?: UserUpdateOneWithoutUpdatedRepairsNestedInput
   }
@@ -24537,6 +27817,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutRepairNestedInput
     logs?: RepairLogUncheckedUpdateManyWithoutRepairNestedInput
     services?: RepairServiceUncheckedUpdateManyWithoutRepairNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutRepairNestedInput
   }
 
   export type RepairUncheckedUpdateManyWithoutClientInput = {
@@ -24622,6 +27903,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     services?: ServiceUpdateManyWithoutPartNestedInput
+    orderLines?: OrderLineUpdateManyWithoutPartNestedInput
   }
 
   export type PartUncheckedUpdateWithoutModelInput = {
@@ -24641,6 +27923,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quality?: NullableStringFieldUpdateOperationsInput | string | null
     services?: ServiceUncheckedUpdateManyWithoutPartNestedInput
+    orderLines?: OrderLineUncheckedUpdateManyWithoutPartNestedInput
   }
 
   export type PartUncheckedUpdateManyWithoutModelInput = {
@@ -24767,6 +28050,36 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrderLineUpdateWithoutPartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    order?: OrderUpdateOneRequiredWithoutLinesNestedInput
+    repair?: RepairUpdateOneWithoutOrderLinesNestedInput
+  }
+
+  export type OrderLineUncheckedUpdateWithoutPartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OrderLineUncheckedUpdateManyWithoutPartInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
   export type RepairServiceUpdateWithoutServiceInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -24808,6 +28121,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutInvoicesNestedInput
     quote?: QuoteUpdateOneWithoutInvoiceNestedInput
     createdBy?: UserUpdateOneWithoutCreatedInvoicesNestedInput
@@ -24829,6 +28143,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     quote?: QuoteUncheckedUpdateOneWithoutInvoiceNestedInput
   }
 
@@ -24848,6 +28163,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUpdateWithoutRepairInput = {
@@ -24863,6 +28179,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     client?: ClientUpdateOneRequiredWithoutQuotesNestedInput
     invoice?: InvoiceUpdateOneWithoutQuoteNestedInput
     createdBy?: UserUpdateOneWithoutCreatedQuotesNestedInput
@@ -24884,6 +28201,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type QuoteUncheckedUpdateManyWithoutRepairInput = {
@@ -24902,6 +28220,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taxDetails?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RepairLogUpdateWithoutRepairInput = {
@@ -24955,6 +28274,66 @@ export namespace Prisma {
     partStatus?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type OrderLineUpdateWithoutRepairInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    order?: OrderUpdateOneRequiredWithoutLinesNestedInput
+    part?: PartUpdateOneRequiredWithoutOrderLinesNestedInput
+  }
+
+  export type OrderLineUncheckedUpdateWithoutRepairInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    partId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OrderLineUncheckedUpdateManyWithoutRepairInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    partId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OrderLineUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    part?: PartUpdateOneRequiredWithoutOrderLinesNestedInput
+    repair?: RepairUpdateOneWithoutOrderLinesNestedInput
+  }
+
+  export type OrderLineUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    partId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type OrderLineUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    partId?: StringFieldUpdateOperationsInput | string
+    quantityOrdered?: IntFieldUpdateOperationsInput | number
+    quantityReceived?: IntFieldUpdateOperationsInput | number
+    costPrice?: FloatFieldUpdateOperationsInput | number
+    repairId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+  }
+
 
 
   /**
@@ -24992,6 +28371,10 @@ export namespace Prisma {
      * @deprecated Use RepairCountOutputTypeDefaultArgs instead
      */
     export type RepairCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = RepairCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use OrderCountOutputTypeDefaultArgs instead
+     */
+    export type OrderCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OrderCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use UserDefaultArgs instead
      */
@@ -25048,6 +28431,14 @@ export namespace Prisma {
      * @deprecated Use WorkshopSettingsDefaultArgs instead
      */
     export type WorkshopSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = WorkshopSettingsDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use OrderDefaultArgs instead
+     */
+    export type OrderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OrderDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use OrderLineDefaultArgs instead
+     */
+    export type OrderLineArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OrderLineDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

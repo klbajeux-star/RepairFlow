@@ -23,6 +23,7 @@ import {
   ShoppingBag,
   Loader2,
   StickyNote,
+  Archive,
   Lock as LockIcon,
 } from 'lucide-react'
 import {
@@ -219,24 +220,27 @@ function BillingContent() {
   const [draftDueDate, setDraftDueDate] = useState<string>('')
   const [draftPaymentMethod, setDraftPaymentMethod] = useState<string>('VIREMENT')
   const [draftValidity, setDraftValidity] = useState<number>(30)
+  const [draftArchived, setDraftArchived] = useState(false)
   
   // Search & Filter
   const [search, setSearch] = useState('')
   const [shopSearch, setShopSearch] = useState('')
+  const [showArchived, setShowArchived] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
     void loadInitialData()
-  }, [])
+  }, [showArchived])
 
   async function loadInitialData() {
     try {
       setIsLoading(true)
+      const archParam = showArchived ? '?archived=true' : ''
       const [quotesRes, invoicesRes, clientsRes, shopRes, repairsRes, settingsRes] = await Promise.all([
-        fetch('/api/quotes'),
-        fetch('/api/invoices'),
+        fetch(`/api/quotes${archParam}`),
+        fetch(`/api/invoices${archParam}`),
         fetch('/api/clients'),
         fetch('/api/shop'),
         fetch('/api/repairs'),
@@ -404,6 +408,7 @@ function BillingContent() {
       setDraftQuoteNumber(null)
       setInitialPaid(false)
     }
+    setDraftArchived(!!doc.isArchived)
     setSelectedDocId(doc.id)
     setSelectedDocType(type)
     setShowEditor(true)
@@ -792,6 +797,16 @@ function BillingContent() {
                 <Wrench className="w-4 h-4" />
                 Tickets Atelier
               </button>
+
+              <div className="w-px h-8 bg-slate-100 mx-2 self-center" />
+
+              <button 
+                onClick={() => setShowArchived(!showArchived)}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all ${showArchived ? 'bg-amber-500 text-white shadow-lg' : 'text-slate-400 hover:text-amber-500'}`}
+              >
+                <Archive className="w-4 h-4" />
+                {showArchived ? 'Masquer Archives' : 'Voir Archives'}
+              </button>
             </div>
 
             {/* Filter Bar */}
@@ -857,7 +872,12 @@ function BillingContent() {
                       className="group cursor-pointer hover:bg-white/40 transition-colors"
                     >
                       <td className="px-8 py-5">
-                        <p className="font-black text-slate-950">{doc.number}</p>
+                        <div className="flex items-center gap-3">
+                          <p className="font-black text-slate-950">{doc.number}</p>
+                          {(doc as any).isArchived && (
+                            <span className="bg-amber-100 text-amber-700 text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Archivé</span>
+                          )}
+                        </div>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">REF: {doc.id.slice(-6).toUpperCase()}</p>
                       </td>
                       <td className="px-8 py-5">
@@ -965,6 +985,41 @@ function BillingContent() {
                 <Printer className="w-5 h-5" />
                 Imprimer
               </button>
+
+              {selectedDocId && (
+                <button 
+                  onClick={async () => {
+                    try {
+                      setIsSaving(true)
+                      const targetValue = !draftArchived
+                      const res = await fetch(`/api/${editorMode === 'quote' ? 'quotes' : 'invoices'}/${selectedDocId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ isArchived: targetValue }),
+                      })
+                      if (res.ok) {
+                        setDraftArchived(targetValue)
+                        if (targetValue && !showArchived) {
+                          setShowEditor(false)
+                        }
+                        await loadInitialData()
+                      }
+                    } catch (err) {
+                      alert('Erreur lors de l\'archivage.')
+                    } finally {
+                      setIsSaving(false)
+                    }
+                  }}
+                  className={`flex h-14 items-center gap-2 rounded-2xl border px-6 text-sm font-bold shadow-sm transition-all active:scale-95 ${
+                    draftArchived 
+                    ? 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200' 
+                    : 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100'
+                  }`}
+                >
+                  <Archive className="w-5 h-5" />
+                  {draftArchived ? 'Désarchiver' : 'Archiver'}
+                </button>
+              )}
             </div>
           </div>
 
@@ -1107,21 +1162,33 @@ function BillingContent() {
                                          {(((line.price || 0) * (line.quantity || 1)) / (1 + (line.vatRate || 20) / 100)).toFixed(2)} €
                                        </p>
                                     </td>
-                                    <td className="py-6 px-4 text-right print:hidden">
-                                       {!isLocked && (
-                                         <button 
-                                           onClick={() => removeLine(idx)}
-                                           className="p-2 text-slate-300 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100"
-                                         >
-                                           <Trash2 className="w-4 h-4" />
-                                         </button>
-                                       )}
-                                    </td>
-                                 </tr>
-                               ))}
-                            </tbody>
-                         </table>
-                      </div>
+                                     <td className="py-6 px-4 text-right print:hidden">
+                                        {!isLocked && (
+                                          <button 
+                                            onClick={() => removeLine(idx)}
+                                            className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
+                                            title="Supprimer la ligne"
+                                          >
+                                            <Trash2 className="w-4 h-4" />
+                                          </button>
+                                        )}
+                                     </td>
+                                  </tr>
+                                ))}
+                             </tbody>
+                          </table>
+
+                          {!isLocked && (
+                            <button 
+                              onClick={addLine}
+                              className="mt-4 flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-slate-200 text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all group w-full justify-center"
+                            >
+                              <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-black uppercase tracking-widest">Ajouter une ligne de prestation</span>
+                            </button>
+                          )}
+                       </div>
+
 
                     <div className="mt-24 pt-12 border-t border-slate-100 flex justify-between items-start">
                         <div className="max-w-md">

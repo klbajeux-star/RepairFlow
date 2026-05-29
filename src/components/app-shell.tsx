@@ -85,7 +85,12 @@ function isNavItemActive(pathname: string, href: string) {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
+  if (pathname === '/login') {
+    return <div className="min-h-screen">{children}</div>
+  }
+
   const currentPage = useMemo(() => {
+
     return pageMeta[pathname] ?? pageMeta['/']
   }, [pathname])
 

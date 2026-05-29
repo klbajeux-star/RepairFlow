@@ -83,6 +83,7 @@ export async function PATCH(
         notes: json.notes !== undefined ? optionalString(json.notes) : undefined,
         dueDate: json.dueDate ? new Date(json.dueDate) : undefined,
         paymentMethod: json.paymentMethod !== undefined ? optionalString(json.paymentMethod) : undefined,
+        isArchived: json.isArchived !== undefined ? !!json.isArchived : undefined,
       },
       include: {
         client: true,

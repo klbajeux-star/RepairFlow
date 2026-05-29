@@ -42,9 +42,27 @@ async function generateInvoiceNumber() {
   return `FAC-${year}-${seq.toString().padStart(4, '0')}`
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const includeArchived = searchParams.get('archived') === 'true'
+
+    // Auto-archive paid invoices older than 30 days
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+    await prisma.invoice.updateMany({
+      where: {
+        paid: true,
+        status: 'EMISE',
+        createdAt: { lt: thirtyDaysAgo },
+        isArchived: false
+      },
+      data: { isArchived: true }
+    })
+
     const invoices = await prisma.invoice.findMany({
+      where: includeArchived ? {} : { isArchived: false },
       include: {
         client: true,
         repair: true,

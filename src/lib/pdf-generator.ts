@@ -64,8 +64,9 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
   try {
     const { type, number, date, client, items, totalHT, totalTTC, taxDetails, notes, ticketRef, quoteRef, settings } = data
     const doc = new jsPDF()
-    const margin = 20
-    let y = 30
+    const margin = 15
+    let y = 25
+
 
     // LOGO SECTION
     doc.setFillColor(15, 23, 42) // Slate 950
@@ -125,13 +126,21 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     y += 4
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(100, 116, 139) // Slate 500
-    doc.text(`${settings?.address || '123 Avenue de la Réparation'}, ${settings?.zipCode || '75001'} ${settings?.city || 'Paris'}`, margin, y)
     
-    y += 4
-    doc.text(`Tél: ${settings?.phone || '01 23 45 67 89'} — Email: ${settings?.email || 'contact@repairflow.fr'}`, margin, y)
+    const workshopAddress = `${settings?.address || '123 Avenue de la Réparation'}, ${settings?.zipCode || '75001'} ${settings?.city || 'Paris'}`
+    const splitWorkshopAddress = doc.splitTextToSize(workshopAddress, 110)
+    doc.text(splitWorkshopAddress, margin, y)
     
-    y += 4
-    doc.text(`SIRET: ${settings?.siret || '123 456 789 00012'} — TVA: ${settings?.vatNumber || 'FR 12 123 456 789'}`, margin, y)
+    y += (splitWorkshopAddress.length * 4)
+    const workshopContact = `Tél: ${settings?.phone || '01 23 45 67 89'} — Email: ${settings?.email || 'contact@repairflow.fr'}`
+    const splitWorkshopContact = doc.splitTextToSize(workshopContact, 110)
+    doc.text(splitWorkshopContact, margin, y)
+    
+    y += (splitWorkshopContact.length * 4)
+    const workshopIds = `SIRET: ${settings?.siret || '123 456 789 00012'} — TVA: ${settings?.vatNumber || 'FR 12 123 456 789'}`
+    const splitWorkshopIds = doc.splitTextToSize(workshopIds, 110)
+    doc.text(splitWorkshopIds, margin, y)
+
 
     y += 20
 
@@ -151,10 +160,12 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
     y += 8
     doc.setFontSize(18)
     doc.setTextColor(15, 23, 42)
-    doc.text(client.name.toUpperCase(), margin, y)
+    const splitClientName = doc.splitTextToSize(client.name.toUpperCase(), colWidth)
+    doc.text(splitClientName, margin, y)
     
-    y += 5
+    y += (splitClientName.length * 7)
     doc.setFontSize(10)
+
     doc.setTextColor(71, 85, 105)
     doc.setFont('helvetica', 'normal')
     if (client.address) {
@@ -218,18 +229,29 @@ export async function generatePDF(data: DocumentData): Promise<Uint8Array> {
       const puHT = line.price / (1 + rate / 100)
       const totalHTLine = (line.price * line.quantity) / (1 + rate / 100)
 
+      // GESTION DU TEXTE LONG (WRAPPING)
       doc.setFont('helvetica', 'bold')
-      doc.text(line.name, margin + 4, y)
+      const maxWidth = 85 // Largeur max pour la description
+      const splitName = doc.splitTextToSize(line.name, maxWidth)
+      
+      // Affichage du nom (peut occuper plusieurs lignes)
+      doc.text(splitName, margin + 4, y)
+      
+      const linesCount = splitName.length
       
       doc.setFont('helvetica', 'normal')
       doc.text(line.quantity.toString(), 115, y, { align: 'center' })
       doc.text(`${(puHT || 0).toFixed(2)} €`, 140, y, { align: 'right' })
-      doc.text(`${line.quantity}`, 165, y, { align: 'center' })
+      doc.text(`${rate}%`, 160, y, { align: 'center' })
       doc.text(`${(totalHTLine || 0).toFixed(2)} €`, 190, y, { align: 'right' })
       
-      y += 10
-      doc.line(margin, y - 6, 210 - margin, y - 6)
+      // Ajustement dynamique de la hauteur de ligne
+      const rowHeight = Math.max(10, (linesCount * 5) + 2)
+      y += rowHeight
+      doc.setDrawColor(241, 245, 249) // Slate 100 pour les lignes séparatrices
+      doc.line(margin, y - 4, 210 - margin, y - 4)
     })
+
 
     y += 10
 

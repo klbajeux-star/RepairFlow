@@ -7,6 +7,7 @@ export type MissingPart = {
   partId: string
   name: string
   sku: string
+  costPrice: number
   currentStock: number
   totalNeeded: number
   quantityToOrder: number
@@ -32,6 +33,13 @@ export function calculateMissingParts(repairs: any[]): MissingPart[] {
   activeRepairs.forEach(repair => {
     // Navigate through the Prisma include structure: repair.services[].service.part
     repair.services?.forEach((rs: any) => {
+      // DEBUG: console.log(`Repair ${repair.id} - Part: ${rs.service?.part?.name} - Status: ${rs.partStatus}`)
+      
+      // On compte les pièces qui ne sont pas encore COMMANDÉES ou REÇUES
+      // On NE skip PAS 'IN_STOCK' car si le stock a baissé manuellement, 
+      // il faut pouvoir redéclencher une commande.
+      if (rs.partStatus === 'ORDERED' || rs.partStatus === 'RECEIVED') return
+
       const part = rs.service?.part
       if (part) {
         const partId = part.id
@@ -42,6 +50,7 @@ export function calculateMissingParts(repairs: any[]): MissingPart[] {
             partId,
             name: part.name,
             sku: part.sku,
+            costPrice: part.costPrice || 0,
             currentStock: part.stock,
             totalNeeded: 0,
             quantityToOrder: 0,

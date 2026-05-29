@@ -160,7 +160,8 @@ exports.Prisma.QuoteScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   taxDetails: 'taxDetails',
-  createdById: 'createdById'
+  createdById: 'createdById',
+  isArchived: 'isArchived'
 };
 
 exports.Prisma.InvoiceScalarFieldEnum = {
@@ -179,7 +180,8 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   taxDetails: 'taxDetails',
-  createdById: 'createdById'
+  createdById: 'createdById',
+  isArchived: 'isArchived'
 };
 
 exports.Prisma.DeviceTypeScalarFieldEnum = {
@@ -310,6 +312,27 @@ exports.Prisma.WorkshopSettingsScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  status: 'status',
+  supplier: 'supplier',
+  totalHT: 'totalHT',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OrderLineScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  partId: 'partId',
+  quantityOrdered: 'quantityOrdered',
+  quantityReceived: 'quantityReceived',
+  costPrice: 'costPrice',
+  repairId: 'repairId',
+  status: 'status'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -335,7 +358,9 @@ exports.Prisma.ModelName = {
   RepairService: 'RepairService',
   RepairLog: 'RepairLog',
   ShopProduct: 'ShopProduct',
-  WorkshopSettings: 'WorkshopSettings'
+  WorkshopSettings: 'WorkshopSettings',
+  Order: 'Order',
+  OrderLine: 'OrderLine'
 };
 
 /**

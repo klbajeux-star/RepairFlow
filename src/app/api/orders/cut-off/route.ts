@@ -28,6 +28,7 @@ export async function GET() {
       id: mp.partId,
       name: mp.name,
       sku: mp.sku,
+      costPrice: mp.costPrice,
       supplier: 'Générique', // On pourra affiner avec mp.supplier si on l'ajoute à MissingPart
       supplierRef: null,
       quantity: mp.quantityToOrder,

@@ -23,6 +23,8 @@ import {
   Trash2,
   Wrench,
   X,
+  ShoppingCart,
+  Truck,
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/repair'
 import { SideDrawer } from '@/components/side-drawer'
@@ -33,8 +35,9 @@ import {
   analyzeMargin, 
   PricingParams 
 } from '@/lib/pricing-engine'
+import { OrdersWorkspace } from './orders-workspace'
 
-type CatalogTab = 'models' | 'services' | 'parts'
+type CatalogTab = 'models' | 'services' | 'parts' | 'orders'
 
 interface Brand {
   id: string
@@ -187,91 +190,66 @@ export function CatalogWorkspace() {
   const paramTab = searchParams.get('tab') as CatalogTab
   
   const [activeTab, setActiveTab] = useState<CatalogTab>(paramTab || 'models')
-  const [brands, setBrands] = useState<Brand[]>([])
-  const [types, setTypes] = useState<DeviceType[]>([])
   const [models, setModels] = useState<DeviceModel[]>([])
   const [services, setServices] = useState<Service[]>([])
   const [parts, setParts] = useState<Part[]>([])
-  
-  const [search, setSearch] = useState('')
-  const [modelSearch, setModelSearch] = useState('')
-  const [showModelSuggestions, setShowModelSuggestions] = useState(false)
+  const [brands, setBrands] = useState<Brand[]>([])
+  const [types, setTypes] = useState<DeviceType[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
-  const filteredModelSuggestions = useMemo(() => {
-    const q = modelSearch.trim().toLowerCase()
-    if (!q) return []
-    return models
-      .filter((m) => m.name.toLowerCase().includes(q) || m.brand.name.toLowerCase().includes(q))
-      .slice(0, 5)
-  }, [models, modelSearch])
   const [isSaving, setIsSaving] = useState(false)
-  const [valuation, setValuation] = useState<{ totalValue: number; totalItems: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [drawerError, setDrawerError] = useState<string | null>(null)
-
-  // Drawer states
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [drawerType, setDrawerType] = useState<'model' | 'service' | 'part' | 'brand' | 'type' | null>(null)
-  const [editingId, setEditingId] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
+  const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null)
   
-  // Form states
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerType, setDrawerType] = useState<'model' | 'service' | 'part' | 'brand' | 'type'>('model')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [drawerError, setDrawerError] = useState<string | null>(null)
+  
   const [modelForm, setModelForm] = useState(initialModelForm)
   const [serviceForm, setServiceForm] = useState(initialServiceForm)
   const [partForm, setPartForm] = useState(initialPartForm)
   const [brandForm, setBrandForm] = useState({ name: '' })
-  const [typeForm, setTypeForm] = useState({ 
-    name: '',
-    defaultExtraCosts: '0',
-    defaultCoefficient: '2.0',
-    minMarginRate: '30'
-  })
-
-  // Filter states
-  const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
-  const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null)
+  const [typeForm, setTypeForm] = useState({ name: '', defaultExtraCosts: '0', defaultCoefficient: '2.0', minMarginRate: '30' })
+  
+  const [modelSearch, setModelSearch] = useState('')
+  const [showModelSuggestions, setShowModelSuggestions] = useState(false)
+  const [ordersCount, setOrdersCount] = useState(0)
 
   useEffect(() => {
-    void loadAllData()
-    void fetchValuation()
+    loadAllData()
   }, [])
 
-  async function fetchValuation() {
-    try {
-      const res = await fetch('/api/inventory/valuation')
-      const data = await res.json()
-      setValuation(data.summary)
-    } catch (e) {
-      console.error('Failed to fetch valuation:', e)
-    }
-  }
-
   async function loadAllData() {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
-      const [bRes, tRes, mRes, sRes, pRes] = await Promise.all([
-        fetch('/api/brands'),
-        fetch('/api/types'),
+      const [modelsRes, servicesRes, partsRes, brandsRes, typesRes, ordersRes] = await Promise.all([
         fetch('/api/models'),
         fetch('/api/services'),
         fetch('/api/parts'),
+        fetch('/api/brands'),
+        fetch('/api/types'),
+        fetch('/api/orders')
       ])
 
-      const [bData, tData, mData, sData, pData] = await Promise.all([
-        bRes.json(),
-        tRes.json(),
-        mRes.json(),
-        sRes.json(),
-        pRes.json(),
+      const [m, s, p, b, t, o] = await Promise.all([
+        modelsRes.json(),
+        servicesRes.json(),
+        partsRes.json(),
+        brandsRes.json(),
+        typesRes.json(),
+        ordersRes.json()
       ])
 
-      setBrands(bData)
-      setTypes(tData)
-      setModels(mData)
-      setServices(sData)
-      setParts(pData)
-    } catch (err) {
-      setError('Erreur lors du chargement du catalogue.')
+      setModels(m)
+      setServices(s)
+      setParts(p)
+      setBrands(b)
+      setTypes(t)
+      setOrdersCount(o.length)
+    } catch (error) {
+      console.error('Failed to load catalog data', error)
     } finally {
       setIsLoading(false)
     }
@@ -300,6 +278,12 @@ export function CatalogWorkspace() {
     }
     return counts
   }, [activeTab, models, services, parts])
+
+  const valuation = useMemo(() => {
+    const totalValue = parts.reduce((acc, p) => acc + (p.costPrice * p.stock), 0)
+    const totalItems = parts.reduce((acc, p) => acc + p.stock, 0)
+    return { totalValue, totalItems }
+  }, [parts])
 
   const handleExportInventory = () => {
     window.open('/api/inventory/valuation?export=true', '_blank')
@@ -573,7 +557,8 @@ export function CatalogWorkspace() {
   return (
     <div className="flex h-full gap-8 p-12 overflow-hidden">
       {/* Sidebar Filter */}
-      <aside className="flex h-full w-[340px] flex-col gap-6 overflow-hidden">
+      {activeTab !== 'orders' && (
+        <aside className="flex h-full w-[340px] flex-col gap-6 overflow-hidden">
         <div className="space-y-6">
           <div className="rounded-[2rem] border border-white/60 bg-white/40 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/50">
             <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Recherche</p>
@@ -678,10 +663,12 @@ export function CatalogWorkspace() {
               ))}
             </div>
           </div>
-        </div>
-      </aside>
+          </div>
+        </aside>
+      )}
 
       {/* Main Content */}
+
       <main className="flex flex-1 flex-col gap-8 overflow-hidden">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4 lg:gap-6">
@@ -709,6 +696,14 @@ export function CatalogWorkspace() {
                 <Package className="h-4 w-4" />
                 <span className="hidden sm:inline">Pièces</span>
                 <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'parts' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{parts.length}</span>
+              </button>
+              <button 
+                onClick={() => setActiveTab('orders')}
+                className={`flex items-center gap-2 rounded-[1.75rem] px-4 lg:px-6 py-2.5 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'orders' ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/20' : 'text-slate-400 hover:bg-white/60 hover:text-slate-600'}`}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                <span className="hidden sm:inline">Commandes</span>
+                <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] ${activeTab === 'orders' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}`}>{ordersCount}</span>
               </button>
             </nav>
 
@@ -747,165 +742,168 @@ export function CatalogWorkspace() {
 
 
         {/* List Content */}
-        <main>
-          {isLoading ? (
-            <div className="flex h-64 items-center justify-center rounded-[2.5rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-            </div>
-          ) : (
-            <div className="overflow-hidden rounded-[2.5rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
-              <table className="w-full text-left">
-                <thead className="bg-white/50 backdrop-blur-sm">
-                  <tr className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">
-                    {activeTab === 'models' ? (
-                      <>
-                        <th className="px-8 py-5">Marque & Type</th>
-                        <th className="px-8 py-5">Modèle & Réf.</th>
-                        <th className="px-8 py-5">Contenu</th>
-                        <th className="px-8 py-5 text-right">Action</th>
-                      </>
-                    ) : activeTab === 'services' ? (
-                      <>
-                        <th className="px-8 py-5">Forfait & Temps</th>
-                        <th className="px-8 py-5">Modèle Lié</th>
-                        <th className="px-8 py-5">Prix de Vente</th>
-                        <th className="px-8 py-5 text-right">Action</th>
-                      </>
-                    ) : (
-                      <>
-                        <th className="px-8 py-5">Produit & Qualité</th>
-                        <th className="px-8 py-5">SKU / Stock</th>
-                        <th className="px-8 py-5">Coût Achat</th>
-                        <th className="px-8 py-5 text-right">Action</th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/20">
-                  {activeTab === 'models' && filteredModels.map(m => (
-                    <tr key={m.id} className="group hover:bg-white/40 transition-colors">
-                      <td className="px-8 py-5">
-                        <div className="flex flex-col gap-2">
-                          <span className="w-fit rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">{m.brand.name}</span>
-                          <div className={`flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-black uppercase ring-1 ring-inset ${getTypeColor(m.type.name)}`}>
-                            <TypeIcon type={m.type.name} className="h-3 w-3" />
-                            {m.type.name}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5">
-                        <p className="font-black text-slate-950">{m.name}</p>
-                        {m.modelReference && <p className="text-[10px] font-bold text-blue-600 uppercase">{m.modelReference}</p>}
-                      </td>
-                      <td className="px-8 py-5">
-                        <div className="flex gap-4">
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                            <Wrench className="h-3.5 w-3.5" /> {m._count?.services || 0}
-                          </div>
-                          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                            <Package className="h-3.5 w-3.5" /> {m._count?.parts || 0}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 text-right">
-                        <button onClick={() => openDrawer('model', m)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
-                      </td>
+        {activeTab === 'orders' ? (
+          <OrdersWorkspace />
+        ) : (
+          <>
+            {isLoading ? (
+              <div className="flex h-64 items-center justify-center rounded-[2.5rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-[2.5rem] border border-white/60 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
+                <table className="w-full text-left">
+                  <thead className="bg-white/50 backdrop-blur-sm">
+                    <tr className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">
+                      {activeTab === 'models' ? (
+                        <>
+                          <th className="px-8 py-5">Marque & Type</th>
+                          <th className="px-8 py-5">Modèle & Réf.</th>
+                          <th className="px-8 py-5">Contenu</th>
+                          <th className="px-8 py-5 text-right">Action</th>
+                        </>
+                      ) : activeTab === 'services' ? (
+                        <>
+                          <th className="px-8 py-5">Forfait & Temps</th>
+                          <th className="px-8 py-5">Modèle Lié</th>
+                          <th className="px-8 py-5">Prix de Vente</th>
+                          <th className="px-8 py-5 text-right">Action</th>
+                        </>
+                      ) : (
+                        <>
+                          <th className="px-8 py-5">Produit & Qualité</th>
+                          <th className="px-8 py-5">SKU / Stock</th>
+                          <th className="px-8 py-5">Coût Achat</th>
+                          <th className="px-8 py-5 text-right">Action</th>
+                        </>
+                      )}
                     </tr>
-                  ))}
-                  
-                   {activeTab === 'services' && filteredServices.map(s => (
-                    <tr key={s.id} className="group hover:bg-white/40 transition-colors">
-                      <td className="px-8 py-5">
-                        <p className="font-black text-slate-950">{s.name}</p>
-                        <p className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
-                          <Tag className="h-3 w-3" /> {s.duration || 30} min
-                        </p>
-                      </td>
-                      <td className="px-8 py-5">
-                        {s.model ? (
-                          <div className="flex flex-col gap-1.5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{s.model.brand.name}</span>
-                              <span className="text-xs font-black text-slate-950">{s.model.name}</span>
-                            </div>
-                            <div className={`flex w-fit items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase ring-1 ring-inset ${getTypeColor(s.model.type.name)}`}>
-                              <TypeIcon type={s.model.type.name} className="h-2.5 w-2.5" />
-                              {s.model.type.name}
+                  </thead>
+                  <tbody className="divide-y divide-white/20">
+                    {activeTab === 'models' && filteredModels.map(m => (
+                      <tr key={m.id} className="group hover:bg-white/40 transition-colors">
+                        <td className="px-8 py-5">
+                          <div className="flex flex-col gap-2">
+                            <span className="w-fit rounded-lg bg-slate-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider">{m.brand.name}</span>
+                            <div className={`flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-black uppercase ring-1 ring-inset ${getTypeColor(m.type.name)}`}>
+                              <TypeIcon type={m.type.name} className="h-3 w-3" />
+                              {m.type.name}
                             </div>
                           </div>
-                        ) : (
-                          <span className="text-[10px] font-bold text-slate-300 uppercase">Service Générique</span>
-                        )}
-                      </td>
-                      <td className="px-8 py-5">
-                        <div className="flex flex-col gap-1">
-                          <p className="font-black text-emerald-600">{formatCurrency(s.finalPriceTTC)}</p>
-                          {s.laborCost > 0 && (
-                            <div className="flex items-center gap-1.5">
-                              <div className={`h-1.5 w-1.5 rounded-full ${
-                                (s.finalPriceTTC / (1 + (s.vatRate || 20) / 100) - s.laborCost - (s.extraCosts || 0)) / (s.finalPriceTTC / (1 + (s.vatRate || 20) / 100)) * 100 > 30 
-                                ? 'bg-emerald-500' : 'bg-amber-500'
+                        </td>
+                        <td className="px-8 py-5">
+                          <p className="font-black text-slate-950">{m.name}</p>
+                          {m.modelReference && <p className="text-[10px] font-bold text-blue-600 uppercase">{m.modelReference}</p>}
+                        </td>
+                        <td className="px-8 py-5">
+                          <div className="flex gap-4">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                              <Wrench className="h-3.5 w-3.5" /> {m._count?.services || 0}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                              <Package className="h-3.5 w-3.5" /> {m._count?.parts || 0}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-8 py-5 text-right">
+                          <button onClick={() => openDrawer('model', m)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
+                        </td>
+                      </tr>
+                    ))}
+                    
+                     {activeTab === 'services' && filteredServices.map(s => (
+                      <tr key={s.id} className="group hover:bg-white/40 transition-colors">
+                        <td className="px-8 py-5">
+                          <p className="font-black text-slate-950">{s.name}</p>
+                          <p className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
+                            <Tag className="h-3 w-3" /> {s.duration || 30} min
+                          </p>
+                        </td>
+                        <td className="px-8 py-5">
+                          {s.model ? (
+                            <div className="flex flex-col gap-1.5">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{s.model.brand.name}</span>
+                                <span className="text-xs font-black text-slate-950">{s.model.name}</span>
+                              </div>
+                              <div className={`flex w-fit items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase ring-1 ring-inset ${getTypeColor(s.model.type.name)}`}>
+                                <TypeIcon type={s.model.type.name} className="h-2.5 w-2.5" />
+                                {s.model.type.name}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-[10px] font-bold text-slate-300 uppercase">Service Générique</span>
+                          )}
+                        </td>
+                        <td className="px-8 py-5">
+                          <div className="flex flex-col gap-1">
+                            <p className="font-black text-emerald-600">{formatCurrency(s.finalPriceTTC)}</p>
+                            {s.laborCost > 0 && (
+                              <div className="flex items-center gap-1.5">
+                                <div className={`h-1.5 w-1.5 rounded-full ${
+                                  (s.finalPriceTTC / (1 + (s.vatRate || 20) / 100) - s.laborCost - (s.extraCosts || 0)) / (s.finalPriceTTC / (1 + (s.vatRate || 20) / 100)) * 100 > 30 
+                                  ? 'bg-emerald-500' : 'bg-amber-500'
+                                }`} />
+                                <span className="text-[9px] font-bold text-slate-400 uppercase">
+                                  {s.pricingMode === 'AUTO' ? 'Auto' : 'Manuel'}
+                                </span>
+                              </div>
+                            )}
+                            {s.lastPriceSyncAt && (
+                              <p className="text-[8px] font-bold text-blue-500 animate-pulse">✨ Synchronisé</p>
+                            )}
+                          </div>
+                        </td>
+
+                        <td className="px-8 py-5 text-right">
+                          <button onClick={() => openDrawer('service', s)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {activeTab === 'parts' && filteredParts.map(p => (
+                      <tr key={p.id} className="group hover:bg-white/40 transition-colors">
+                        <td className="px-8 py-5">
+                          <p className="font-black text-slate-950">{p.name}</p>
+                          <span className="inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[9px] font-black text-slate-500 uppercase">{p.quality || 'N/A'}</span>
+                        </td>
+                        <td className="px-8 py-5">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{p.sku}</p>
+                          <div className="mt-2 flex flex-col gap-1.5">
+                            <div className="flex items-center gap-2">
+                              <div className={`h-2 w-2 rounded-full shadow-sm ${
+                                p.stock === 0 
+                                  ? 'bg-rose-500 animate-pulse' 
+                                  : p.stock <= (p.minStock || 0) 
+                                  ? 'bg-amber-500 animate-pulse' 
+                                  : 'bg-emerald-500'
                               }`} />
-                              <span className="text-[9px] font-bold text-slate-400 uppercase">
-                                {s.pricingMode === 'AUTO' ? 'Auto' : 'Manuel'}
+                              <span className={`text-xs font-black ${
+                                p.stock === 0 ? 'text-rose-600' : p.stock <= (p.minStock || 0) ? 'text-amber-600' : 'text-slate-700'
+                              }`}>
+                                {p.stock} en stock
                               </span>
                             </div>
-                          )}
-                          {s.lastPriceSyncAt && (
-                            <p className="text-[8px] font-bold text-blue-500 animate-pulse">✨ Synchronisé</p>
-                          )}
-                        </div>
-                      </td>
-
-                      <td className="px-8 py-5 text-right">
-                        <button onClick={() => openDrawer('service', s)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {activeTab === 'parts' && filteredParts.map(p => (
-                    <tr key={p.id} className="group hover:bg-white/40 transition-colors">
-                      <td className="px-8 py-5">
-                        <p className="font-black text-slate-950">{p.name}</p>
-                        <span className="inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[9px] font-black text-slate-500 uppercase">{p.quality || 'N/A'}</span>
-                      </td>
-                      <td className="px-8 py-5">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{p.sku}</p>
-                        <div className="mt-2 flex flex-col gap-1.5">
-                          <div className="flex items-center gap-2">
-                            <div className={`h-2 w-2 rounded-full shadow-sm ${
-                              p.stock === 0 
-                                ? 'bg-rose-500 animate-pulse' 
-                                : p.stock <= (p.minStock || 0) 
-                                ? 'bg-amber-500 animate-pulse' 
-                                : 'bg-emerald-500'
-                            }`} />
-                            <span className={`text-xs font-black ${
-                              p.stock === 0 ? 'text-rose-600' : p.stock <= (p.minStock || 0) ? 'text-amber-600' : 'text-slate-700'
-                            }`}>
-                              {p.stock} en stock
-                            </span>
+                            
+                            {(p.reservedQuantity ?? 0) > 0 && (
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight text-blue-500">
+                                  <span>{p.reservedQuantity} réservé{p.reservedQuantity > 1 ? 's' : ''}</span>
+                                  <span>{Math.round((p.reservedQuantity / p.stock) * 100)}%</span>
+                                </div>
+                                <div className="h-1 w-24 overflow-hidden rounded-full bg-slate-100">
+                                  <div 
+                                    className="h-full bg-blue-500 transition-all" 
+                                    style={{ width: `${Math.min((p.reservedQuantity / p.stock) * 100, 100)}%` }}
+                                  />
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          
-                          {(p.reservedQuantity ?? 0) > 0 && (
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight text-blue-500">
-                                <span>{p.reservedQuantity} réservé{p.reservedQuantity > 1 ? 's' : ''}</span>
-                                <span>{Math.round((p.reservedQuantity / p.stock) * 100)}%</span>
-                              </div>
-                              <div className="h-1 w-24 overflow-hidden rounded-full bg-slate-100">
-                                <div 
-                                  className="h-full bg-blue-500 transition-all" 
-                                  style={{ width: `${Math.min((p.reservedQuantity / p.stock) * 100, 100)}%` }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 text-sm font-black text-slate-600">
-                        {formatCurrency(p.costPrice)}
-                      </td>
+                        </td>
+                        <td className="px-8 py-5 text-sm font-black text-slate-600">
+                          {formatCurrency(p.costPrice)}
+                        </td>
                       <td className="px-8 py-5 text-right">
                         <button onClick={() => openDrawer('part', p)} className="text-blue-600 hover:underline text-sm font-bold">Détails</button>
                       </td>
@@ -915,8 +913,9 @@ export function CatalogWorkspace() {
               </table>
             </div>
           )}
-        </main>
-      </main>
+        </>
+      )}
+    </main>
 
       {/* Side Drawer for forms */}
       <SideDrawer 

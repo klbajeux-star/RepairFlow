@@ -19,6 +19,7 @@ interface OrderItem {
   id: string
   name: string
   sku: string | null
+  costPrice: number
   supplier: string
   supplierRef: string | null
   quantity: number
@@ -62,16 +63,51 @@ export default function OrderDrawer({ isOpen, onClose, onOrderConfirmed }: Order
   }
 
   async function handleConfirm() {
-    const repairIds = Array.from(new Set(items.flatMap(item => item.tickets.map(t => t.id))))
-    if (repairIds.length === 0) return
+    if (items.length === 0) return
 
     setIsConfirming(true)
     try {
-      const response = await fetch('/api/orders/cut-off', {
+      // Préparer les items pour l'API orders
+      // On éclate chaque item par ticket pour le suivi JIT
+      const orderLines = items.flatMap(item => {
+        const lines = []
+        let qtyToAssign = item.quantity
+        
+        // On assigne en priorité aux tickets liés
+        // (Dans le flux JIT, quantity est le nombre de pièces manquantes)
+        for (const ticket of item.tickets) {
+          if (qtyToAssign <= 0) break
+          lines.push({
+            partId: item.id,
+            quantity: 1,
+            costPrice: item.costPrice,
+            repairId: ticket.id
+          })
+          qtyToAssign--
+        }
+
+        // S'il reste de la quantité sans ticket (stock tampon par ex)
+        if (qtyToAssign > 0) {
+          lines.push({
+            partId: item.id,
+            quantity: qtyToAssign,
+            costPrice: item.costPrice,
+            repairId: null
+          })
+        }
+        
+        return lines
+      })
+
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ repairIds })
+        body: JSON.stringify({ 
+          supplier: 'Générique',
+          items: orderLines 
+        })
       })
+
       if (response.ok) {
         onOrderConfirmed()
         onClose()

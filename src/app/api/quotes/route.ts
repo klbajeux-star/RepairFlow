@@ -42,9 +42,13 @@ async function generateQuoteNumber() {
   return `DEV-${year}-${sequence.toString().padStart(4, '0')}`
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url)
+    const includeArchived = searchParams.get('archived') === 'true'
+
     const quotes = await prisma.quote.findMany({
+      where: includeArchived ? {} : { isArchived: false },
       include: {
         client: true,
         repair: true,
